@@ -42,12 +42,12 @@ export function Hero() {
         <img
           src="/images/hero-poster.jpg"
           alt=""
-          className="absolute inset-0 h-full w-full object-cover object-[center_55%]"
+          className="absolute inset-0 h-full w-full object-cover object-[center_62%]"
         />
       ) : (
         <video
           ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover object-[center_55%]"
+          className="absolute inset-0 h-full w-full object-cover object-[center_62%]"
           poster="/images/hero-poster.jpg"
           autoPlay
           muted
@@ -60,8 +60,8 @@ export function Hero() {
         </video>
       )}
 
-      <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-bg via-bg/50 to-bg/20" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-linear-to-b from-bg/80 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-bg via-bg/55 to-bg/25" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-bg/85 to-transparent" />
 
       <div className="relative mx-auto w-full max-w-7xl px-5 pt-36 pb-14 md:px-8 md:pb-24">
         <motion.p
