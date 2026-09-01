@@ -1,0 +1,92 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { ArrowUpRight } from "lucide-react";
+import { site } from "@data/site";
+import {
+  ContactForm,
+  type InquiryType,
+} from "@/components/contact/ContactForm";
+import { PageHero } from "@/components/layout/PageHero";
+
+type ContactSearch = {
+  type?: InquiryType;
+};
+
+export const Route = createFileRoute("/contact")({
+  validateSearch: (search: Record<string, unknown>): ContactSearch => ({
+    type:
+      search.type === "rental" || search.type === "shoot"
+        ? search.type
+        : undefined,
+  }),
+  component: ContactPage,
+  head: () => ({
+    meta: [
+      { title: "Contact — Lighthill Studio" },
+      {
+        name: "description",
+        content:
+          "Book an in-house photography session or inquire about renting Lighthill Studio in Lawrenceville, GA.",
+      },
+    ],
+  }),
+});
+
+function ContactPage() {
+  const { type } = Route.useSearch();
+
+  return (
+    <main id="main" className="scheme-light bg-paper pb-24 text-ink">
+      <div className="bg-bg text-fg">
+        <PageHero
+          eyebrow="Contact"
+          title="Tell us what you are making."
+          lede="In-house sessions start with a note. Studio rentals can be booked on Peerspace — or ask us anything first."
+        />
+      </div>
+      <div className="mx-auto grid max-w-7xl gap-14 px-5 pt-16 md:grid-cols-12 md:px-8">
+        <div className="md:col-span-7">
+          <ContactForm defaultType={type ?? "shoot"} />
+        </div>
+        <aside className="md:col-span-4 md:col-start-9">
+          <p className="text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
+            Studio
+          </p>
+          <ul className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted">
+            <li>{site.location}</li>
+            <li>{site.locationNote}</li>
+            <li>{site.hours.weekdays}</li>
+            <li>{site.hours.weekends}</li>
+            <li>
+              <a
+                href={`mailto:${site.contactEmail}`}
+                className="text-ink underline-offset-4 hover:underline"
+              >
+                {site.contactEmail}
+              </a>
+            </li>
+            <li>
+              <a
+                href={site.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-ink underline-offset-4 hover:underline"
+              >
+                {site.instagramHandle}
+                <ArrowUpRight className="size-3.5" />
+              </a>
+            </li>
+          </ul>
+          <a
+            href={site.peerspaceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-flex items-center gap-1 text-sm text-ink underline-offset-4 hover:underline"
+          >
+            Prefer to rent? Open Peerspace
+            <ArrowUpRight className="size-3.5" />
+          </a>
+        </aside>
+      </div>
+    </main>
+  );
+}
