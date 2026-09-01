@@ -47,15 +47,15 @@
     background: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
-    scroll-behavior: smooth;
     color-scheme: dark;
+    overflow-x: clip;
   }
 
   body {
     background: var(--color-bg);
     color: var(--color-fg);
     min-height: 100dvh;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   h1,
@@ -104,6 +104,12 @@
   }
 }
 
+@media (pointer: fine) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 @keyframes marquee {
   from {
     transform: translate3d(0, 0, 0);
@@ -114,25 +120,7 @@
 }
 
 .marquee-track {
-  animation: marquee 38s linear infinite;
-  will-change: transform;
-}
-
-.marquee-mask {
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 6%,
-    #000 94%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 6%,
-    #000 94%,
-    transparent
-  );
+  animation: marquee 48s linear infinite;
 }
 
 .grain {

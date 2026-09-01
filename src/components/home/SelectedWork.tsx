@@ -5,9 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 
 const picks = galleryImages.filter((img) =>
-  ["maternity", "newborn", "branding", "family", "seasonal", "birthdays"].includes(
-    img.id,
-  ),
+  [
+    "maternity",
+    "newborn",
+    "branding",
+    "headshots",
+    "family",
+    "seasonal",
+    "birthdays",
+  ].includes(img.id),
 );
 
 export function SelectedWork() {

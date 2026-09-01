@@ -1,18 +1,19 @@
 import { marqueeItems } from "@data/services";
 
-function MarqueeRow({ hidden = false }: { hidden?: boolean }) {
+function MarqueeGroup({ hidden = false }: { hidden?: boolean }) {
+  const items = [...marqueeItems, ...marqueeItems];
   return (
     <div
-      className="flex shrink-0 items-center gap-10 pr-10"
+      className="flex shrink-0 items-center gap-x-12 pr-12"
       aria-hidden={hidden || undefined}
     >
-      {marqueeItems.map((item) => (
+      {items.map((item, i) => (
         <span
-          key={item}
-          className="font-display text-2xl leading-none tracking-tight text-fg/80 italic md:text-4xl"
+          key={`${item}-${i}`}
+          className="font-display text-[1.65rem] leading-[1.35] tracking-tight text-fg/80 italic whitespace-nowrap md:text-4xl md:leading-[1.35]"
         >
           {item}
-          <span className="ml-10 text-fg-subtle">/</span>
+          <span className="ml-12 text-fg-subtle">/</span>
         </span>
       ))}
     </div>
@@ -21,10 +22,10 @@ function MarqueeRow({ hidden = false }: { hidden?: boolean }) {
 
 export function Marquee() {
   return (
-    <div className="marquee-mask overflow-hidden border-y border-border bg-bg-elevated py-6 md:py-8">
+    <div className="overflow-hidden border-y border-border bg-bg-elevated py-7 md:py-9">
       <div className="marquee-track flex w-max items-center">
-        <MarqueeRow />
-        <MarqueeRow hidden />
+        <MarqueeGroup />
+        <MarqueeGroup hidden />
       </div>
     </div>
   );

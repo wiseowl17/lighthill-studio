@@ -42,9 +42,9 @@ function Home() {
             <p className="text-lead leading-relaxed text-ink-muted">
               Lighthill is a 1,200 square-foot photography studio in
               Lawrenceville — just outside Atlanta. We built it first for our
-              own sessions: maternity, newborns, brands, families, seasonals,
-              small events, and podcasts. The cyclorama and the strobes are
-              the reason the work looks the way it does.
+              own sessions: maternity, newborns, brands, headshots, families,
+              seasonals, celebrations, and podcasts. The cyclorama and the
+              strobes are the reason the work looks the way it does.
             </p>
             <p className="mt-5 leading-relaxed text-ink-muted">
               When we are not on set, the room is available to other
@@ -82,9 +82,9 @@ function Home() {
               studio is listed for hourly rental.
             </p>
           </Reveal>
-          <div className="mt-14 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid grid-cols-2 items-stretch gap-3 lg:mt-14 lg:grid-cols-4 lg:gap-4">
             {services.map((service, i) => (
-              <Reveal key={service.id} delay={i * 0.04} className="h-full">
+              <Reveal key={service.id} delay={i * 0.03} className="h-full">
                 <Link
                   to="/pricing"
                   className="group flex h-full flex-col overflow-hidden bg-bg-elevated"
@@ -96,12 +96,14 @@ function Home() {
                       className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                     />
                   </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <p className="text-xs tracking-[0.16em] text-fg-subtle uppercase">
+                  <div className="flex flex-1 flex-col p-3 sm:p-5">
+                    <p className="hidden text-xs tracking-[0.16em] text-fg-subtle uppercase sm:block">
                       {service.kicker}
                     </p>
-                    <h3 className="mt-2 font-display text-2xl">{service.title}</h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-fg-muted">
+                    <h3 className="font-display text-lg leading-tight sm:mt-2 sm:text-2xl">
+                      {service.title}
+                    </h3>
+                    <p className="mt-2 hidden flex-1 text-sm leading-relaxed text-fg-muted sm:block">
                       {service.description}
                     </p>
                   </div>

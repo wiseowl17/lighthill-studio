@@ -4,9 +4,10 @@ export type GalleryCategory =
   | "Maternity"
   | "Newborn"
   | "Branding"
+  | "Headshots"
   | "Family"
   | "Seasonals"
-  | "Small Events"
+  | "Celebrations"
   | "Podcasts";
 
 export type GalleryImage = {
@@ -23,9 +24,10 @@ export const galleryCategories: GalleryCategory[] = [
   "Maternity",
   "Newborn",
   "Branding",
+  "Headshots",
   "Family",
   "Seasonals",
-  "Small Events",
+  "Celebrations",
   "Podcasts",
 ];
 
@@ -50,6 +52,13 @@ export const galleryImages: GalleryImage[] = [
     alt: "Newborn wrapped in blush linen on a lilac set",
     category: "Newborn",
     span: "square",
+  },
+  {
+    id: "headshots",
+    src: "/images/headshots.jpg",
+    alt: "Corporate headshot in a white suit on the cyclorama",
+    category: "Headshots",
+    span: "tall",
   },
   {
     id: "infinity-wall",
@@ -82,8 +91,8 @@ export const galleryImages: GalleryImage[] = [
   {
     id: "birthdays",
     src: "/images/birthdays.jpg",
-    alt: "Small-event birthday session on a mermaid set",
-    category: "Small Events",
+    alt: "Celebration birthday session on a mermaid set",
+    category: "Celebrations",
     span: "tall",
   },
   {

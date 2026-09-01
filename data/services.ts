@@ -32,6 +32,14 @@ export const services: Service[] = [
     image: "/images/branding.jpg",
   },
   {
+    id: "headshots",
+    title: "Headshots",
+    kicker: "Corporate",
+    description:
+      "Clean, directed portraits for teams, LinkedIn, and the press page — lit on the infinity wall.",
+    image: "/images/headshots.jpg",
+  },
+  {
     id: "family",
     title: "Family",
     kicker: "Portraits",
@@ -48,9 +56,9 @@ export const services: Service[] = [
     image: "/images/seasonal.jpg",
   },
   {
-    id: "events",
-    title: "Small Events",
-    kicker: "Celebrations",
+    id: "celebrations",
+    title: "Celebrations",
+    kicker: "Events",
     description:
       "Birthdays, cake smash, and the little productions that still deserve a real set.",
     image: "/images/birthdays.jpg",
@@ -69,9 +77,10 @@ export const marqueeItems = [
   "Maternity",
   "Newborn",
   "Branding",
+  "Headshots",
   "Family",
   "Seasonals",
-  "Small Events",
+  "Celebrations",
   "Podcasts",
   "Cyclorama",
 ] as const;

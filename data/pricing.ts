@@ -76,6 +76,21 @@ export const photographyPackages: PhotographyPackage[] = [
     ],
   },
   {
+    id: "headshots",
+    name: "Corporate / Headshots",
+    price: "$450",
+    duration: "60 minutes",
+    description:
+      "Clean, directed portraits for LinkedIn, teams, and the press page — lit on the cyclorama.",
+    includes: [
+      "60 minutes in studio",
+      "Up to 2 looks",
+      "15 retouched images",
+      "Social-ready crops",
+      "Print release",
+    ],
+  },
+  {
     id: "family",
     name: "Family Session",
     price: "$550",
@@ -106,8 +121,8 @@ export const photographyPackages: PhotographyPackage[] = [
     ],
   },
   {
-    id: "events",
-    name: "Small Events",
+    id: "celebrations",
+    name: "Celebrations",
     price: "$600",
     duration: "90 minutes",
     description:

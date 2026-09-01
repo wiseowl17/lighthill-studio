@@ -13,11 +13,11 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
 
   return (
     <motion.div
-      initial={reduce ? false : { opacity: 0, y: 16, filter: "blur(4px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-12% 0px" }}
+      initial={reduce ? false : { opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
       transition={{
-        duration: 0.5,
+        duration: 0.4,
         delay,
         ease: [0.22, 1, 0.36, 1],
       }}

@@ -26,7 +26,7 @@ export const team: TeamMember[] = [
     id: "hillary",
     name: "Hillary Urgelles",
     title: "Co-owner",
-    bio: "Hillary is a co-owner of Lighthill. She and Luz work the floor together on seasonal sets, small events, branding, and podcast days — keeping the room moving and the light consistent, from a toddler on the cove to a founder at the desk.",
+    bio: "Hillary is a co-owner of Lighthill. She and Luz work the floor together on seasonal sets, celebrations, branding, and podcast days — keeping the room moving and the light consistent, from a toddler on the cove to a founder at the desk.",
     image: "/images/team-hillary.jpg",
     objectPosition: "64% 18%",
     instagram: "https://www.instagram.com/lighthill_studio/",
