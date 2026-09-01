@@ -1,5 +1,5 @@
 /**
- * Team CMS. Swap names, titles, bios, and headshot paths as the roster changes.
+ * Team CMS. Swap names, titles, bios, and portrait paths as the roster changes.
  */
 
 export type TeamMember = {
@@ -8,24 +8,27 @@ export type TeamMember = {
   title: string;
   bio: string;
   image: string;
+  objectPosition?: string;
   instagram?: string;
 };
 
 export const team: TeamMember[] = [
   {
-    id: "manuel",
-    name: "Manuel Cruz",
-    title: "Founder & Director",
-    bio: "Manuel built Lighthill around the light he wanted on this side of Atlanta — a quiet cyclorama, a long run of windows, and enough floor for a real set. He directs in-house sessions and keeps the room ready for the photographers who rent it.",
-    image: "/images/team-manuel.jpg",
+    id: "luz",
+    name: "Luz Reyes",
+    title: "Photographer",
+    bio: "Luz leads in-house sessions at Lighthill — maternity, newborns, families, and the personal brands that need a room already built for a face. She directs with a light touch and treats the cyclorama like a set, not a box.",
+    image: "/images/team-luz.jpg",
+    objectPosition: "center 12%",
     instagram: "https://www.instagram.com/lighthill_studio/",
   },
   {
-    id: "sofia",
-    name: "Sofia Reyes",
-    title: "Lead Photographer",
-    bio: "Sofia leads in-house portrait work — maternity, brands, and the headshots people actually send. She directs with a light touch and lights like the window is still the key, even when it isn’t.",
-    image: "/images/team-sofia.jpg",
+    id: "hillary",
+    name: "Hillary Urgelles",
+    title: "Photographer",
+    bio: "Hillary photographs the work that fills the calendar: seasonal sets, small events, branding, and podcast days. She keeps the floor moving and the light consistent, whether it’s a toddler on the cove or a founder at the desk.",
+    image: "/images/team-hillary.jpg",
+    objectPosition: "64% 18%",
   },
 ];
 

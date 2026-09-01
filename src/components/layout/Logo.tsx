@@ -25,10 +25,7 @@ export function Logo({
             : "/brand/logo-black.png"
         }
         alt="Lighthill Studio"
-        className={cn(
-          "h-10 w-auto outline-none md:h-12",
-          imgClassName,
-        )}
+        className={cn("h-16 w-auto outline-none md:h-20", imgClassName)}
       />
     </Link>
   );

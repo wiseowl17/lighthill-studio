@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 
 const picks = galleryImages.filter((img) =>
-  ["maternity", "headshot-woman", "fashion", "family", "branding", "beauty"].includes(
+  ["maternity", "newborn", "branding", "family", "seasonal", "birthdays"].includes(
     img.id,
   ),
 );

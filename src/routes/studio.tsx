@@ -19,7 +19,7 @@ export const Route = createFileRoute("/studio")({
       {
         name: "description",
         content:
-          "A 1,200 sq ft photography studio in Lawrenceville, GA with a white cyclorama, northern window light, dressing area, and lighting add-ons.",
+          "A 1,200 sq ft photography studio in Lawrenceville, GA with a white cyclorama, Godox lighting, a podcast set, and a private changing room.",
       },
     ],
   }),
@@ -32,8 +32,8 @@ function StudioPage() {
         eyebrow="The studio"
         title={studioIntro.title}
         lede={studioIntro.body}
-        image="/images/hero-studio.jpg"
-        imageAlt="Lighthill Studio cyclorama and window wall"
+        image="/images/cyclorama.jpg"
+        imageAlt="Lighthill Studio white cyclorama"
       />
 
       <section className="bg-paper text-ink">
@@ -56,6 +56,9 @@ function StudioPage() {
                       src={feature.image}
                       alt={feature.title}
                       className="h-full w-full object-cover"
+                      style={{
+                        objectPosition: feature.objectPosition ?? "center",
+                      }}
                     />
                   </div>
                 </Reveal>

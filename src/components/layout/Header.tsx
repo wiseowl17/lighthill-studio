@@ -36,22 +36,22 @@ export function Header() {
           : "bg-linear-to-b from-bg/85 to-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-5 md:h-20 md:px-8">
-        <div className="flex items-center gap-1">
-          <Logo variant="white" imgClassName="h-10 md:h-12" />
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-center px-5 md:h-24 md:px-8 lg:h-20 lg:justify-between">
+        <div className="flex items-center gap-1 md:gap-2">
+          <Logo variant="white" imgClassName="h-16 md:h-20 lg:h-12" />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <button
                 type="button"
-                className="flex size-11 items-center justify-center text-fg lg:hidden"
+                className="flex size-12 items-center justify-center text-fg lg:hidden md:size-14"
                 aria-label="Open menu"
               >
-                <Menu className="size-6" strokeWidth={1.25} />
+                <Menu className="size-7 md:size-8" strokeWidth={1.25} />
               </button>
             </SheetTrigger>
             <SheetContent>
               <div className="flex h-full flex-col px-6 pt-20 pb-10">
-                <Logo variant="white" imgClassName="h-14" />
+                <Logo variant="white" imgClassName="h-16 md:h-20" />
                 <nav className="mt-12 flex flex-col gap-1" aria-label="Mobile">
                   {nav.map((item) => (
                     <SheetClose asChild key={item.to}>

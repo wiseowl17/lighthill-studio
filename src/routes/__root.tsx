@@ -18,7 +18,7 @@ function NotFound() {
   return (
     <main
       id="main"
-      className="flex min-h-[70dvh] flex-col items-center justify-center bg-bg px-6 pt-28 text-center text-fg"
+      className="flex min-h-[70dvh] flex-col items-center justify-center bg-bg px-6 pt-32 text-center text-fg"
     >
       <p className="text-xs tracking-[0.2em] text-fg-muted uppercase">404</p>
       <h1 className="mt-4 font-display text-headline">
@@ -88,9 +88,7 @@ function RootComponent() {
         </a>
         <AuthProvider>
           <Header />
-          <div id="main">
-            <Outlet />
-          </div>
+          <Outlet />
           <Footer />
         </AuthProvider>
         <Scripts />

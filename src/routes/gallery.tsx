@@ -10,7 +10,7 @@ export const Route = createFileRoute("/gallery")({
       {
         name: "description",
         content:
-          "Selected photography from Lighthill Studio — portraits, maternity, branding, fashion, and the room itself.",
+          "Selected photography from Lighthill Studio — maternity, newborn, branding, family, seasonals, small events, podcasts, and the room itself.",
       },
     ],
   }),

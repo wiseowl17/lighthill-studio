@@ -8,7 +8,7 @@ Edit these TypeScript files and redeploy. The UI maps over them; you should not 
 | `pricing.ts` | In-house packages, rental rates, add-ons |
 | `gallery.ts` | Gallery images, captions, categories |
 | `studio.ts` | Space copy, features, amenities, specs |
-| `team.ts` | Photographer names, titles, bios, headshots |
+| `team.ts` | Photographer names, titles, bios, portraits |
 | `services.ts` | Homepage service cards and marquee |
 | `faq.ts` | Accordion questions |
 

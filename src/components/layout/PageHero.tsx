@@ -7,6 +7,7 @@ type PageHeroProps = {
   lede?: string;
   image?: string;
   imageAlt?: string;
+  imageClassName?: string;
   className?: string;
 };
 
@@ -16,10 +17,11 @@ export function PageHero({
   lede,
   image,
   imageAlt,
+  imageClassName,
   className,
 }: PageHeroProps) {
   return (
-    <section className={cn("bg-bg pt-28 pb-10 md:pt-32 md:pb-14", className)}>
+    <section className={cn("bg-bg pt-32 pb-10 md:pt-36 md:pb-14", className)}>
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           {eyebrow ? (
@@ -44,7 +46,10 @@ export function PageHero({
               <img
                 src={image}
                 alt={imageAlt ?? ""}
-                className="h-full w-full object-cover"
+                className={cn(
+                  "h-full w-full object-cover object-[center_78%]",
+                  imageClassName,
+                )}
               />
             </div>
           </Reveal>

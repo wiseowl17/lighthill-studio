@@ -12,23 +12,23 @@ export const services: Service[] = [
     title: "Maternity",
     kicker: "Portraits",
     description:
-      "Quiet, filmic sessions on the cyclorama or in window light. Made to feel like stills, not setups.",
+      "Quiet, filmic sessions on the cyclorama. Made to feel like stills, not setups.",
     image: "/images/maternity.jpg",
   },
   {
-    id: "headshots",
-    title: "Headshots",
+    id: "newborn",
+    title: "Newborn",
     kicker: "Portraits",
     description:
-      "Studio portraits for people who need to look like themselves — actors, founders, teams, and everyone in between.",
-    image: "/images/headshot-woman.jpg",
+      "Slow, warm sessions for the first days. Wrapped, posed, and lit with studio strobes — never rushed.",
+    image: "/images/newborn.jpg",
   },
   {
     id: "branding",
     title: "Branding",
     kicker: "Commercial",
     description:
-      "Personal brand and small-business imagery with room to move. Product, portrait, and lifestyle in one space.",
+      "Personal brand and small-business imagery with room to move. Portrait and lifestyle in one space.",
     image: "/images/branding.jpg",
   },
   {
@@ -36,34 +36,42 @@ export const services: Service[] = [
     title: "Family",
     kicker: "Portraits",
     description:
-      "Unhurried family and couple sessions. Neutral wardrobe, natural light, and a floor the kids can actually use.",
+      "Unhurried family sessions. Neutral wardrobe, directed posing, and a floor the kids can actually use.",
     image: "/images/family.jpg",
   },
   {
-    id: "product",
-    title: "Product",
-    kicker: "Commercial",
+    id: "seasonals",
+    title: "Seasonals",
+    kicker: "Mini sessions",
     description:
-      "Clean still life on seamless paper or the infinity wall. Jewelry, objects, and the things you make.",
-    image: "/images/product.jpg",
+      "Holiday and seasonal sets that change with the calendar — Easter, fall, Christmas, and the in-between.",
+    image: "/images/seasonal.jpg",
   },
   {
-    id: "editorial",
-    title: "Editorial",
-    kicker: "Fashion",
+    id: "events",
+    title: "Small Events",
+    kicker: "Celebrations",
     description:
-      "Fashion and beauty work that uses the cyclorama as a graphic field — hard light, soft light, or both.",
-    image: "/images/fashion.jpg",
+      "Birthdays, cake smash, and the little productions that still deserve a real set.",
+    image: "/images/birthdays.jpg",
+  },
+  {
+    id: "podcasts",
+    title: "Podcasts",
+    kicker: "Production",
+    description:
+      "A dedicated interview set — slat wall, lounge chairs, and light already built for talking-head video.",
+    image: "/images/podcast.jpg",
   },
 ];
 
 export const marqueeItems = [
   "Maternity",
-  "Headshots",
+  "Newborn",
   "Branding",
   "Family",
-  "Product",
-  "Editorial",
-  "Content",
+  "Seasonals",
+  "Small Events",
+  "Podcasts",
   "Cyclorama",
 ] as const;

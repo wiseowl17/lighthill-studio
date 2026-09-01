@@ -21,18 +21,12 @@ export function Hero() {
       className="relative isolate flex min-h-dvh items-end overflow-hidden bg-bg"
     >
       <motion.div style={{ y, opacity }} className="absolute inset-0 -z-10">
-        <video
-          className="h-[120%] w-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/hero-studio.jpg"
-          aria-hidden="true"
-        >
-          <source src="/videos/hero.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-linear-to-t from-bg via-bg/35 to-bg/10" />
+        <img
+          src="/images/cyclorama.jpg"
+          alt=""
+          className="h-[120%] w-full object-cover object-[center_70%]"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-bg via-bg/50 to-bg/25" />
         <div className="absolute inset-x-0 top-0 h-28 bg-linear-to-b from-bg/80 to-transparent" />
         <div className="grain" />
       </motion.div>
@@ -60,8 +54,9 @@ export function Hero() {
           transition={{ duration: 0.55, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
           className="mt-6 max-w-xl text-lead leading-relaxed text-fg-muted"
         >
-          In-house photography for portraits, brands, and the days that matter
-          — and a cyclorama you can rent when you want the space to yourself.
+          In-house photography for maternity, newborns, families, brands, and
+          the days that matter — and a cyclorama you can rent when you want
+          the space to yourself.
         </motion.p>
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 14 }}

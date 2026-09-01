@@ -3,6 +3,7 @@ export type StudioFeature = {
   title: string;
   description: string;
   image: string;
+  objectPosition?: string;
 };
 
 export type Amenity = {
@@ -13,8 +14,8 @@ export type Amenity = {
 
 export const studioIntro = {
   eyebrow: "The space",
-  title: "A bright, quiet floor with an infinity wall.",
-  body: "Lighthill is a 1,200 square-foot studio in Lawrenceville — built for photographers, videographers, and small productions who want natural light, a true cyclorama, and enough room to work without a warehouse echo.",
+  title: "A quiet floor with a true infinity wall.",
+  body: "Lighthill is a 1,200 square-foot studio in Lawrenceville — built for photographers, videographers, and small productions who want a cyclorama, controlled strobe lighting, and enough room to work without a warehouse echo.",
 } as const;
 
 export const studioFeatures: StudioFeature[] = [
@@ -22,29 +23,41 @@ export const studioFeatures: StudioFeature[] = [
     id: "cyclorama",
     title: "White infinity wall",
     description:
-      "A full cyclorama that disappears the horizon. Portraits, product, fashion, and talking-head video all sit cleanly on the cove — no wrinkled muslin, no visible floor line.",
+      "A full cyclorama that disappears the horizon. Portraits, maternity, branding, and talking-head video all sit cleanly on the cove — no wrinkled muslin, no visible floor line.",
     image: "/images/cyclorama.jpg",
-  },
-  {
-    id: "light",
-    title: "Northern window light",
-    description:
-      "A long run of industrial windows keeps the floor usable from first booking to last. Soft, even daylight with just enough direction to shape a face without a single strobe.",
-    image: "/images/natural-light.jpg",
-  },
-  {
-    id: "dressing",
-    title: "Dressing area",
-    description:
-      "A private corner to change, a lit vanity, a full-length mirror, and a rack. Clients can settle in without living out of a duffel on the studio floor.",
-    image: "/images/dressing.jpg",
+    objectPosition: "center 78%",
   },
   {
     id: "lighting",
-    title: "Lighting, when you want it",
+    title: "Studio lighting",
     description:
-      "Strobes, octas, a beauty dish, flags, and a boom are available as add-ons. The base rental is the room and the cyclorama — bring your own kit, or use ours.",
+      "Godox strobes, octas, and modifiers ready as add-ons. The base rental is the room and the cyclorama — bring your own kit, or use ours. No guessing at the weather.",
     image: "/images/lighting.jpg",
+    objectPosition: "center 42%",
+  },
+  {
+    id: "podcast",
+    title: "Podcast set",
+    description:
+      "A finished interview corner: channel-tufted chairs, a wood-slat wall, and a round table already dressed. Sit down and record — or photograph the hosts in place.",
+    image: "/images/podcast.jpg",
+    objectPosition: "center 40%",
+  },
+  {
+    id: "sets",
+    title: "Built-in sets",
+    description:
+      "A navy paneled desk for branding, a lounge chair against warm slats, and a peacock chair with pampas for portraits. Change the story without building a set from scratch.",
+    image: "/images/professional-space.jpg",
+    objectPosition: "center 55%",
+  },
+  {
+    id: "dressing",
+    title: "Changing room & restroom",
+    description:
+      "A private, accessible restroom on the floor with a sink, mirror, and room to change. Clients can settle in without living out of a duffel on the studio floor.",
+    image: "/images/bathroom.jpg",
+    objectPosition: "center 62%",
   },
 ];
 
@@ -63,7 +76,7 @@ export const studioSpecs = [
   { label: "Floor", value: "1,200 sq ft" },
   { label: "Capacity", value: "10 guests" },
   { label: "Cyclorama", value: "White infinity wall" },
-  { label: "Light", value: "North-facing windows" },
+  { label: "Light", value: "Godox studio strobes" },
   { label: "Access", value: "Street level" },
   { label: "Parking", value: "Free on site" },
 ] as const;

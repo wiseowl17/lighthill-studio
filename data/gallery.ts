@@ -2,11 +2,12 @@ export type GalleryCategory =
   | "All"
   | "Studio"
   | "Maternity"
-  | "Portraits"
+  | "Newborn"
   | "Branding"
   | "Family"
-  | "Fashion"
-  | "Product";
+  | "Seasonals"
+  | "Small Events"
+  | "Podcasts";
 
 export type GalleryImage = {
   id: string;
@@ -20,18 +21,19 @@ export const galleryCategories: GalleryCategory[] = [
   "All",
   "Studio",
   "Maternity",
-  "Portraits",
+  "Newborn",
   "Branding",
   "Family",
-  "Fashion",
-  "Product",
+  "Seasonals",
+  "Small Events",
+  "Podcasts",
 ];
 
 export const galleryImages: GalleryImage[] = [
   {
-    id: "hero-studio",
-    src: "/images/hero-studio.jpg",
-    alt: "Sunlit cyclorama studio with industrial windows",
+    id: "cyclorama",
+    src: "/images/cyclorama.jpg",
+    alt: "White cyclorama cove with paper rolls and Godox lighting",
     category: "Studio",
     span: "wide",
   },
@@ -43,101 +45,87 @@ export const galleryImages: GalleryImage[] = [
     span: "tall",
   },
   {
-    id: "headshot-woman",
-    src: "/images/headshot-woman.jpg",
-    alt: "Studio headshot of a woman in a charcoal blazer",
-    category: "Portraits",
-    span: "tall",
+    id: "newborn",
+    src: "/images/newborn.jpg",
+    alt: "Newborn wrapped in blush linen on a lilac set",
+    category: "Newborn",
+    span: "square",
   },
   {
-    id: "cyclorama",
-    src: "/images/cyclorama.jpg",
-    alt: "White cyclorama cove with a single strobe",
+    id: "infinity-wall",
+    src: "/images/infinity-wall.jpg",
+    alt: "Infinity wall with posing stairs, sheer drapes, and a Godox octabox",
     category: "Studio",
-    span: "wide",
-  },
-  {
-    id: "fashion",
-    src: "/images/fashion.jpg",
-    alt: "Fashion editorial against the infinity wall",
-    category: "Fashion",
     span: "tall",
   },
   {
     id: "branding",
     src: "/images/branding.jpg",
-    alt: "Personal brand session with ceramics in window light",
+    alt: "Personal brand session with spotlight and lookbook prints",
     category: "Branding",
-    span: "wide",
+    span: "tall",
   },
   {
     id: "family",
     src: "/images/family.jpg",
-    alt: "Family portrait in cream tones by the studio windows",
+    alt: "Multi-generation family portrait in cream tones",
     category: "Family",
-    span: "wide",
-  },
-  {
-    id: "headshot-man",
-    src: "/images/headshot-man.jpg",
-    alt: "Studio headshot of a man in a navy knit",
-    category: "Portraits",
     span: "tall",
   },
   {
-    id: "natural-light",
-    src: "/images/natural-light.jpg",
-    alt: "Afternoon light across the studio floor",
-    category: "Studio",
-    span: "wide",
+    id: "seasonal",
+    src: "/images/seasonal.jpg",
+    alt: "Seasonal Easter session with siblings and studio props",
+    category: "Seasonals",
+    span: "tall",
   },
   {
-    id: "couple",
-    src: "/images/couple.jpg",
-    alt: "Couple portrait on the cyclorama",
-    category: "Family",
-    span: "wide",
+    id: "birthdays",
+    src: "/images/birthdays.jpg",
+    alt: "Small-event birthday session on a mermaid set",
+    category: "Small Events",
+    span: "tall",
   },
   {
-    id: "product",
-    src: "/images/product.jpg",
-    alt: "Jewelry still life on white seamless",
-    category: "Product",
-    span: "square",
-  },
-  {
-    id: "dressing",
-    src: "/images/dressing.jpg",
-    alt: "Studio dressing area with vanity and wardrobe rack",
-    category: "Studio",
-    span: "wide",
-  },
-  {
-    id: "beauty",
-    src: "/images/beauty.jpg",
-    alt: "Beauty close-up with dewy skin and a large softbox",
-    category: "Fashion",
+    id: "podcast",
+    src: "/images/podcast.jpg",
+    alt: "Podcast interview set with velvet chairs and a wood-slat wall",
+    category: "Podcasts",
     span: "tall",
   },
   {
     id: "lighting",
     src: "/images/lighting.jpg",
-    alt: "Softboxes and modifiers set on the studio floor",
+    alt: "Godox strobe on a stand in the cyclorama",
     category: "Studio",
-    span: "wide",
+    span: "tall",
   },
   {
-    id: "content",
-    src: "/images/content.jpg",
-    alt: "Content creator filming a product in the studio",
-    category: "Branding",
-    span: "wide",
+    id: "professional-space",
+    src: "/images/professional-space.jpg",
+    alt: "Navy paneled branding set with a walnut desk",
+    category: "Studio",
+    span: "tall",
   },
   {
-    id: "paper-rolls",
-    src: "/images/paper-rolls.jpg",
-    alt: "Rack of colored seamless paper rolls",
+    id: "lounge",
+    src: "/images/lounge.jpg",
+    alt: "Lounge chair against a warm wood-slat wall",
     category: "Studio",
-    span: "wide",
+    span: "tall",
+  },
+  {
+    id: "props",
+    src: "/images/props.jpg",
+    alt: "Peacock chair, pampas, and draped linen for portrait sets",
+    category: "Studio",
+    span: "tall",
+  },
+  {
+    id: "bathroom",
+    src: "/images/bathroom.jpg",
+    alt: "Private changing room and restroom on the studio floor",
+    category: "Studio",
+    span: "tall",
   },
 ];

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/team")({
       {
         name: "description",
         content:
-          "Meet the photographers behind Lighthill Studio in Lawrenceville, Georgia.",
+          "Meet Luz Reyes and Hillary Urgelles, the photographers behind Lighthill Studio in Lawrenceville, Georgia.",
       },
     ],
   }),
@@ -38,6 +38,9 @@ function TeamPage() {
                   src={member.image}
                   alt={member.name}
                   className="h-full w-full object-cover"
+                  style={{
+                    objectPosition: member.objectPosition ?? "center 18%",
+                  }}
                 />
               </div>
               <p className="mt-5 text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">

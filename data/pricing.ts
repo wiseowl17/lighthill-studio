@@ -29,27 +29,12 @@ export type Addon = {
 
 export const photographyPackages: PhotographyPackage[] = [
   {
-    id: "headshots",
-    name: "Studio Headshots",
-    price: "$350",
-    duration: "45 minutes",
-    description:
-      "A focused portrait session for one person. Wardrobe changes welcome. Delivered as a tight, usable set.",
-    includes: [
-      "Pre-session consult",
-      "45 minutes on set",
-      "8 retouched images",
-      "Online gallery within 7 days",
-      "Personal and commercial usage",
-    ],
-  },
-  {
     id: "maternity",
     name: "Maternity",
     price: "$650",
     duration: "90 minutes",
     description:
-      "An unhurried session on the cyclorama and in window light. Partner and children are welcome.",
+      "An unhurried session on the cyclorama. Partner and children are welcome.",
     featured: true,
     includes: [
       "Planning call and mood notes",
@@ -60,13 +45,28 @@ export const photographyPackages: PhotographyPackage[] = [
     ],
   },
   {
+    id: "newborn",
+    name: "Newborn",
+    price: "$750",
+    duration: "2 hours",
+    description:
+      "A slow session for the first days home. Wraps, posing, and a warm, controlled set.",
+    featured: true,
+    includes: [
+      "Planning call and wrap options",
+      "Up to 2 hours in studio",
+      "Parents welcome in frame",
+      "25 retouched images",
+      "Print-ready files and web set",
+    ],
+  },
+  {
     id: "branding",
     name: "Brand Studio",
     price: "$850",
     duration: "2 hours",
     description:
-      "Portraits, product, and lifestyle frames for a personal brand or small business — shot as one story.",
-    featured: true,
+      "Portraits and lifestyle frames for a personal brand or small business — shot as one story.",
     includes: [
       "Shot list workshop",
       "2 hours on the floor",
@@ -81,7 +81,7 @@ export const photographyPackages: PhotographyPackage[] = [
     price: "$550",
     duration: "60 minutes",
     description:
-      "Families, couples, and the in-between. Soft direction, natural light, and room to breathe.",
+      "Families, couples, and the in-between. Soft direction and room to breathe.",
     includes: [
       "60 minutes in studio",
       "Up to 6 people",
@@ -91,33 +91,48 @@ export const photographyPackages: PhotographyPackage[] = [
     ],
   },
   {
-    id: "product",
-    name: "Product Still Life",
-    price: "$450",
-    duration: "90 minutes",
+    id: "seasonals",
+    name: "Seasonals",
+    price: "$350",
+    duration: "30 minutes",
     description:
-      "Objects on seamless or the infinity wall. Lighting designed around the thing, not a template.",
+      "Mini sessions on a dressed seasonal set. Limited dates, a tight gallery, and a reason to update the wall.",
     includes: [
-      "Up to 8 products / SKUs",
-      "Hero + detail frames",
-      "12 retouched images",
-      "White-background options",
-      "Web and print files",
+      "30 minutes on the seasonal set",
+      "Up to 5 people",
+      "10 retouched images",
+      "Online gallery",
+      "Print release",
     ],
   },
   {
-    id: "half-day",
-    name: "Half-Day Directed",
-    price: "$1,400",
-    duration: "4 hours",
+    id: "events",
+    name: "Small Events",
+    price: "$600",
+    duration: "90 minutes",
     description:
-      "A longer directed day with the in-house team — campaigns, lookbooks, and mixed portrait / product work.",
+      "Birthdays, cake smash, and themed celebrations that still belong in a studio, not a hallway.",
     includes: [
-      "4 hours of directed shooting",
-      "Lighting and set changes",
-      "50 retouched images",
-      "Usage for web and print",
-      "Optional assistant (see add-ons)",
+      "90 minutes on a dressed set",
+      "Cake and props welcome",
+      "20 retouched images",
+      "Online gallery",
+      "Print release",
+    ],
+  },
+  {
+    id: "podcasts",
+    name: "Podcast Session",
+    price: "$500",
+    duration: "90 minutes",
+    description:
+      "Host portraits and talking-head frames in the finished podcast set — or a recording block with the lights already placed.",
+    includes: [
+      "90 minutes in the interview set",
+      "Host and guest portraits",
+      "15 retouched stills",
+      "Set remains dressed",
+      "Optional B-roll of the room",
     ],
   },
 ];
@@ -161,7 +176,7 @@ export const addons: Addon[] = [
     id: "flashes",
     name: "Studio flashes",
     price: "$40 / session",
-    description: "Battery and pack strobes with triggers. Ask if you need a specific modifier.",
+    description: "Godox strobes with triggers. Ask if you need a specific modifier.",
   },
   {
     id: "softboxes",

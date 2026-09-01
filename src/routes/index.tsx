@@ -35,16 +35,16 @@ function Home() {
               The studio
             </p>
             <h2 className="mt-4 font-display text-headline">
-              Natural light. An infinity wall. A floor that stays out of the way.
+              An infinity wall. Controlled light. A floor that stays out of the way.
             </h2>
           </Reveal>
           <Reveal delay={0.08} className="md:col-span-6 md:col-start-7">
             <p className="text-lead leading-relaxed text-ink-muted">
               Lighthill is a 1,200 square-foot photography studio in
               Lawrenceville — just outside Atlanta. We built it first for our
-              own sessions: maternity, headshots, brands, families, product. The
-              cyclorama and the window wall are the reason the work looks the
-              way it does.
+              own sessions: maternity, newborns, brands, families, seasonals,
+              small events, and podcasts. The cyclorama and the strobes are
+              the reason the work looks the way it does.
             </p>
             <p className="mt-5 leading-relaxed text-ink-muted">
               When we are not on set, the room is available to other
@@ -170,7 +170,7 @@ function Home() {
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-8 px-5 py-24 md:flex-row md:items-end md:justify-between md:px-8 md:py-32">
           <Reveal className="max-w-2xl">
             <h2 className="font-display text-headline">
-              Ready when the light is.
+              Ready when you are.
             </h2>
             <p className="mt-5 text-lead text-ink-muted">
               Tell us about the session. We will come back with dates, a brief,
