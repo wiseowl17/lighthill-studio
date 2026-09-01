@@ -23,7 +23,7 @@ function GalleryPage() {
         <PageHero
           eyebrow="Gallery"
           title="The work, and the room it was made in."
-          lede="A selection of in-house sessions and wide frames of the studio. Tap any image to open it."
+          lede="Sessions made here — maternity, newborns, families, brands, headshots, seasonals, celebrations. Tap any frame."
         />
       </div>
       <div className="mx-auto max-w-7xl px-5 pt-8 md:px-8 md:pt-10">

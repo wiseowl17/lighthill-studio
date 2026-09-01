@@ -69,29 +69,26 @@ export function MasonryGallery() {
         ))}
       </div>
 
-      <div className="mt-8 columns-1 gap-4 sm:columns-2 lg:columns-3">
+      <div className="mt-8 columns-2 gap-2 sm:gap-3 lg:columns-3 lg:gap-4 xl:columns-4">
         {items.map((img, i) => (
           <motion.button
             key={img.id}
             type="button"
-            layout={!reduce}
+            layout={false}
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: Math.min(i, 8) * 0.04 }}
             onClick={() => setActive(img)}
-            className="mb-4 block w-full break-inside-avoid overflow-hidden bg-paper-muted text-left"
+            className="mb-2 block w-full break-inside-avoid overflow-hidden bg-paper-muted text-left sm:mb-3 lg:mb-4"
           >
             <img
               src={img.src}
               alt={img.alt}
-              className={cn(
-                "w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.03]",
-                img.span === "tall"
-                  ? "aspect-portrait"
-                  : img.span === "square"
-                    ? "aspect-square"
-                    : "aspect-photo",
-              )}
+              width={img.width}
+              height={img.height}
+              loading="lazy"
+              decoding="async"
+              className="h-auto w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.03]"
             />
           </motion.button>
         ))}

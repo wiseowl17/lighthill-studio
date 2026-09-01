@@ -4,17 +4,7 @@ import { galleryImages } from "@data/gallery";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 
-const picks = galleryImages.filter((img) =>
-  [
-    "maternity",
-    "newborn",
-    "branding",
-    "headshots",
-    "family",
-    "seasonal",
-    "birthdays",
-  ].includes(img.id),
-);
+const picks = galleryImages.filter((img) => img.featured);
 
 export function SelectedWork() {
   return (
@@ -38,14 +28,18 @@ export function SelectedWork() {
             </Button>
           </Reveal>
         </div>
-        <div className="mt-14 columns-1 gap-4 sm:columns-2 lg:columns-3">
+        <div className="mt-14 columns-2 gap-2 sm:gap-3 lg:columns-3 lg:gap-4">
           {picks.map((img, i) => (
-            <Reveal key={img.id} delay={i * 0.04} className="mb-4 break-inside-avoid">
+            <Reveal key={img.id} delay={i * 0.04} className="mb-2 break-inside-avoid sm:mb-3 lg:mb-4">
               <Link to="/gallery" className="group block overflow-hidden bg-bg-elevated">
                 <img
                   src={img.src}
                   alt={img.alt}
-                  className="w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                  width={img.width}
+                  height={img.height}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-auto w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
                 />
               </Link>
             </Reveal>
