@@ -12,9 +12,10 @@ export const site = {
     "In-house photography and a rentable cyclorama studio in Lawrenceville, Georgia — just outside Atlanta.",
   location: "Lawrenceville, Georgia",
   locationNote: "Just outside Atlanta. Exact address is shared after booking.",
-  email: "mlcruz9804@gmail.com",
-  contactEmail: "mlcruz9804@gmail.com",
-  phone: "",
+  email: "studiolighthill@gmail.com",
+  contactEmail: "studiolighthill@gmail.com",
+  phone: "+14702069150",
+  phoneDisplay: "+1 (470) 206-9150",
   instagram: "https://www.instagram.com/lighthill_studio/",
   instagramHandle: "@lighthill_studio",
   peerspaceUrl:

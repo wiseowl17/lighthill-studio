@@ -1,9 +1,7 @@
-import { Link } from "@tanstack/react-router";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 import { site } from "@data/site";
-import { Button } from "@/components/ui/button";
+import { CtaPair } from "@/components/layout/CtaPair";
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -62,23 +60,9 @@ export function Hero() {
           initial={reduce ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center"
+          className="mt-10"
         >
-          <Button variant="primary" size="lg" asChild>
-            <Link to="/contact" search={{ type: "shoot" }}>
-              Book a Shoot
-            </Link>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <a
-              href={site.peerspaceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Rent the Space
-              <ArrowUpRight className="size-3.5" />
-            </a>
-          </Button>
+          <CtaPair />
         </motion.div>
       </div>
     </section>

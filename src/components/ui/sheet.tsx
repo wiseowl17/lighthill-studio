@@ -15,7 +15,7 @@ function SheetOverlay({
   return (
     <DialogPrimitive.Overlay
       className={cn(
-        "fixed inset-0 z-50 bg-bg/80 data-[state=open]:animate-in data-[state=closed]:animate-out",
+        "fixed inset-x-0 top-20 bottom-0 z-40 bg-bg/80 md:top-24 data-[state=open]:animate-in data-[state=closed]:animate-out",
         className,
       )}
       {...props}
@@ -26,23 +26,32 @@ function SheetOverlay({
 function SheetContent({
   className,
   children,
+  hideClose = false,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+  hideClose?: boolean;
+}) {
   return (
     <SheetPortal>
       <SheetOverlay />
       <DialogPrimitive.Content
         className={cn(
-          "fixed inset-0 z-50 flex flex-col bg-bg text-fg outline-none",
+          "fixed inset-x-0 top-20 bottom-0 z-40 flex flex-col bg-bg text-fg outline-none md:top-24",
           className,
         )}
         {...props}
       >
+        <DialogPrimitive.Title className="sr-only">Menu</DialogPrimitive.Title>
+        <DialogPrimitive.Description className="sr-only">
+          Studio navigation
+        </DialogPrimitive.Description>
         {children}
-        <DialogPrimitive.Close className="absolute top-4 right-4 flex size-11 items-center justify-center text-fg/80 transition-opacity duration-150 hover:text-fg">
-          <X className="size-6" strokeWidth={1.25} />
-          <span className="sr-only">Close menu</span>
-        </DialogPrimitive.Close>
+        {hideClose ? null : (
+          <DialogPrimitive.Close className="absolute top-4 right-4 flex size-11 items-center justify-center text-fg/80 transition-opacity duration-150 hover:text-fg">
+            <X className="size-6" strokeWidth={1.25} />
+            <span className="sr-only">Close menu</span>
+          </DialogPrimitive.Close>
+        )}
       </DialogPrimitive.Content>
     </SheetPortal>
   );

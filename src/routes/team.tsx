@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
 import { team, teamIntro } from "@data/team";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal } from "@/components/motion/Reveal";
+import { InstagramLink } from "@/components/layout/ContactLinks";
 
 export const Route = createFileRoute("/team")({
   component: TeamPage,
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/team")({
       {
         name: "description",
         content:
-          "Meet Luz Reyes and Hillary Urgelles, the photographers behind Lighthill Studio in Lawrenceville, Georgia.",
+          "Meet Luz Reyes and Hillary Urgelles, co-owners of Lighthill Studio in Lawrenceville, Georgia.",
       },
     ],
   }),
@@ -29,10 +29,10 @@ function TeamPage() {
           lede={teamIntro.body}
         />
       </div>
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 pt-16 md:grid-cols-2 md:px-8">
+      <div className="mx-auto grid max-w-7xl items-stretch gap-10 px-5 pt-16 md:grid-cols-2 md:px-8">
         {team.map((member, i) => (
-          <Reveal key={member.id} delay={i * 0.06}>
-            <article>
+          <Reveal key={member.id} delay={i * 0.06} className="h-full">
+            <article className="flex h-full flex-col">
               <div className="aspect-portrait overflow-hidden bg-paper-muted">
                 <img
                   src={member.image}
@@ -47,19 +47,11 @@ function TeamPage() {
                 {member.title}
               </p>
               <h2 className="mt-2 font-display text-4xl">{member.name}</h2>
-              <p className="mt-4 max-w-lg leading-relaxed text-ink-muted">
+              <p className="mt-4 max-w-lg flex-1 leading-relaxed text-ink-muted">
                 {member.bio}
               </p>
               {member.instagram ? (
-                <a
-                  href={member.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-1 text-sm text-ink transition-opacity hover:opacity-70"
-                >
-                  Instagram
-                  <ArrowUpRight className="size-3.5" />
-                </a>
+                <InstagramLink className="mt-4 text-ink hover:opacity-70" />
               ) : null}
             </article>
           </Reveal>

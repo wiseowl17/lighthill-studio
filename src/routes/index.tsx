@@ -82,12 +82,12 @@ function Home() {
               studio is listed for hourly rental.
             </p>
           </Reveal>
-          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-14 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service, i) => (
-              <Reveal key={service.id} delay={i * 0.04}>
+              <Reveal key={service.id} delay={i * 0.04} className="h-full">
                 <Link
                   to="/pricing"
-                  className="group block overflow-hidden bg-bg-elevated"
+                  className="group flex h-full flex-col overflow-hidden bg-bg-elevated"
                 >
                   <div className="aspect-portrait overflow-hidden">
                     <img
@@ -96,12 +96,12 @@ function Home() {
                       className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                     />
                   </div>
-                  <div className="p-5">
+                  <div className="flex flex-1 flex-col p-5">
                     <p className="text-xs tracking-[0.16em] text-fg-subtle uppercase">
                       {service.kicker}
                     </p>
                     <h3 className="mt-2 font-display text-2xl">{service.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-fg-muted">
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-fg-muted">
                       {service.description}
                     </p>
                   </div>

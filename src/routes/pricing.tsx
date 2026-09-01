@@ -45,12 +45,12 @@ function PricingPage() {
               Photography with the studio team.
             </h2>
           </Reveal>
-          <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-12 grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-3">
             {photographyPackages.map((pkg) => (
               <article
                 key={pkg.id}
                 className={cn(
-                  "flex flex-col border p-7 shadow-[var(--shadow-paper)]",
+                  "flex h-full flex-col border p-7 shadow-[var(--shadow-paper)]",
                   pkg.featured
                     ? "border-ink bg-ink text-paper"
                     : "border-ink-border bg-paper text-ink",

@@ -6,6 +6,11 @@ import {
   type InquiryType,
 } from "@/components/contact/ContactForm";
 import { PageHero } from "@/components/layout/PageHero";
+import {
+  EmailLink,
+  InstagramLink,
+  PhoneLink,
+} from "@/components/layout/ContactLinks";
 
 type ContactSearch = {
   type?: InquiryType;
@@ -51,29 +56,19 @@ function ContactPage() {
           <p className="text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
             Studio
           </p>
-          <ul className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted">
+          <ul className="mt-4 space-y-4 text-sm leading-relaxed text-ink-muted">
             <li>{site.location}</li>
             <li>{site.locationNote}</li>
             <li>{site.hours.weekdays}</li>
             <li>{site.hours.weekends}</li>
             <li>
-              <a
-                href={`mailto:${site.contactEmail}`}
-                className="text-ink underline-offset-4 hover:underline"
-              >
-                {site.contactEmail}
-              </a>
+              <EmailLink className="text-ink hover:opacity-70" />
             </li>
             <li>
-              <a
-                href={site.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-ink underline-offset-4 hover:underline"
-              >
-                {site.instagramHandle}
-                <ArrowUpRight className="size-3.5" />
-              </a>
+              <PhoneLink className="text-ink hover:opacity-70" />
+            </li>
+            <li>
+              <InstagramLink className="text-ink hover:opacity-70" />
             </li>
           </ul>
           <a

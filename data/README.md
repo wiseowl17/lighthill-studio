@@ -4,7 +4,7 @@ Edit these TypeScript files and redeploy. The UI maps over them; you should not 
 
 | File | What it controls |
 | --- | --- |
-| `site.ts` | Name, location, email (FormSubmit), Instagram, Peerspace URL, hours |
+| `site.ts` | Name, location, email (FormSubmit), phone, Instagram, Peerspace URL, hours |
 | `pricing.ts` | In-house packages, rental rates, add-ons |
 | `gallery.ts` | Gallery images, captions, categories |
 | `studio.ts` | Space copy, features, amenities, specs |

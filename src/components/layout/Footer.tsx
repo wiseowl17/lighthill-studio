@@ -1,8 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
 import { nav, site } from "@data/site";
 import { Logo } from "@/components/layout/Logo";
-import { Button } from "@/components/ui/button";
+import { CtaPair } from "@/components/layout/CtaPair";
+import {
+  EmailLink,
+  InstagramLink,
+  PhoneLink,
+} from "@/components/layout/ContactLinks";
 
 export function Footer() {
   return (
@@ -15,23 +19,7 @@ export function Footer() {
               In-house photography and a rentable cyclorama in Lawrenceville,
               Georgia. Book the team — or take the room.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button variant="primary" size="lg" asChild>
-                <Link to="/contact" search={{ type: "shoot" }}>
-                  Book a Shoot
-                </Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <a
-                  href={site.peerspaceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Rent the Space
-                  <ArrowUpRight className="size-3.5" />
-                </a>
-              </Button>
-            </div>
+            <CtaPair className="mt-8" />
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7">
@@ -57,31 +45,21 @@ export function Footer() {
                 <li>{site.location}</li>
                 <li>{site.hours.weekdays}</li>
                 <li>{site.hours.weekends}</li>
-                <li>
-                  <a
-                    href={site.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 transition-colors hover:text-fg"
-                  >
-                    {site.instagramHandle}
-                    <ArrowUpRight className="size-3" />
-                  </a>
-                </li>
               </ul>
             </div>
             <div>
               <p className="text-[0.68rem] font-medium tracking-[0.16em] text-fg-subtle uppercase">
                 Inquire
               </p>
-              <ul className="mt-4 space-y-2 text-sm text-fg-muted">
+              <ul className="mt-4 space-y-3 text-sm text-fg-muted">
                 <li>
-                  <a
-                    href={`mailto:${site.contactEmail}`}
-                    className="transition-colors hover:text-fg"
-                  >
-                    {site.contactEmail}
-                  </a>
+                  <EmailLink />
+                </li>
+                <li>
+                  <PhoneLink />
+                </li>
+                <li>
+                  <InstagramLink />
                 </li>
                 <li>
                   <Link
@@ -99,7 +77,7 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col gap-3 border-t border-border pt-6 text-xs tracking-wide text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Lighthill Studio. All rights reserved.</p>
-          <p>Lawrenceville, Georgia</p>
+          <InstagramLink className="text-fg-subtle hover:text-fg" />
         </div>
       </div>
     </footer>

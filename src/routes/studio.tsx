@@ -1,15 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
-import {
-  amenities,
-  studioFeatures,
-  studioIntro,
-  studioSpecs,
-} from "@data/studio";
-import { site } from "@data/site";
-import { Button } from "@/components/ui/button";
+import { createFileRoute } from "@tanstack/react-router";
+import { amenities, studioFeatures, studioIntro } from "@data/studio";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal } from "@/components/motion/Reveal";
+import { CtaPair } from "@/components/layout/CtaPair";
 
 export const Route = createFileRoute("/studio")({
   component: StudioPage,
@@ -96,43 +89,16 @@ function StudioPage() {
           </Reveal>
           <div className="mt-12 grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
             {amenities.map((item) => (
-              <div key={item.id} className="bg-bg p-6 md:p-8">
+              <div key={item.id} className="flex h-full flex-col bg-bg p-6 md:p-8">
                 <h3 className="font-display text-xl">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-fg-muted">
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-fg-muted">
                   {item.detail}
                 </p>
               </div>
             ))}
           </div>
 
-          <dl className="mt-16 grid gap-6 border-t border-border pt-10 sm:grid-cols-3">
-            {studioSpecs.map((spec) => (
-              <div key={spec.label}>
-                <dt className="text-[0.68rem] tracking-[0.16em] text-fg-subtle uppercase">
-                  {spec.label}
-                </dt>
-                <dd className="mt-2 font-display text-2xl">{spec.value}</dd>
-              </div>
-            ))}
-          </dl>
-
-          <div className="mt-14 flex flex-col gap-3 sm:flex-row">
-            <Button variant="primary" size="lg" asChild>
-              <Link to="/contact" search={{ type: "shoot" }}>
-                Book a shoot in this room
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <a
-                href={site.peerspaceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Rent the space
-                <ArrowUpRight className="size-3.5" />
-              </a>
-            </Button>
-          </div>
+          <CtaPair className="mt-14" />
         </div>
       </section>
     </main>
