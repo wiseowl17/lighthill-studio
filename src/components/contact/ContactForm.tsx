@@ -3,6 +3,7 @@ import { Check, ChevronDown } from "lucide-react";
 import { site } from "@data/site";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
+import { submitInquiry } from "@/lib/studio/fns";
 
 export type InquiryType = "shoot" | "rental";
 
@@ -39,19 +40,28 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
     };
 
     setStatus("sending");
+    const inquiry = {
+      name: payload.name.trim(),
+      email: payload.email.trim(),
+      phone: payload.phone.trim() || undefined,
+      kind: type,
+      message: payload.message.trim(),
+    };
     try {
-      const res = await fetch(
-        `https://formsubmit.co/ajax/${encodeURIComponent(site.contactEmail)}`,
-        {
+      const [mail, desk] = await Promise.allSettled([
+        fetch(`https://formsubmit.co/ajax/${encodeURIComponent(site.contactEmail)}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
           body: JSON.stringify(payload),
-        },
-      );
-      if (!res.ok) throw new Error("FormSubmit rejected the request");
+        }),
+        submitInquiry({ data: inquiry }),
+      ]);
+      const mailOk = mail.status === "fulfilled" && mail.value.ok;
+      const deskOk = desk.status === "fulfilled" && desk.value.ok;
+      if (!mailOk && !deskOk) throw new Error("Could not send");
       setStatus("sent");
       form.reset();
       setType(defaultType);

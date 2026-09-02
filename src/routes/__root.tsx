@@ -4,6 +4,7 @@ import {
   Link,
   Outlet,
   Scripts,
+  useRouterState,
 } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
@@ -90,12 +91,22 @@ function RootComponent() {
           Skip to content
         </a>
         <AuthProvider>
-          <Header />
-          <Outlet />
-          <Footer />
+          <AppChrome />
         </AuthProvider>
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function AppChrome() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const staff = pathname === "/login" || pathname.startsWith("/desk");
+  return (
+    <>
+      {staff ? null : <Header />}
+      <Outlet />
+      {staff ? null : <Footer />}
+    </>
   );
 }

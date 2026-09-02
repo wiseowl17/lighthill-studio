@@ -11,11 +11,23 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DeskRouteImport } from './routes/desk'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as TeamRouteImport } from './routes/team'
+import { Route as DeskIndexRouteImport } from './routes/desk/index'
+import { Route as DeskBookingsRouteImport } from './routes/desk/bookings'
+import { Route as DeskClientsRouteImport } from './routes/desk/clients'
+import { Route as DeskInboxRouteImport } from './routes/desk/inbox'
+import { Route as DeskInvoicesRouteImport } from './routes/desk/invoices'
+import { Route as DeskNewRouteImport } from './routes/desk/new'
+import { Route as DeskSettingsRouteImport } from './routes/desk/settings'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as DeskBookingsIndexRouteImport } from './routes/desk/bookings.index'
+import { Route as DeskBookingsIdRouteImport } from './routes/desk/bookings.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -27,6 +39,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeskRoute = DeskRouteImport.update({
+  id: '/desk',
+  path: '/desk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
@@ -35,6 +52,11 @@ const FaqRoute = FaqRouteImport.update({
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -52,60 +74,194 @@ const TeamRoute = TeamRouteImport.update({
   path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeskIndexRoute = DeskIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DeskRoute,
+} as any)
+const DeskBookingsRoute = DeskBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => DeskRoute,
+} as any)
+const DeskClientsRoute = DeskClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => DeskRoute,
+} as any)
+const DeskInboxRoute = DeskInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => DeskRoute,
+} as any)
+const DeskInvoicesRoute = DeskInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => DeskRoute,
+} as any)
+const DeskNewRoute = DeskNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => DeskRoute,
+} as any)
+const DeskSettingsRoute = DeskSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DeskRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeskBookingsIndexRoute = DeskBookingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DeskBookingsRoute,
+} as any)
+const DeskBookingsIdRoute = DeskBookingsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => DeskBookingsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contact': typeof ContactRoute
+  '/desk': typeof DeskRouteWithChildren
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
+  '/desk/bookings': typeof DeskBookingsRouteWithChildren
+  '/desk/clients': typeof DeskClientsRoute
+  '/desk/inbox': typeof DeskInboxRoute
+  '/desk/invoices': typeof DeskInvoicesRoute
+  '/desk/new': typeof DeskNewRoute
+  '/desk/settings': typeof DeskSettingsRoute
+  '/desk/': typeof DeskIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/desk/bookings/$id': typeof DeskBookingsIdRoute
+  '/desk/bookings/': typeof DeskBookingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
+  '/desk/clients': typeof DeskClientsRoute
+  '/desk/inbox': typeof DeskInboxRoute
+  '/desk/invoices': typeof DeskInvoicesRoute
+  '/desk/new': typeof DeskNewRoute
+  '/desk/settings': typeof DeskSettingsRoute
+  '/desk': typeof DeskIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/desk/bookings/$id': typeof DeskBookingsIdRoute
+  '/desk/bookings': typeof DeskBookingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contact': typeof ContactRoute
+  '/desk': typeof DeskRouteWithChildren
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
+  '/desk/bookings': typeof DeskBookingsRouteWithChildren
+  '/desk/clients': typeof DeskClientsRoute
+  '/desk/inbox': typeof DeskInboxRoute
+  '/desk/invoices': typeof DeskInvoicesRoute
+  '/desk/new': typeof DeskNewRoute
+  '/desk/settings': typeof DeskSettingsRoute
+  '/desk/': typeof DeskIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/desk/bookings/$id': typeof DeskBookingsIdRoute
+  '/desk/bookings/': typeof DeskBookingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/contact' | '/faq' | '/gallery' | '/pricing' | '/studio' | '/team'
+    | '/'
+    | '/contact'
+    | '/desk'
+    | '/faq'
+    | '/gallery'
+    | '/login'
+    | '/pricing'
+    | '/studio'
+    | '/team'
+    | '/desk/bookings'
+    | '/desk/clients'
+    | '/desk/inbox'
+    | '/desk/invoices'
+    | '/desk/new'
+    | '/desk/settings'
+    | '/desk/'
+    | '/api/auth/$'
+    | '/desk/bookings/$id'
+    | '/desk/bookings/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contact' | '/faq' | '/gallery' | '/pricing' | '/studio' | '/team'
-  id:
-    | '__root__'
+  to:
     | '/'
     | '/contact'
     | '/faq'
     | '/gallery'
+    | '/login'
     | '/pricing'
     | '/studio'
     | '/team'
+    | '/desk/clients'
+    | '/desk/inbox'
+    | '/desk/invoices'
+    | '/desk/new'
+    | '/desk/settings'
+    | '/desk'
+    | '/api/auth/$'
+    | '/desk/bookings/$id'
+    | '/desk/bookings'
+  id:
+    | '__root__'
+    | '/'
+    | '/contact'
+    | '/desk'
+    | '/faq'
+    | '/gallery'
+    | '/login'
+    | '/pricing'
+    | '/studio'
+    | '/team'
+    | '/desk/bookings'
+    | '/desk/clients'
+    | '/desk/inbox'
+    | '/desk/invoices'
+    | '/desk/new'
+    | '/desk/settings'
+    | '/desk/'
+    | '/api/auth/$'
+    | '/desk/bookings/$id'
+    | '/desk/bookings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContactRoute: typeof ContactRoute
+  DeskRoute: typeof DeskRouteWithChildren
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
+  LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   StudioRoute: typeof StudioRoute
   TeamRoute: typeof TeamRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -124,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/desk': {
+      id: '/desk'
+      path: '/desk'
+      fullPath: '/desk'
+      preLoaderRoute: typeof DeskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/faq': {
       id: '/faq'
       path: '/faq'
@@ -136,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -159,17 +329,126 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/desk/': {
+      id: '/desk/'
+      path: '/'
+      fullPath: '/desk/'
+      preLoaderRoute: typeof DeskIndexRouteImport
+      parentRoute: typeof DeskRoute
+    }
+    '/desk/bookings': {
+      id: '/desk/bookings'
+      path: '/bookings'
+      fullPath: '/desk/bookings'
+      preLoaderRoute: typeof DeskBookingsRouteImport
+      parentRoute: typeof DeskRoute
+    }
+    '/desk/clients': {
+      id: '/desk/clients'
+      path: '/clients'
+      fullPath: '/desk/clients'
+      preLoaderRoute: typeof DeskClientsRouteImport
+      parentRoute: typeof DeskRoute
+    }
+    '/desk/inbox': {
+      id: '/desk/inbox'
+      path: '/inbox'
+      fullPath: '/desk/inbox'
+      preLoaderRoute: typeof DeskInboxRouteImport
+      parentRoute: typeof DeskRoute
+    }
+    '/desk/invoices': {
+      id: '/desk/invoices'
+      path: '/invoices'
+      fullPath: '/desk/invoices'
+      preLoaderRoute: typeof DeskInvoicesRouteImport
+      parentRoute: typeof DeskRoute
+    }
+    '/desk/new': {
+      id: '/desk/new'
+      path: '/new'
+      fullPath: '/desk/new'
+      preLoaderRoute: typeof DeskNewRouteImport
+      parentRoute: typeof DeskRoute
+    }
+    '/desk/settings': {
+      id: '/desk/settings'
+      path: '/settings'
+      fullPath: '/desk/settings'
+      preLoaderRoute: typeof DeskSettingsRouteImport
+      parentRoute: typeof DeskRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/desk/bookings/': {
+      id: '/desk/bookings/'
+      path: '/'
+      fullPath: '/desk/bookings/'
+      preLoaderRoute: typeof DeskBookingsIndexRouteImport
+      parentRoute: typeof DeskBookingsRoute
+    }
+    '/desk/bookings/$id': {
+      id: '/desk/bookings/$id'
+      path: '/$id'
+      fullPath: '/desk/bookings/$id'
+      preLoaderRoute: typeof DeskBookingsIdRouteImport
+      parentRoute: typeof DeskBookingsRoute
+    }
   }
 }
+
+interface DeskBookingsRouteChildren {
+  DeskBookingsIdRoute: typeof DeskBookingsIdRoute
+  DeskBookingsIndexRoute: typeof DeskBookingsIndexRoute
+}
+
+const DeskBookingsRouteChildren: DeskBookingsRouteChildren = {
+  DeskBookingsIdRoute: DeskBookingsIdRoute,
+  DeskBookingsIndexRoute: DeskBookingsIndexRoute,
+}
+
+const DeskBookingsRouteWithChildren = DeskBookingsRoute._addFileChildren(
+  DeskBookingsRouteChildren,
+)
+
+interface DeskRouteChildren {
+  DeskBookingsRoute: typeof DeskBookingsRouteWithChildren
+  DeskClientsRoute: typeof DeskClientsRoute
+  DeskInboxRoute: typeof DeskInboxRoute
+  DeskInvoicesRoute: typeof DeskInvoicesRoute
+  DeskNewRoute: typeof DeskNewRoute
+  DeskSettingsRoute: typeof DeskSettingsRoute
+  DeskIndexRoute: typeof DeskIndexRoute
+}
+
+const DeskRouteChildren: DeskRouteChildren = {
+  DeskBookingsRoute: DeskBookingsRouteWithChildren,
+  DeskClientsRoute: DeskClientsRoute,
+  DeskInboxRoute: DeskInboxRoute,
+  DeskInvoicesRoute: DeskInvoicesRoute,
+  DeskNewRoute: DeskNewRoute,
+  DeskSettingsRoute: DeskSettingsRoute,
+  DeskIndexRoute: DeskIndexRoute,
+}
+
+const DeskRouteWithChildren = DeskRoute._addFileChildren(DeskRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactRoute: ContactRoute,
+  DeskRoute: DeskRouteWithChildren,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
+  LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   StudioRoute: StudioRoute,
   TeamRoute: TeamRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
