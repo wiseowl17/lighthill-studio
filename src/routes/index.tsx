@@ -94,6 +94,11 @@ function Home() {
                       src={service.image}
                       alt={service.title}
                       className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                      style={
+                        service.objectPosition
+                          ? { objectPosition: service.objectPosition }
+                          : undefined
+                      }
                     />
                   </div>
                   <div className="flex flex-1 flex-col p-3 sm:p-5">

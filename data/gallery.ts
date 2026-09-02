@@ -401,6 +401,14 @@ export const galleryImages: GalleryImage[] = [
   {
     id: "podcast",
     src: "/images/podcast.jpg",
+    alt: "Two hosts seated in the podcast set against the wood-slat wall",
+    category: "Podcasts",
+    width: 1067,
+    height: 1600,
+  },
+  {
+    id: "podcast-empty",
+    src: "/images/podcast-empty.jpg",
     alt: "Podcast interview set with velvet chairs and a wood-slat wall",
     category: "Podcasts",
     width: 1086,

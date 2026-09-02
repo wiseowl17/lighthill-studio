@@ -41,7 +41,7 @@ export const studioFeatures: StudioFeature[] = [
     description:
       "A finished interview corner: channel-tufted chairs, a wood-slat wall, and a round table already dressed. Sit down and record — or photograph the hosts in place.",
     image: "/images/podcast.jpg",
-    objectPosition: "center 40%",
+    objectPosition: "center 52%",
   },
   {
     id: "sets",

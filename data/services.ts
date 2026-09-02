@@ -4,6 +4,7 @@ export type Service = {
   kicker: string;
   description: string;
   image: string;
+  objectPosition?: string;
 };
 
 export const services: Service[] = [
@@ -70,6 +71,7 @@ export const services: Service[] = [
     description:
       "A dedicated interview set — slat wall, lounge chairs, and light already built for talking-head video.",
     image: "/images/podcast.jpg",
+    objectPosition: "center 48%",
   },
 ];
 
