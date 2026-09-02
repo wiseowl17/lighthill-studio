@@ -25,7 +25,6 @@ import {
   type PaymentStatus,
 } from "./catalog";
 import { addMinutes, zonedStart } from "./time";
-import { colorSwatchIds, mergeCategoryColors } from "./colors";
 
 type OwnerCtx = { userId: string; email: string };
 
@@ -811,10 +810,9 @@ export const getSettings = createServerFn({ method: "GET" })
       buffer_minutes: number;
       square_connected: boolean;
       google_calendar_connected: boolean;
-      category_colors: unknown;
     }>`
       select timezone, min_rental_hours, buffer_minutes,
-        square_connected, google_calendar_connected, category_colors
+        square_connected, google_calendar_connected
       from studio_settings
       where user_id = ${userId}
       limit 1
@@ -826,7 +824,6 @@ export const getSettings = createServerFn({ method: "GET" })
       bufferMinutes: Number(row?.buffer_minutes ?? 0),
       squareConnected: Boolean(row?.square_connected),
       googleCalendarConnected: Boolean(row?.google_calendar_connected),
-      categoryColors: mergeCategoryColors(row?.category_colors),
     };
   });
 
@@ -837,34 +834,19 @@ export const saveSettings = createServerFn({ method: "POST" })
       .object({
         minRentalHours: z.number().int().min(1).max(12),
         bufferMinutes: z.number().int().min(0).max(180),
-        categoryColors: z.record(z.string(), z.enum(colorSwatchIds)).optional(),
       })
       .parse(d),
   )
   .handler(async ({ context, data }) => {
     const { userId } = await requireOwner(context.userId);
     const sql = await getSql();
-    const colors = data.categoryColors
-      ? mergeCategoryColors(data.categoryColors)
-      : null;
-    if (colors) {
-      await sql`
-        insert into studio_settings (user_id, min_rental_hours, buffer_minutes, category_colors)
-        values (${userId}, ${data.minRentalHours}, ${data.bufferMinutes}, ${JSON.stringify(colors)}::jsonb)
-        on conflict (user_id) do update set
-          min_rental_hours = excluded.min_rental_hours,
-          buffer_minutes = excluded.buffer_minutes,
-          category_colors = excluded.category_colors
-      `;
-    } else {
-      await sql`
-        insert into studio_settings (user_id, min_rental_hours, buffer_minutes)
-        values (${userId}, ${data.minRentalHours}, ${data.bufferMinutes})
-        on conflict (user_id) do update set
-          min_rental_hours = excluded.min_rental_hours,
-          buffer_minutes = excluded.buffer_minutes
-      `;
-    }
+    await sql`
+      insert into studio_settings (user_id, min_rental_hours, buffer_minutes)
+      values (${userId}, ${data.minRentalHours}, ${data.bufferMinutes})
+      on conflict (user_id) do update set
+        min_rental_hours = excluded.min_rental_hours,
+        buffer_minutes = excluded.buffer_minutes
+    `;
     return { ok: true };
   });
 

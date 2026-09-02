@@ -40,3 +40,17 @@ export function StatusBadge({
     </span>
   );
 }
+
+/** One-color floor marks: solid ink when booked/blocked, outline when on hold. */
+export function floorBlockClass(kind: string, status: string): string {
+  if (status === "cancelled") return "bg-ink/20 text-ink/60 line-through";
+  if (kind === "hold" || status === "tentative") return "border border-ink bg-paper text-ink";
+  return "bg-ink text-paper";
+}
+
+export function floorDotClass(kind: string, status: string): string {
+  if (status === "cancelled") return "bg-ink/25";
+  if (kind === "hold" || status === "tentative") return "border border-ink bg-transparent";
+  return "bg-ink";
+}
+

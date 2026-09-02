@@ -38,27 +38,6 @@
   --aspect-portrait: 3/4;
   --aspect-photo: 3/2;
   --aspect-wide: 16/8;
-
-  --color-swatch-ink: #141210;
-  --color-swatch-ink-fg: #f4f1ea;
-  --color-swatch-clay: #b56a48;
-  --color-swatch-clay-fg: #f4f1ea;
-  --color-swatch-wine: #7a3b45;
-  --color-swatch-wine-fg: #f4f1ea;
-  --color-swatch-forest: #3d5a4c;
-  --color-swatch-forest-fg: #f4f1ea;
-  --color-swatch-gold: #c4a35a;
-  --color-swatch-gold-fg: #141210;
-  --color-swatch-slate: #5a6570;
-  --color-swatch-slate-fg: #f4f1ea;
-  --color-swatch-ocean: #3d5c6e;
-  --color-swatch-ocean-fg: #f4f1ea;
-  --color-swatch-sand: #d4c4a8;
-  --color-swatch-sand-fg: #141210;
-  --color-swatch-rose: #c9a3a8;
-  --color-swatch-rose-fg: #141210;
-  --color-swatch-moss: #8a9a7a;
-  --color-swatch-moss-fg: #141210;
 }
 
 @layer base {

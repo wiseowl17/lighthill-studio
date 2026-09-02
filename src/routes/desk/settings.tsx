@@ -6,14 +6,6 @@ import { Field } from "@/components/desk/Field";
 import { getSettings, saveSettings } from "@/lib/studio/fns";
 import { signOut } from "@/lib/auth/client";
 import { STUDIO_TZ } from "@/lib/studio/owner";
-import {
-  colorSwatches,
-  defaultCategoryColors,
-  floorCategories,
-  swatchStyle,
-  type ColorSwatchId,
-} from "@/lib/studio/colors";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/desk/settings")({
   component: SettingsPage,
@@ -22,7 +14,6 @@ export const Route = createFileRoute("/desk/settings")({
 function SettingsPage() {
   const [minRentalHours, setMinRentalHours] = useState(2);
   const [bufferMinutes, setBufferMinutes] = useState(0);
-  const [colors, setColors] = useState<Record<string, ColorSwatchId>>(defaultCategoryColors);
   const [square, setSquare] = useState(false);
   const [gcal, setGcal] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -32,7 +23,6 @@ function SettingsPage() {
     void getSettings().then((row) => {
       setMinRentalHours(row.minRentalHours);
       setBufferMinutes(row.bufferMinutes);
-      setColors(row.categoryColors);
       setSquare(row.squareConnected);
       setGcal(row.googleCalendarConnected);
     });
@@ -44,7 +34,7 @@ function SettingsPage() {
     setSaved(false);
     try {
       await saveSettings({
-        data: { minRentalHours, bufferMinutes, categoryColors: colors },
+        data: { minRentalHours, bufferMinutes },
       });
       setSaved(true);
     } finally {
@@ -90,49 +80,6 @@ function SettingsPage() {
             />
           </Field>
         </div>
-
-        <section className="border border-ink-border p-5">
-          <h2 className="font-display text-2xl">Floor colors</h2>
-          <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-            Each session type and rental gets a color on the calendar so the day
-            reads at a glance.
-          </p>
-          <ul className="mt-6 space-y-5">
-            {floorCategories.map((category) => (
-              <li key={category.id} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-3">
-                  <span
-                    className="size-4 shrink-0"
-                    style={swatchStyle(colors[category.id] ?? "ink")}
-                    aria-hidden
-                  />
-                  <p className="text-sm font-medium">{category.label}</p>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {colorSwatches.map((swatch) => {
-                    const selected = (colors[category.id] ?? "ink") === swatch.id;
-                    return (
-                      <button
-                        key={swatch.id}
-                        type="button"
-                        aria-label={`${category.label} ${swatch.label}`}
-                        aria-pressed={selected}
-                        onClick={() =>
-                          setColors((current) => ({ ...current, [category.id]: swatch.id }))
-                        }
-                        className={cn(
-                          "size-9 border border-ink/15",
-                          selected && "outline outline-offset-2 outline-ink",
-                        )}
-                        style={swatchStyle(swatch.id)}
-                      />
-                    );
-                  })}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
 
         <div className="flex flex-wrap items-center gap-3">
           <Button type="submit" variant="invert" disabled={pending}>

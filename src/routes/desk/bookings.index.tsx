@@ -1,16 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { getSettings, listBookings, type BookingRow } from "@/lib/studio/fns";
+import { listBookings, type BookingRow } from "@/lib/studio/fns";
 import { kindLabel, money } from "@/lib/studio/catalog";
-import { StatusBadge } from "@/components/desk/StatusBadge";
+import { StatusBadge, floorDotClass } from "@/components/desk/StatusBadge";
 import { NativeSelect } from "@/components/desk/Field";
+import { cn } from "@/lib/utils";
 import { addDays, dateInTz, formatRange, todayInTz, zonedStart } from "@/lib/studio/time";
-import {
-  categoryKey,
-  defaultCategoryColors,
-  swatchStyle,
-  type ColorSwatchId,
-} from "@/lib/studio/colors";
 
 export const Route = createFileRoute("/desk/bookings/")({
   component: BookingsPage,
@@ -20,19 +15,12 @@ function BookingsPage() {
   const [rows, setRows] = useState<BookingRow[]>([]);
   const [kind, setKind] = useState("all");
   const [status, setStatus] = useState("upcoming");
-  const [colors, setColors] = useState<Record<string, ColorSwatchId>>(defaultCategoryColors);
 
   useEffect(() => {
     const from = zonedStart(addDays(todayInTz(), -60), "00:00").toISOString();
     const to = zonedStart(addDays(todayInTz(), 180), "00:00").toISOString();
-    void Promise.all([
-      listBookings({ data: { from, to } }),
-      getSettings().catch(() => null),
-    ])
-      .then(([bookings, settings]) => {
-        setRows(bookings);
-        if (settings) setColors(settings.categoryColors);
-      })
+    void listBookings({ data: { from, to } })
+      .then(setRows)
       .catch(() => setRows([]));
   }, []);
 
@@ -85,9 +73,9 @@ function BookingsPage() {
               >
                 <div className="flex items-start gap-3">
                   <span
-                    className="mt-1.5 size-2.5 shrink-0"
-                    style={swatchStyle(
-                      colors[categoryKey(booking.kind, booking.sessionType)] ?? "ink",
+                    className={cn(
+                      "mt-1.5 size-2.5 shrink-0",
+                      floorDotClass(booking.kind, booking.status),
                     )}
                     aria-hidden
                   />
