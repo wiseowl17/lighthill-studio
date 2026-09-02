@@ -14,7 +14,7 @@ Studio rentals are booked on [Peerspace](https://www.peerspace.com/pages/listing
 
 Sign in at `/login` with the studio Gmail. The desk (`/desk`) is the floor calendar, bookings, clients, invoices, and inbox. In-house shoots are booked by hand here — no public checkout. Square and Google Calendar stay disconnected until those accounts are ready.
 
-The live site needs **Neon Postgres** on the Vercel project (`lighthill-studio`). Without it, owner sessions cannot persist. Connect Neon in Vercel → Storage, attach Production (and Preview if you want), then Redeploy so migrations run.
+The owner desk stores bookings in **Neon Postgres**, connected on the Vercel project (`lighthill-studio`). Sign in at `/login` with the studio Gmail. In-house shoots are booked by hand here — no public checkout. Square and Google Calendar stay disconnected until those accounts are ready.
 
 
 ## Scripts
