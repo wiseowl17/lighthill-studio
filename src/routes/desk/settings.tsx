@@ -6,11 +6,10 @@ import { Field } from "@/components/desk/Field";
 import {
   disconnectGoogleCalendar,
   getSettings,
-  listGoogleCalendars,
-  saveGoogleCalendar,
   saveGoogleCredentials,
   saveSettings,
 } from "@/lib/studio/fns";
+import { listGoogleCalendars, saveGoogleCalendar } from "@/lib/studio/gcal-fns";
 import { signOut } from "@/lib/auth/client";
 import { STUDIO_TZ } from "@/lib/studio/owner";
 
@@ -78,11 +77,14 @@ function SettingsPage() {
       setGoogleReady(row.googleReady);
       setGoogleEnv(row.googleEnvConfigured);
       setClientHint(row.googleClientIdHint);
-      if (row.googleCalendarId) setCalendarId(row.googleCalendarId);
       if (row.googleCalendarConnected) {
         void listGoogleCalendars().then((items) => {
           setCalendars(items);
-          if (!row.googleCalendarId && items[0]) setCalendarId(items[0].id);
+          setCalendarId((current) => {
+            if (current && items.some((item) => item.id === current)) return current;
+            const studio = items.find((item) => item.name.toLowerCase() === "lighthill studio");
+            return studio?.id || items[0]?.id || current;
+          });
         });
       } else {
         setCalendars([]);
