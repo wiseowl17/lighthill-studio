@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { getSql } from "@/lib/db";
+import { getDbSource, getSql } from "@/lib/db";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { OWNER_EMAIL } from "./owner";
 import {
@@ -40,6 +40,10 @@ async function requireOwner(userId: string): Promise<OwnerCtx> {
     throw err;
   }
   return { userId, email };
+}
+
+function deskHosted(): boolean {
+  return Boolean(process.env.VERCEL?.trim());
 }
 
 function parseAddons(raw: unknown): Array<AddonSelection & { name?: string; cents?: number }> {
@@ -119,6 +123,13 @@ const bookingSelect = `
   b.payment_status, b.total_cents, b.deposit_cents, b.notes, b.addons
 `;
 
+export const getDeskStatus = createServerFn({ method: "GET" }).handler(async () => {
+  return {
+    db: getDbSource(),
+    hosted: deskHosted(),
+  };
+});
+
 export const getDeskSession = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
@@ -134,6 +145,8 @@ export const getDeskSession = createServerFn({ method: "GET" })
       email,
       name: rows[0]?.name ?? "",
       isOwner: email === OWNER_EMAIL,
+      db: getDbSource(),
+      hosted: deskHosted(),
     };
   });
 

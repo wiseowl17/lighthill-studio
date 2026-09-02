@@ -1,10 +1,12 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { authClient, authEnabled } from "@/lib/auth/client";
+import { authClient, authEnabled, signOut } from "@/lib/auth/client";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { Logo } from "@/components/layout/Logo";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
-import { seedOwnerAccount } from "@/lib/studio/fns";
+import { getDeskStatus, seedOwnerAccount } from "@/lib/studio/fns";
+import { OWNER_EMAIL } from "@/lib/studio/owner";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async () => {
@@ -22,8 +24,19 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const navigate = useNavigate();
+  const { user, isPending } = useCurrentUserState();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [needsNeon, setNeedsNeon] = useState(false);
+
+  useEffect(() => {
+    void getDeskStatus()
+      .then((status) => setNeedsNeon(status.hosted && status.db === "pglite"))
+      .catch(() => undefined);
+  }, []);
+
+  const signedInAs = user?.primaryEmail?.toLowerCase() ?? "";
+  const wrongAccount = Boolean(signedInAs && signedInAs !== OWNER_EMAIL);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,6 +81,26 @@ function Login() {
           Owner desk
         </p>
         <h1 className="mt-3 text-center font-display text-4xl">Sign in</h1>
+        {needsNeon ? (
+          <p className="mt-5 text-center text-sm text-fg-muted">
+            The live site still needs Neon Postgres. Connect it in Vercel, redeploy, then sign in here.
+          </p>
+        ) : null}
+        {wrongAccount && !isPending ? (
+          <div className="mt-5 space-y-3 text-center">
+            <p className="text-sm text-fg-muted">
+              Signed in as {signedInAs}. Sign out first, then use the studio Gmail.
+            </p>
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-fg"
+              onClick={() => void signOut("/login")}
+            >
+              Sign out
+            </Button>
+          </div>
+        ) : null}
         <form onSubmit={onSubmit} className="mt-10 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-fg-muted">
