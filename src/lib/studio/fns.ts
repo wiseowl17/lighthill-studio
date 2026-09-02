@@ -24,10 +24,12 @@ import {
   type InvoiceStatus,
   type PaymentStatus,
 } from "./catalog";
-import { addMinutes, zonedStart } from "./time";
+import { addMinutes, addDays, todayInTz, zonedStart } from "./time";
 import {
   disconnectGoogle,
   envGoogleConfigured,
+  findGoogleOverlap,
+  listGoogleFloorEvents,
   loadGoogleApp,
   mirrorBooking,
   mirrorDelete,
@@ -229,8 +231,14 @@ export const getDeskSummary = createServerFn({ method: "GET" })
       select count(*)::int as count from inquiries
       where user_id = ${userId} and status = 'new'
     `;
+    const day = todayInTz();
+    const googleToday = await listGoogleFloorEvents(
+      userId,
+      zonedStart(day, "00:00").toISOString(),
+      zonedStart(addDays(day, 1), "00:00").toISOString(),
+    );
     return {
-      todayCount: Number(today[0]?.count ?? 0),
+      todayCount: Number(today[0]?.count ?? 0) + googleToday.length,
       unpaidInvoices: Number(unpaid[0]?.count ?? 0),
       newInquiries: Number(inbox[0]?.count ?? 0),
     };
@@ -362,6 +370,14 @@ export const saveBooking = createServerFn({ method: "POST" })
     );
     if (overlap) {
       throw new Error(`That window overlaps “${overlap.title}”.`);
+    }
+    const googleBusy = await findGoogleOverlap(
+      userId,
+      addMinutes(start, -buffer),
+      addMinutes(end, buffer),
+    );
+    if (googleBusy) {
+      throw new Error(`That window overlaps “${googleBusy.title}” on Google Calendar.`);
     }
 
     const clientId =
@@ -825,10 +841,11 @@ export const getSettings = createServerFn({ method: "GET" })
       google_calendar_connected: boolean;
       google_account_email: string | null;
       google_client_id: string | null;
+      google_calendar_id: string | null;
     }>`
       select timezone, min_rental_hours, buffer_minutes,
         square_connected, google_calendar_connected,
-        google_account_email, google_client_id
+        google_account_email, google_client_id, google_calendar_id
       from studio_settings
       where user_id = ${userId}
       limit 1
@@ -842,6 +859,7 @@ export const getSettings = createServerFn({ method: "GET" })
       squareConnected: Boolean(row?.square_connected),
       googleCalendarConnected: Boolean(row?.google_calendar_connected),
       googleAccountEmail: row?.google_account_email ?? null,
+      googleCalendarId: row?.google_calendar_id ?? null,
       googleReady: Boolean(app),
       googleEnvConfigured: envGoogleConfigured(),
       googleClientIdHint: envGoogleConfigured()

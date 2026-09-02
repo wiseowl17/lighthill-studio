@@ -3,7 +3,14 @@ import { z } from "zod";
 import { getSql } from "@/lib/db";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { OWNER_EMAIL } from "./owner";
-import { listWritableCalendars, setTargetCalendar } from "./google.server";
+import {
+  listGoogleFloorEvents,
+  listWritableCalendars,
+  setTargetCalendar,
+  type GoogleFloorEvent,
+} from "./google.server";
+
+export type { GoogleFloorEvent };
 
 async function requireOwner(userId: string): Promise<void> {
   const sql = await getSql();
@@ -31,4 +38,12 @@ export const saveGoogleCalendar = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await requireOwner(context.userId);
     return setTargetCalendar(context.userId, data.calendarId);
+  });
+
+export const listGoogleEvents = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .validator((d: unknown) => z.object({ from: z.string(), to: z.string() }).parse(d))
+  .handler(async ({ context, data }) => {
+    await requireOwner(context.userId);
+    return listGoogleFloorEvents(context.userId, data.from, data.to);
   });

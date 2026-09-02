@@ -31,7 +31,7 @@ export const Route = createFileRoute("/desk/settings")({
 function googleBanner(code: string | undefined): string | null {
   switch (code) {
     case "connected":
-      return "Google Calendar is connected. Pick which calendar the desk should write to below.";
+      return "Google Calendar is connected. Desk bookings write there; existing events show on the floor.";
     case "denied":
       return "Google access was declined. You can try Connect again.";
     case "need-app":
@@ -77,10 +77,14 @@ function SettingsPage() {
       setGoogleReady(row.googleReady);
       setGoogleEnv(row.googleEnvConfigured);
       setClientHint(row.googleClientIdHint);
+      if (row.googleCalendarId) setCalendarId(row.googleCalendarId);
       if (row.googleCalendarConnected) {
         void listGoogleCalendars().then((items) => {
           setCalendars(items);
           setCalendarId((current) => {
+            if (row.googleCalendarId && items.some((item) => item.id === row.googleCalendarId)) {
+              return row.googleCalendarId;
+            }
             if (current && items.some((item) => item.id === current)) return current;
             const studio = items.find((item) => item.name.toLowerCase() === "lighthill studio");
             return studio?.id || items[0]?.id || current;
@@ -178,8 +182,9 @@ function SettingsPage() {
       <p className="text-[0.7rem] tracking-[0.2em] text-ink-muted uppercase">Desk</p>
       <h1 className="mt-2 font-display text-4xl">Settings</h1>
       <p className="mt-3 text-sm text-ink-muted">
-        Floor rules live here. Google Calendar mirrors the desk — the desk stays
-        the source of truth.
+        Floor rules live here. The desk and Google Calendar stay in step — bookings
+        you add here write to the chosen calendar, and events already on that
+        calendar show up on the floor.
       </p>
 
       {notice ? (
@@ -238,13 +243,13 @@ function SettingsPage() {
           </div>
           <p className="mt-3 text-sm leading-relaxed text-ink-muted">
             {gcal
-              ? `Connected${gcalEmail ? ` as ${gcalEmail}` : ""}. The desk writes bookings, holds, and blocks to the calendar you pick — it does not import events from Google.`
-              : "Connect the studio Gmail. Then choose which calendar the desk should write to — usually Lighthill Studio."}
+              ? `Connected${gcalEmail ? ` as ${gcalEmail}` : ""}. Bookings, holds, and blocks write to the calendar you pick. Events already on that calendar appear on the desk as busy time — they do not become invoices.`
+              : "Connect the studio Gmail. Then choose which calendar to sync — usually Lighthill Studio."}
           </p>
 
           {gcal ? (
             <form onSubmit={onSaveCalendar} className="mt-5 space-y-3">
-              <Field label="Write to this calendar" htmlFor="gcalTarget">
+              <Field label="Sync this calendar" htmlFor="gcalTarget">
                 <select
                   id="gcalTarget"
                   value={calendarId}
@@ -383,6 +388,10 @@ function SettingsPage() {
         <ul className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted">
           <li>In-house shoots are booked here by you — never a public self-serve checkout.</li>
           <li>Studio rentals still go through Peerspace until we turn on in-house rental checkout.</li>
+          <li>
+            Events that already exist on the connected Google calendar appear on
+            the desk floor as busy time. They are not turned into invoices.
+          </li>
           <li>
             Public notes from the contact page appear in{" "}
             <Link to="/desk/inbox" className="underline underline-offset-4">

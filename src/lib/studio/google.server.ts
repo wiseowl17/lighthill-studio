@@ -2,6 +2,7 @@ import { createCipheriv, createDecipheriv, createHmac, createHash, randomBytes }
 import { getSql } from "@/lib/db";
 import { OWNER_EMAIL, STUDIO_TZ } from "./owner";
 import { kindLabel, type BookingKind } from "./catalog";
+import { zonedStart } from "./time";
 
 const SCOPES = [
   "https://www.googleapis.com/auth/calendar",
@@ -271,6 +272,118 @@ export async function listWritableCalendars(userId: string): Promise<GoogleCalen
   }
 }
 
+export type GoogleFloorEvent = {
+  id: string;
+  title: string;
+  startsAt: string;
+  endsAt: string;
+  allDay: boolean;
+  htmlLink: string | null;
+};
+
+type GoogleEventItem = {
+  id?: string;
+  status?: string;
+  summary?: string;
+  htmlLink?: string;
+  transparency?: string;
+  start?: { date?: string; dateTime?: string };
+  end?: { date?: string; dateTime?: string };
+  extendedProperties?: { private?: Record<string, string> };
+};
+
+function parseGoogleSlot(
+  slot: { date?: string; dateTime?: string } | undefined,
+): { iso: string; allDay: boolean } | null {
+  if (!slot) return null;
+  if (slot.dateTime) return { iso: new Date(slot.dateTime).toISOString(), allDay: false };
+  if (slot.date) return { iso: zonedStart(slot.date, "00:00").toISOString(), allDay: true };
+  return null;
+}
+
+export async function listGoogleFloorEvents(
+  userId: string,
+  fromIso: string,
+  toIso: string,
+): Promise<GoogleFloorEvent[]> {
+  const authz = await authHeader(userId);
+  if (!authz) return [];
+  try {
+    const sql = await getSql();
+    const known = await sql<{ google_event_id: string | null }>`
+      select google_event_id from bookings
+      where user_id = ${userId} and google_event_id is not null
+    `;
+    const skip = new Set(
+      known.map((row) => row.google_event_id).filter((id): id is string => Boolean(id)),
+    );
+
+    const items: GoogleEventItem[] = [];
+    let pageToken: string | undefined;
+    do {
+      const url = new URL(
+        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(authz.calendarId)}/events`,
+      );
+      url.searchParams.set("timeMin", fromIso);
+      url.searchParams.set("timeMax", toIso);
+      url.searchParams.set("singleEvents", "true");
+      url.searchParams.set("orderBy", "startTime");
+      url.searchParams.set("maxResults", "250");
+      if (pageToken) url.searchParams.set("pageToken", pageToken);
+      const data = await googleJson<{ items?: GoogleEventItem[]; nextPageToken?: string }>(
+        url.toString(),
+        { headers: { Authorization: `Bearer ${authz.token}` } },
+      );
+      items.push(...(data.items ?? []));
+      pageToken = data.nextPageToken;
+    } while (pageToken && items.length < 500);
+
+    const out: GoogleFloorEvent[] = [];
+    for (const item of items) {
+      if (!item.id || item.status === "cancelled") continue;
+      if (item.transparency === "transparent") continue;
+      if (skip.has(item.id)) continue;
+      const priv = item.extendedProperties?.private;
+      if (priv?.lighthill === "desk" || priv?.lighthillBookingId) continue;
+      const start = parseGoogleSlot(item.start);
+      const end = parseGoogleSlot(item.end);
+      if (!start || !end) continue;
+      out.push({
+        id: item.id,
+        title: item.summary?.trim() || "Busy",
+        startsAt: start.iso,
+        endsAt: end.iso,
+        allDay: start.allDay || end.allDay,
+        htmlLink: item.htmlLink ?? null,
+      });
+    }
+    return out;
+  } catch (err) {
+    console.error("[gcal] events", err);
+    return [];
+  }
+}
+
+export async function findGoogleOverlap(
+  userId: string,
+  start: Date,
+  end: Date,
+): Promise<{ title: string } | null> {
+  const events = await listGoogleFloorEvents(
+    userId,
+    new Date(start.getTime() - 12 * 60 * 60 * 1000).toISOString(),
+    new Date(end.getTime() + 12 * 60 * 60 * 1000).toISOString(),
+  );
+  const startMs = start.getTime();
+  const endMs = end.getTime();
+  const hit = events.find((event) => {
+    const from = new Date(event.startsAt).getTime();
+    const to = new Date(event.endsAt).getTime();
+    return from < endMs && to > startMs;
+  });
+  return hit ? { title: hit.title } : null;
+}
+
 export async function setTargetCalendar(
   userId: string,
   calendarId: string,
@@ -420,6 +533,12 @@ export async function upsertGoogleEvent(userId: string, bookingId: string): Prom
     end: { dateTime: new Date(booking.ends_at).toISOString(), timeZone: STUDIO_TZ },
     status: booking.status === "tentative" || booking.kind === "hold" ? "tentative" : "confirmed",
     transparency: "opaque" as const,
+    extendedProperties: {
+      private: {
+        lighthill: "desk",
+        lighthillBookingId: bookingId,
+      },
+    },
   };
   const headers = {
     Authorization: `Bearer ${authz.token}`,

@@ -1,25 +1,52 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { kindLabel } from "@/lib/studio/catalog";
 import { listBookings, type BookingRow } from "@/lib/studio/fns";
+import { listGoogleEvents, type GoogleFloorEvent } from "@/lib/studio/gcal-fns";
 import { floorBlockClass, floorDotClass } from "@/components/desk/StatusBadge";
 import {
   addDays,
   dateInTz,
   formatRange,
   startOfWeekMonday,
-  timeInTz,
   todayInTz,
   zonedStart,
 } from "@/lib/studio/time";
 
-function hoursFor(booking: BookingRow): { start: number; end: number } {
-  const [sh, sm] = timeInTz(booking.startsAt).split(":").map(Number);
-  const [eh, em] = timeInTz(booking.endsAt).split(":").map(Number);
-  return { start: sh + sm / 60, end: eh + em / 60 };
+const GRID_START = 7;
+const GRID_HOURS = 16;
+
+type FloorBlock = {
+  key: string;
+  title: string;
+  startsAt: string;
+  endsAt: string;
+  allDay: boolean;
+  variant: "desk" | "google";
+  kind: string;
+  status: string;
+  bookingId?: string;
+  href?: string | null;
+};
+
+function hoursOnDay(startsAt: string, endsAt: string, day: string): { start: number; end: number } {
+  const dayStart = zonedStart(day, "00:00").getTime();
+  const dayEnd = zonedStart(addDays(day, 1), "00:00").getTime();
+  const startMs = Math.max(new Date(startsAt).getTime(), dayStart);
+  const endMs = Math.min(new Date(endsAt).getTime(), dayEnd);
+  return {
+    start: (startMs - dayStart) / 3_600_000,
+    end: (endMs - dayStart) / 3_600_000,
+  };
+}
+
+function overlapsDay(startsAt: string, endsAt: string, day: string): boolean {
+  const dayStart = zonedStart(day, "00:00").getTime();
+  const dayEnd = zonedStart(addDays(day, 1), "00:00").getTime();
+  return new Date(startsAt).getTime() < dayEnd && new Date(endsAt).getTime() > dayStart;
 }
 
 export function CalendarBoard() {
@@ -27,6 +54,7 @@ export function CalendarBoard() {
   const [cursor, setCursor] = useState(today);
   const [mode, setMode] = useState<"week" | "day">("week");
   const [bookings, setBookings] = useState<BookingRow[]>([]);
+  const [google, setGoogle] = useState<GoogleFloorEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
   const weekStart = startOfWeekMonday(mode === "day" ? cursor : cursor);
@@ -38,13 +66,14 @@ export function CalendarBoard() {
     setLoading(true);
     const from = zonedStart(rangeFrom, "00:00").toISOString();
     const to = zonedStart(rangeTo, "00:00").toISOString();
-    void listBookings({ data: { from, to } })
-      .then((rows) => {
+    void Promise.all([
+      listBookings({ data: { from, to } }).catch(() => [] as BookingRow[]),
+      listGoogleEvents({ data: { from, to } }).catch(() => [] as GoogleFloorEvent[]),
+    ])
+      .then(([rows, events]) => {
         if (!alive) return;
         setBookings(rows);
-      })
-      .catch(() => {
-        if (alive) setBookings([]);
+        setGoogle(events);
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -59,7 +88,34 @@ export function CalendarBoard() {
     return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   }, [mode, cursor, weekStart]);
 
-  const hourRows = Array.from({ length: 16 }, (_, i) => i + 7);
+  const blocks: FloorBlock[] = useMemo(() => {
+    const desk: FloorBlock[] = bookings.map((booking) => ({
+      key: booking.id,
+      title: booking.title,
+      startsAt: booking.startsAt,
+      endsAt: booking.endsAt,
+      allDay: false,
+      variant: "desk",
+      kind: booking.kind,
+      status: booking.status,
+      bookingId: booking.id,
+    }));
+    const imported: FloorBlock[] = google.map((event) => ({
+      key: `g-${event.id}`,
+      title: event.title,
+      startsAt: event.startsAt,
+      endsAt: event.endsAt,
+      allDay: event.allDay,
+      variant: "google",
+      kind: "google",
+      status: "confirmed",
+      href: event.htmlLink,
+    }));
+    return [...desk, ...imported];
+  }, [bookings, google]);
+
+  const hourRows = Array.from({ length: GRID_HOURS }, (_, i) => i + GRID_START);
+  const hasAllDay = blocks.some((block) => block.allDay);
 
   function shift(dir: number) {
     setCursor(addDays(cursor, mode === "day" ? dir : dir * 7));
@@ -152,8 +208,38 @@ export function CalendarBoard() {
             );
           })}
 
+          {hasAllDay ? (
+            <>
+              <div className="border-b border-ink-border py-2 pr-2 text-right text-[0.65rem] text-ink-subtle">
+                All day
+              </div>
+              {days.map((day) => {
+                const dayBlocks = blocks.filter(
+                  (block) => block.allDay && overlapsDay(block.startsAt, block.endsAt, day),
+                );
+                return (
+                  <div
+                    key={`all-${day}`}
+                    className="min-h-12 space-y-1 border-b border-l border-ink-border/80 px-1 py-1"
+                  >
+                    {dayBlocks.map((block) => (
+                      <FloorLink
+                        key={block.key}
+                        block={block}
+                        className={cn(
+                          "block px-1.5 py-1 text-[0.65rem] leading-tight",
+                          floorBlockClass(block.kind, block.status),
+                        )}
+                      />
+                    ))}
+                  </div>
+                );
+              })}
+            </>
+          ) : null}
+
           {hourRows.map((hour) => (
-            <HourRow key={hour} hour={hour} days={days} bookings={bookings} />
+            <HourRow key={hour} hour={hour} days={days} blocks={blocks} />
           ))}
         </div>
       </div>
@@ -175,40 +261,45 @@ export function CalendarBoard() {
           <span className="size-2.5 bg-ink" aria-hidden />
           Blocked
         </li>
+        <li className="flex items-center gap-2 text-xs text-ink-muted">
+          <span className="size-2.5 border border-dashed border-ink" aria-hidden />
+          Google
+        </li>
       </ul>
 
       <div className="mt-10 md:hidden">
         <p className="text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
           This day
         </p>
-        {bookings.filter((b) => dateInTz(b.startsAt) === (mode === "day" ? cursor : today))
+        {blocks.filter((b) => overlapsDay(b.startsAt, b.endsAt, mode === "day" ? cursor : today))
           .length === 0 ? (
           <p className="mt-3 text-sm text-ink-muted">Nothing on this day.</p>
         ) : (
           <ul className="mt-3 divide-y divide-ink-border border-y border-ink-border">
-            {bookings
-              .filter((b) => dateInTz(b.startsAt) === (mode === "day" ? cursor : today))
-              .map((booking) => (
-                <li key={booking.id}>
-                  <Link
-                    to="/desk/bookings/$id"
-                    params={{ id: booking.id }}
-                    className="flex items-start gap-3 py-4"
-                  >
+            {blocks
+              .filter((block) => overlapsDay(block.startsAt, block.endsAt, mode === "day" ? cursor : today))
+              .map((block) => (
+                <li key={block.key}>
+                  <FloorLink block={block} className="flex items-start gap-3 py-4">
                     <span
                       className={cn(
                         "mt-1 size-2.5 shrink-0",
-                        floorDotClass(booking.kind, booking.status),
+                        floorDotClass(block.kind, block.status),
                       )}
                       aria-hidden
                     />
                     <span>
-                      <p className="text-sm font-medium">{booking.title}</p>
+                      <p className="text-sm font-medium">{block.title}</p>
                       <p className="mt-1 text-xs text-ink-muted">
-                        {formatRange(booking.startsAt, booking.endsAt)} · {kindLabel(booking.kind)}
+                        {block.allDay
+                          ? "All day"
+                          : formatRange(block.startsAt, block.endsAt)}
+                        {block.variant === "google"
+                          ? " · Google"
+                          : ` · ${kindLabel(block.kind as "shoot" | "rental" | "hold" | "blocked")}`}
                       </p>
                     </span>
-                  </Link>
+                  </FloorLink>
                 </li>
               ))}
           </ul>
@@ -221,11 +312,11 @@ export function CalendarBoard() {
 function HourRow({
   hour,
   days,
-  bookings,
+  blocks,
 }: {
   hour: number;
   days: string[];
-  bookings: BookingRow[];
+  blocks: FloorBlock[];
 }) {
   const label = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
@@ -237,10 +328,13 @@ function HourRow({
         {label}
       </div>
       {days.map((day) => {
-        const cellBookings = bookings.filter((booking) => {
-          if (dateInTz(booking.startsAt) !== day) return false;
-          const { start, end } = hoursFor(booking);
-          return start < hour + 1 && end > hour;
+        const cellBlocks = blocks.filter((block) => {
+          if (block.allDay) return false;
+          if (!overlapsDay(block.startsAt, block.endsAt, day)) return false;
+          const { start, end } = hoursOnDay(block.startsAt, block.endsAt, day);
+          const visStart = Math.max(start, GRID_START);
+          const visEnd = Math.min(end, GRID_START + GRID_HOURS);
+          return visStart < hour + 1 && visEnd > hour;
         });
         return (
           <div
@@ -253,30 +347,74 @@ function HourRow({
               className="absolute inset-0"
               aria-label={`New booking ${day} ${hour}:00`}
             />
-            {cellBookings.map((booking) => {
-              const { start } = hoursFor(booking);
-              if (Math.floor(start) !== hour) return null;
+            {cellBlocks.map((block) => {
+              const { start, end } = hoursOnDay(block.startsAt, block.endsAt, day);
+              const visStart = Math.max(start, GRID_START);
+              const visEnd = Math.min(end, GRID_START + GRID_HOURS);
+              if (Math.floor(visStart) !== hour) return null;
               return (
-                <Link
-                  key={booking.id}
-                  to="/desk/bookings/$id"
-                  params={{ id: booking.id }}
+                <FloorLink
+                  key={block.key}
+                  block={block}
                   className={cn(
                     "absolute inset-x-1 z-10 overflow-hidden px-1.5 py-1 text-[0.65rem] leading-tight",
-                    floorBlockClass(booking.kind, booking.status),
+                    floorBlockClass(block.kind, block.status),
                   )}
                   style={{
-                    top: `${(start - hour) * 100}%`,
-                    height: `${Math.max(booking.durationMinutes / 60, 0.5) * 100}%`,
+                    top: `${(visStart - hour) * 100}%`,
+                    height: `${Math.max(visEnd - visStart, 0.5) * 100}%`,
                   }}
-                >
-                  {booking.title}
-                </Link>
+                />
               );
             })}
           </div>
         );
       })}
     </>
+  );
+}
+
+function FloorLink({
+  block,
+  className,
+  style,
+  children,
+}: {
+  block: FloorBlock;
+  className?: string;
+  style?: CSSProperties;
+  children?: ReactNode;
+}) {
+  const label = children ?? block.title;
+  if (block.bookingId) {
+    return (
+      <Link
+        to="/desk/bookings/$id"
+        params={{ id: block.bookingId }}
+        className={className}
+        style={style}
+      >
+        {label}
+      </Link>
+    );
+  }
+  if (block.href) {
+    return (
+      <a
+        href={block.href}
+        target="_blank"
+        rel="noreferrer"
+        className={className}
+        style={style}
+        title="Opens in Google Calendar"
+      >
+        {label}
+      </a>
+    );
+  }
+  return (
+    <span className={className} style={style}>
+      {label}
+    </span>
   );
 }

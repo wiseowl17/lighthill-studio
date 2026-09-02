@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarBoard } from "@/components/desk/CalendarBoard";
 import { getDeskSummary, listUpcoming } from "@/lib/studio/fns";
-import { formatRange } from "@/lib/studio/time";
+import { listGoogleEvents } from "@/lib/studio/gcal-fns";
+import { addDays, formatRange, todayInTz, zonedStart } from "@/lib/studio/time";
 import { kindLabel } from "@/lib/studio/catalog";
 
 export const Route = createFileRoute("/desk/")({
@@ -18,11 +19,43 @@ function DeskHome() {
   const [upcoming, setUpcoming] = useState<Awaited<ReturnType<typeof listUpcoming>>>(
     [],
   );
+  const [googleUpcoming, setGoogleUpcoming] = useState<
+    Array<{ id: string; title: string; startsAt: string; endsAt: string; htmlLink: string | null }>
+  >([]);
 
   useEffect(() => {
     void getDeskSummary().then(setSummary).catch(() => undefined);
     void listUpcoming().then(setUpcoming).catch(() => setUpcoming([]));
+    const from = new Date().toISOString();
+    const to = zonedStart(addDays(todayInTz(), 14), "00:00").toISOString();
+    void listGoogleEvents({ data: { from, to } })
+      .then(setGoogleUpcoming)
+      .catch(() => setGoogleUpcoming([]));
   }, []);
+
+  const coming = useMemo(() => {
+    const desk = upcoming.map((booking) => ({
+      key: booking.id,
+      title: booking.title,
+      startsAt: booking.startsAt,
+      endsAt: booking.endsAt,
+      detail: kindLabel(booking.kind),
+      href: null as string | null,
+      external: false,
+    }));
+    const google = googleUpcoming.map((event) => ({
+      key: `g-${event.id}`,
+      title: event.title,
+      startsAt: event.startsAt,
+      endsAt: event.endsAt,
+      detail: "Google",
+      href: event.htmlLink,
+      external: true,
+    }));
+    return [...desk, ...google]
+      .sort((a, b) => a.startsAt.localeCompare(b.startsAt))
+      .slice(0, 12);
+  }, [upcoming, googleUpcoming]);
 
   return (
     <div>
@@ -36,24 +69,47 @@ function DeskHome() {
       </div>
       <section className="mt-14">
         <h2 className="font-display text-3xl">Coming up</h2>
-        {upcoming.length === 0 ? (
+        {coming.length === 0 ? (
           <p className="mt-4 text-sm text-ink-muted">
             Nothing on the books. Add a shoot, a rental, or block the floor.
           </p>
         ) : (
           <ul className="mt-5 divide-y divide-ink-border border-y border-ink-border">
-            {upcoming.map((booking) => (
-              <li key={booking.id}>
-                <Link
-                  to="/desk/bookings/$id"
-                  params={{ id: booking.id }}
-                  className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between"
-                >
-                  <span className="font-medium">{booking.title}</span>
-                  <span className="text-sm text-ink-muted">
-                    {formatRange(booking.startsAt, booking.endsAt)} · {kindLabel(booking.kind)}
-                  </span>
-                </Link>
+            {coming.map((item) => (
+              <li key={item.key}>
+                {item.external ? (
+                  item.href ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between"
+                    >
+                      <span className="font-medium">{item.title}</span>
+                      <span className="text-sm text-ink-muted">
+                        {formatRange(item.startsAt, item.endsAt)} · {item.detail}
+                      </span>
+                    </a>
+                  ) : (
+                    <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between">
+                      <span className="font-medium">{item.title}</span>
+                      <span className="text-sm text-ink-muted">
+                        {formatRange(item.startsAt, item.endsAt)} · {item.detail}
+                      </span>
+                    </div>
+                  )
+                ) : (
+                  <Link
+                    to="/desk/bookings/$id"
+                    params={{ id: item.key }}
+                    className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between"
+                  >
+                    <span className="font-medium">{item.title}</span>
+                    <span className="text-sm text-ink-muted">
+                      {formatRange(item.startsAt, item.endsAt)} · {item.detail}
+                    </span>
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
