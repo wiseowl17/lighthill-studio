@@ -6,6 +6,8 @@ import { Field } from "@/components/desk/Field";
 import {
   disconnectGoogleCalendar,
   getSettings,
+  listGoogleCalendars,
+  saveGoogleCalendar,
   saveGoogleCredentials,
   saveSettings,
 } from "@/lib/studio/fns";
@@ -30,7 +32,7 @@ export const Route = createFileRoute("/desk/settings")({
 function googleBanner(code: string | undefined): string | null {
   switch (code) {
     case "connected":
-      return "Google Calendar is connected. New bookings will land on Lighthill Floor.";
+      return "Google Calendar is connected. Pick which calendar the desk should write to below.";
     case "denied":
       return "Google access was declined. You can try Connect again.";
     case "need-app":
@@ -61,6 +63,10 @@ function SettingsPage() {
   const [pending, setPending] = useState(false);
   const [confirmOff, setConfirmOff] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [calendars, setCalendars] = useState<Array<{ id: string; name: string; primary: boolean }>>([]);
+  const [calendarId, setCalendarId] = useState("");
+  const [calendarSaved, setCalendarSaved] = useState<string | null>(null);
+  const [calendarError, setCalendarError] = useState<string | null>(null);
 
   function hydrate() {
     void getSettings().then((row) => {
@@ -72,6 +78,15 @@ function SettingsPage() {
       setGoogleReady(row.googleReady);
       setGoogleEnv(row.googleEnvConfigured);
       setClientHint(row.googleClientIdHint);
+      if (row.googleCalendarId) setCalendarId(row.googleCalendarId);
+      if (row.googleCalendarConnected) {
+        void listGoogleCalendars().then((items) => {
+          setCalendars(items);
+          if (!row.googleCalendarId && items[0]) setCalendarId(items[0].id);
+        });
+      } else {
+        setCalendars([]);
+      }
     });
   }
 
@@ -136,6 +151,24 @@ function SettingsPage() {
     }
   }
 
+  async function onSaveCalendar(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!calendarId) return;
+    setPending(true);
+    setCalendarSaved(null);
+    setCalendarError(null);
+    try {
+      const result = await saveGoogleCalendar({ data: { calendarId } });
+      setCalendarSaved(result.name);
+      hydrate();
+    } catch {
+      setCalendarError("Could not switch calendars. Try again, or reconnect Google.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  const selectedCalendar = calendars.find((item) => item.id === calendarId);
   const notice = googleBanner(google);
 
   return (
@@ -203,9 +236,47 @@ function SettingsPage() {
           </div>
           <p className="mt-3 text-sm leading-relaxed text-ink-muted">
             {gcal
-              ? `Mirroring to Lighthill Floor${gcalEmail ? ` as ${gcalEmail}` : ""}. New bookings, holds, and blocks write there.`
-              : "Connect the studio Gmail. We’ll create a calendar named Lighthill Floor and keep it in sync with the desk."}
+              ? `Connected${gcalEmail ? ` as ${gcalEmail}` : ""}. The desk writes bookings, holds, and blocks to the calendar you pick — it does not import events from Google.`
+              : "Connect the studio Gmail. Then choose which calendar the desk should write to — usually Lighthill Studio."}
           </p>
+
+          {gcal ? (
+            <form onSubmit={onSaveCalendar} className="mt-5 space-y-3">
+              <Field label="Write to this calendar" htmlFor="gcalTarget">
+                <select
+                  id="gcalTarget"
+                  value={calendarId}
+                  onChange={(e) => {
+                    setCalendarId(e.target.value);
+                    setCalendarSaved(null);
+                  }}
+                  className="h-12 w-full border border-ink-border bg-paper px-3.5 text-sm text-ink outline-none focus-visible:border-ink/40 focus-visible:ring-2 focus-visible:ring-ink/15"
+                >
+                  {calendars.length === 0 ? (
+                    <option value={calendarId || ""}>Loading calendars…</option>
+                  ) : (
+                    calendars.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                        {item.primary ? " (primary)" : ""}
+                      </option>
+                    ))
+                  )}
+                </select>
+              </Field>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button type="submit" variant="invert" disabled={pending || !calendarId}>
+                  {pending ? "Saving…" : "Use this calendar"}
+                </Button>
+                {calendarSaved ? (
+                  <p className="text-sm text-ink-muted">Now writing to {calendarSaved}.</p>
+                ) : selectedCalendar ? (
+                  <p className="text-sm text-ink-muted">Currently {selectedCalendar.name}.</p>
+                ) : null}
+                {calendarError ? <p className="text-sm text-ink-muted">{calendarError}</p> : null}
+              </div>
+            </form>
+          ) : null}
 
           {!googleEnv ? (
             <form onSubmit={onSaveGoogleApp} className="mt-5 space-y-4">
