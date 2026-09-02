@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/desk/StatusBadge";
-import { listInquiries, updateInquiryStatus } from "@/lib/studio/fns";
+import { ConfirmDialog } from "@/components/desk/ConfirmDialog";
+import { deleteInquiry, listInquiries, updateInquiryStatus } from "@/lib/studio/fns";
 import { type InquiryStatus } from "@/lib/studio/catalog";
 import { formatWhen } from "@/lib/studio/time";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/desk/inbox")({
 function InboxPage() {
   const [rows, setRows] = useState<Awaited<ReturnType<typeof listInquiries>>>([]);
   const [filter, setFilter] = useState<(typeof filters)[number]["id"]>("open");
+  const [pending, setPending] = useState<{ id: string; name: string } | null>(null);
+  const [busy, setBusy] = useState(false);
 
   function reload() {
     void listInquiries()
@@ -45,6 +48,18 @@ function InboxPage() {
   async function setStatus(id: string, status: InquiryStatus) {
     await updateInquiryStatus({ data: { id, status } });
     reload();
+  }
+
+  async function confirmDelete() {
+    if (!pending) return;
+    setBusy(true);
+    try {
+      await deleteInquiry({ data: { id: pending.id } });
+      setPending(null);
+      reload();
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -134,11 +149,33 @@ function InboxPage() {
                     Restore
                   </Button>
                 )}
+                <Button
+                  size="sm"
+                  variant="paperOutline"
+                  onClick={() => setPending({ id: inquiry.id, name: inquiry.name })}
+                >
+                  Delete
+                </Button>
               </div>
             </li>
           ))}
         </ul>
       )}
+
+      <ConfirmDialog
+        open={Boolean(pending)}
+        title="Delete this note?"
+        body={
+          pending
+            ? `Remove ${pending.name} from the inbox? This cannot be undone.`
+            : ""
+        }
+        pending={busy}
+        onOpenChange={(next) => {
+          if (!next && !busy) setPending(null);
+        }}
+        onConfirm={() => void confirmDelete()}
+      />
     </div>
   );
 }

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/desk/StatusBadge";
-import { listInvoices, updateInvoiceStatus } from "@/lib/studio/fns";
+import { ConfirmDialog } from "@/components/desk/ConfirmDialog";
+import { deleteInvoice, listInvoices, updateInvoiceStatus } from "@/lib/studio/fns";
 import { money, type InvoiceStatus } from "@/lib/studio/catalog";
 import { formatWhen } from "@/lib/studio/time";
 
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/desk/invoices")({
 function InvoicesPage() {
   const { highlight } = Route.useSearch();
   const [rows, setRows] = useState<Awaited<ReturnType<typeof listInvoices>>>([]);
+  const [pending, setPending] = useState<{ id: string; name: string } | null>(null);
+  const [busy, setBusy] = useState(false);
 
   function reload() {
     void listInvoices().then(setRows).catch(() => setRows([]));
@@ -30,6 +33,18 @@ function InvoicesPage() {
   async function setStatus(id: string, status: InvoiceStatus) {
     await updateInvoiceStatus({ data: { id, status } });
     reload();
+  }
+
+  async function confirmDelete() {
+    if (!pending) return;
+    setBusy(true);
+    try {
+      await deleteInvoice({ data: { id: pending.id } });
+      setPending(null);
+      reload();
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -114,11 +129,38 @@ function InvoicesPage() {
                     </Link>
                   </Button>
                 ) : null}
+                <Button
+                  size="sm"
+                  variant="paperOutline"
+                  onClick={() =>
+                    setPending({
+                      id: invoice.id,
+                      name: invoice.clientName ?? "this invoice",
+                    })
+                  }
+                >
+                  Delete
+                </Button>
               </div>
             </li>
           ))}
         </ul>
       )}
+
+      <ConfirmDialog
+        open={Boolean(pending)}
+        title="Delete this invoice?"
+        body={
+          pending
+            ? `Remove the invoice for ${pending.name}? This does not change the booking on the calendar.`
+            : ""
+        }
+        pending={busy}
+        onOpenChange={(next) => {
+          if (!next && !busy) setPending(null);
+        }}
+        onConfirm={() => void confirmDelete()}
+      />
     </div>
   );
 }

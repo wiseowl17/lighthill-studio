@@ -3,7 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Field } from "@/components/desk/Field";
-import { listClients, saveClient } from "@/lib/studio/fns";
+import { ConfirmDialog } from "@/components/desk/ConfirmDialog";
+import { deleteClient, listClients, saveClient } from "@/lib/studio/fns";
 import { formatWhen } from "@/lib/studio/time";
 
 export const Route = createFileRoute("/desk/clients")({
@@ -13,6 +14,8 @@ export const Route = createFileRoute("/desk/clients")({
 function ClientsPage() {
   const [rows, setRows] = useState<Awaited<ReturnType<typeof listClients>>>([]);
   const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState<{ id: string; name: string } | null>(null);
+  const [busy, setBusy] = useState(false);
 
   function reload() {
     void listClients().then(setRows).catch(() => setRows([]));
@@ -37,6 +40,18 @@ function ClientsPage() {
     event.currentTarget.reset();
     setOpen(false);
     reload();
+  }
+
+  async function confirmDelete() {
+    if (!pending) return;
+    setBusy(true);
+    try {
+      await deleteClient({ data: { id: pending.id } });
+      setPending(null);
+      reload();
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -81,21 +96,45 @@ function ClientsPage() {
       ) : (
         <ul className="mt-8 divide-y divide-ink-border border-y border-ink-border">
           {rows.map((client) => (
-            <li key={client.id} className="py-4">
-              <p className="font-medium">{client.name}</p>
-              <p className="mt-1 text-sm text-ink-muted">
-                {[client.email, client.phone, client.instagram].filter(Boolean).join(" · ") ||
-                  "No contact yet"}
-              </p>
-              {client.last_visit ? (
-                <p className="mt-1 text-xs text-ink-subtle">
-                  Last on the floor {formatWhen(client.last_visit)}
+            <li key={client.id} className="flex flex-wrap items-start justify-between gap-3 py-4">
+              <div>
+                <p className="font-medium">{client.name}</p>
+                <p className="mt-1 text-sm text-ink-muted">
+                  {[client.email, client.phone, client.instagram].filter(Boolean).join(" · ") ||
+                    "No contact yet"}
                 </p>
-              ) : null}
+                {client.last_visit ? (
+                  <p className="mt-1 text-xs text-ink-subtle">
+                    Last on the floor {formatWhen(client.last_visit)}
+                  </p>
+                ) : null}
+              </div>
+              <Button
+                size="sm"
+                variant="paperOutline"
+                onClick={() => setPending({ id: client.id, name: client.name })}
+              >
+                Delete
+              </Button>
             </li>
           ))}
         </ul>
       )}
+
+      <ConfirmDialog
+        open={Boolean(pending)}
+        title="Delete this client?"
+        body={
+          pending
+            ? `${pending.name} will be removed from the desk. Past bookings stay on the calendar without their name.`
+            : ""
+        }
+        pending={busy}
+        onOpenChange={(next) => {
+          if (!next && !busy) setPending(null);
+        }}
+        onConfirm={() => void confirmDelete()}
+      />
     </div>
   );
 }

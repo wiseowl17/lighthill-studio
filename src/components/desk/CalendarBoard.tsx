@@ -3,8 +3,15 @@ import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { kindLabel, type BookingKind } from "@/lib/studio/catalog";
-import { listBookings, type BookingRow } from "@/lib/studio/fns";
+import { kindLabel } from "@/lib/studio/catalog";
+import { getSettings, listBookings, type BookingRow } from "@/lib/studio/fns";
+import {
+  categoryKey,
+  defaultCategoryColors,
+  floorCategories,
+  swatchStyle,
+  type ColorSwatchId,
+} from "@/lib/studio/colors";
 import {
   addDays,
   dateInTz,
@@ -14,13 +21,6 @@ import {
   todayInTz,
   zonedStart,
 } from "@/lib/studio/time";
-
-const kindTone: Record<BookingKind, string> = {
-  shoot: "bg-ink text-paper",
-  rental: "border border-ink bg-paper text-ink",
-  hold: "bg-paper-muted text-ink",
-  blocked: "bg-ink/15 text-ink",
-};
 
 function hoursFor(booking: BookingRow): { start: number; end: number } {
   const [sh, sm] = timeInTz(booking.startsAt).split(":").map(Number);
@@ -33,6 +33,7 @@ export function CalendarBoard() {
   const [cursor, setCursor] = useState(today);
   const [mode, setMode] = useState<"week" | "day">("week");
   const [bookings, setBookings] = useState<BookingRow[]>([]);
+  const [colors, setColors] = useState<Record<string, ColorSwatchId>>(defaultCategoryColors);
   const [loading, setLoading] = useState(true);
 
   const weekStart = startOfWeekMonday(mode === "day" ? cursor : cursor);
@@ -44,9 +45,14 @@ export function CalendarBoard() {
     setLoading(true);
     const from = zonedStart(rangeFrom, "00:00").toISOString();
     const to = zonedStart(rangeTo, "00:00").toISOString();
-    void listBookings({ data: { from, to } })
-      .then((rows) => {
-        if (alive) setBookings(rows);
+    void Promise.all([
+      listBookings({ data: { from, to } }),
+      getSettings().catch(() => null),
+    ])
+      .then(([rows, settings]) => {
+        if (!alive) return;
+        setBookings(rows);
+        if (settings) setColors(settings.categoryColors);
       })
       .catch(() => {
         if (alive) setBookings([]);
@@ -65,6 +71,10 @@ export function CalendarBoard() {
   }, [mode, cursor, weekStart]);
 
   const hourRows = Array.from({ length: 16 }, (_, i) => i + 7);
+  const usedKeys = useMemo(() => {
+    const keys = new Set(bookings.map((booking) => categoryKey(booking.kind, booking.sessionType)));
+    return floorCategories.filter((category) => keys.has(category.id));
+  }, [bookings]);
 
   function shift(dir: number) {
     setCursor(addDays(cursor, mode === "day" ? dir : dir * 7));
@@ -163,6 +173,7 @@ export function CalendarBoard() {
               hour={hour}
               days={days}
               bookings={bookings}
+              colors={colors}
             />
           ))}
         </div>
@@ -171,6 +182,29 @@ export function CalendarBoard() {
       {loading ? (
         <p className="mt-4 text-sm text-ink-muted">Loading the floor…</p>
       ) : null}
+
+      {usedKeys.length > 0 ? (
+        <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2">
+          {usedKeys.map((category) => (
+            <li key={category.id} className="flex items-center gap-2 text-xs text-ink-muted">
+              <span
+                className="size-2.5"
+                style={swatchStyle(colors[category.id] ?? "ink")}
+                aria-hidden
+              />
+              {category.label}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      <p className="mt-3 text-xs text-ink-subtle">
+        Change colors in{" "}
+        <Link to="/desk/settings" className="underline underline-offset-4">
+          Settings
+        </Link>
+        .
+      </p>
 
       <div className="mt-10 md:hidden">
         <p className="text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
@@ -188,12 +222,21 @@ export function CalendarBoard() {
                   <Link
                     to="/desk/bookings/$id"
                     params={{ id: booking.id }}
-                    className="block py-4"
+                    className="flex items-start gap-3 py-4"
                   >
-                    <p className="text-sm font-medium">{booking.title}</p>
-                    <p className="mt-1 text-xs text-ink-muted">
-                      {formatRange(booking.startsAt, booking.endsAt)} · {kindLabel(booking.kind)}
-                    </p>
+                    <span
+                      className="mt-1 size-2.5 shrink-0"
+                      style={swatchStyle(
+                        colors[categoryKey(booking.kind, booking.sessionType)] ?? "ink",
+                      )}
+                      aria-hidden
+                    />
+                    <span>
+                      <p className="text-sm font-medium">{booking.title}</p>
+                      <p className="mt-1 text-xs text-ink-muted">
+                        {formatRange(booking.startsAt, booking.endsAt)} · {kindLabel(booking.kind)}
+                      </p>
+                    </span>
                   </Link>
                 </li>
               ))}
@@ -208,10 +251,12 @@ function HourRow({
   hour,
   days,
   bookings,
+  colors,
 }: {
   hour: number;
   days: string[];
   bookings: BookingRow[];
+  colors: Record<string, ColorSwatchId>;
 }) {
   const label = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
@@ -242,6 +287,7 @@ function HourRow({
             {cellBookings.map((booking) => {
               const { start } = hoursFor(booking);
               if (Math.floor(start) !== hour) return null;
+              const swatch = colors[categoryKey(booking.kind, booking.sessionType)] ?? "ink";
               return (
                 <Link
                   key={booking.id}
@@ -249,12 +295,12 @@ function HourRow({
                   params={{ id: booking.id }}
                   className={cn(
                     "absolute inset-x-1 z-10 overflow-hidden px-1.5 py-1 text-[0.65rem] leading-tight",
-                    kindTone[booking.kind],
                     booking.status === "cancelled" && "opacity-40",
                   )}
                   style={{
                     top: `${(start - hour) * 100}%`,
                     height: `${Math.max(booking.durationMinutes / 60, 0.5) * 100}%`,
+                    ...swatchStyle(swatch),
                   }}
                 >
                   {booking.title}

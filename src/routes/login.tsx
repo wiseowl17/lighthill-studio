@@ -76,7 +76,9 @@ function Login() {
   return (
     <main id="main" className="flex min-h-dvh flex-col items-center justify-center bg-bg px-5 py-16 text-fg">
       <div className="w-full max-w-sm">
-        <Logo variant="white" imgClassName="mx-auto h-16" />
+        <div className="flex justify-center">
+          <Logo variant="white" imgClassName="h-20 md:h-24" />
+        </div>
         <p className="mt-8 text-center text-[0.7rem] tracking-[0.22em] text-fg-muted uppercase">
           Owner desk
         </p>

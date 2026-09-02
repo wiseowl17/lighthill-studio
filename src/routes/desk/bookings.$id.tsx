@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { BookingForm, defaultBookingValues } from "@/components/desk/BookingForm";
 import { StatusBadge } from "@/components/desk/StatusBadge";
+import { ConfirmDialog } from "@/components/desk/ConfirmDialog";
 import {
   createInvoiceFromBooking,
   deleteBooking,
@@ -24,6 +25,8 @@ function BookingDetailPage() {
     null,
   );
   const [loaded, setLoaded] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     setLoaded(false);
@@ -90,12 +93,7 @@ function BookingDetailPage() {
         <Button
           type="button"
           variant="paperOutline"
-          onClick={() => {
-            if (!window.confirm("Remove this booking from the calendar?")) return;
-            void deleteBooking({ data: { id: booking.id } }).then(() =>
-              navigate({ to: "/desk/bookings" }),
-            );
-          }}
+          onClick={() => setConfirmOpen(true)}
         >
           Delete
         </Button>
@@ -104,6 +102,26 @@ function BookingDetailPage() {
         </Button>
       </div>
       {message ? <p className="mt-4 text-sm">{message}</p> : null}
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete this booking?"
+        body="Remove this booking from the calendar? This cannot be undone."
+        pending={busy}
+        onOpenChange={(next) => {
+          if (!next && !busy) setConfirmOpen(false);
+        }}
+        onConfirm={() => {
+          setBusy(true);
+          void deleteBooking({ data: { id: booking.id } })
+            .then(() => navigate({ to: "/desk/bookings" }))
+            .catch((err: Error) => {
+              setMessage(err.message);
+              setBusy(false);
+              setConfirmOpen(false);
+            });
+        }}
+      />
 
       {editing ? (
         <div className="mt-10">
