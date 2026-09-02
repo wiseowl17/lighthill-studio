@@ -1,4 +1,4 @@
-import { readdirSync } from "node:fs";
+import { copyFileSync, mkdirSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Plugin } from "vite";
 import { defineConfig } from "vite";
@@ -46,6 +46,26 @@ function pgliteBootstrapPlugin(): Plugin {
       } catch (err) {
         console.error("[app-builder] DB bootstrap failed:", err);
         throw err;
+      }
+    },
+  };
+}
+
+/**
+ * Copy PGLite WASM payloads into `public/_pglite` so Vercel can serve them as
+ * static files. The serverless bundle drops `.data` / `.wasm` next to the
+ * traced module; the desk then fetches these instead of reading `/var/task`.
+ */
+function pglitePublicAssetsPlugin(): Plugin {
+  return {
+    name: "app-builder:pglite-public-assets",
+    apply: "build",
+    buildStart() {
+      const src = join(process.cwd(), "node_modules/@electric-sql/pglite/dist");
+      const dest = join(process.cwd(), "public/_pglite");
+      mkdirSync(dest, { recursive: true });
+      for (const name of ["pglite.data", "pglite.wasm", "initdb.wasm"]) {
+        copyFileSync(join(src, name), join(dest, name));
       }
     },
   };
@@ -158,6 +178,7 @@ export default defineConfig(({ command, isPreview }) => ({
   },
   resolve: { tsconfigPaths: true },
   plugins: [
+    pglitePublicAssetsPlugin(),
     pgliteBootstrapPlugin(),
     // Before tanstackStart so /auth/popup never falls through to the SPA.
     authPopupPlugin(),

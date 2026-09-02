@@ -9,7 +9,11 @@ import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/desk")({
   beforeLoad: async () => {
-    await seedOwnerAccount();
+    try {
+      await seedOwnerAccount();
+    } catch {
+      /* RedirectToSignIn handles an unready desk */
+    }
   },
   component: DeskLayout,
   head: () => ({

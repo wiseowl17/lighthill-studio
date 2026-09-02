@@ -8,7 +8,11 @@ import { seedOwnerAccount } from "@/lib/studio/fns";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async () => {
-    await seedOwnerAccount();
+    try {
+      await seedOwnerAccount();
+    } catch {
+      /* form still renders if the desk database is warming up */
+    }
   },
   component: Login,
   head: () => ({
@@ -29,6 +33,7 @@ function Login() {
     const email = String(form.get("email") ?? "").trim();
     const password = String(form.get("password") ?? "");
     try {
+      await seedOwnerAccount();
       if (!authEnabled) throw new Error("Sign-in is not enabled.");
       const { data, error: authError } = await authClient.signIn.email({
         email,
