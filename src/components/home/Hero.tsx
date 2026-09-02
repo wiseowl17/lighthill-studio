@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { CtaPair } from "@/components/layout/CtaPair";
+import { Photo } from "@/components/media/Photo";
 
 type ExtraVideoAttrs = {
   "webkit-playsinline"?: string;
@@ -110,20 +111,24 @@ export function Hero() {
 
   return (
     <section className="relative isolate flex min-h-svh items-end overflow-hidden bg-bg">
-      <img
+      <Photo
         src="/images/hero-poster.jpg"
         alt=""
+        loading="eager"
+        fetchPriority="high"
         className="absolute inset-0 h-full w-full object-cover object-[center_62%]"
         aria-hidden
       />
       {!reduce ? (
         <>
-          <img
-            src="/videos/hero.webp"
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover object-[center_62%]"
-            aria-hidden
-          />
+          {useMotionImage && !videoLive ? (
+            <img
+              src="/videos/hero.webp"
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover object-[center_62%]"
+              aria-hidden
+            />
+          ) : null}
           <video
             ref={(el) => {
               videoRef.current = el;

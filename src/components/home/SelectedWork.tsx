@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { galleryImages } from "@data/gallery";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
+import { Photo } from "@/components/media/Photo";
 
 const picks = galleryImages.filter((img) => img.featured);
 
@@ -32,13 +33,12 @@ export function SelectedWork() {
           {picks.map((img, i) => (
             <Reveal key={img.id} delay={i * 0.04} className="mb-2 break-inside-avoid sm:mb-3 lg:mb-4">
               <Link to="/gallery" className="group block overflow-hidden bg-bg-elevated">
-                <img
+                <Photo
                   src={img.src}
                   alt={img.alt}
                   width={img.width}
                   height={img.height}
-                  loading="lazy"
-                  decoding="async"
+                  sizes="(min-width: 1024px) 33vw, 50vw"
                   className="h-auto w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
                 />
               </Link>

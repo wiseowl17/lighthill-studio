@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { Photo } from "@/components/media/Photo";
 import { cn } from "@/lib/utils";
 
 type PageHeroProps = {
@@ -43,9 +44,10 @@ export function PageHero({
         <div className="mx-auto mt-12 max-w-7xl overflow-hidden px-5 md:mt-16 md:px-8">
           <Reveal>
             <div className="aspect-wide overflow-hidden bg-bg-elevated">
-              <img
+              <Photo
                 src={image}
                 alt={imageAlt ?? ""}
+                loading="eager"
                 className={cn(
                   "h-full w-full object-cover object-[center_78%]",
                   imageClassName,

@@ -8,6 +8,7 @@ import {
   type GalleryImage,
 } from "@data/gallery";
 import { cn } from "@/lib/utils";
+import { Photo } from "@/components/media/Photo";
 
 export function MasonryGallery() {
   const [filter, setFilter] = useState<GalleryCategory>("All");
@@ -81,13 +82,12 @@ export function MasonryGallery() {
             onClick={() => setActive(img)}
             className="mb-2 block w-full break-inside-avoid overflow-hidden bg-paper-muted text-left sm:mb-3 lg:mb-4"
           >
-            <img
+            <Photo
               src={img.src}
               alt={img.alt}
               width={img.width}
               height={img.height}
-              loading="lazy"
-              decoding="async"
+              sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
               className="h-auto w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.03]"
             />
           </motion.button>
@@ -137,17 +137,24 @@ export function MasonryGallery() {
             >
               <ChevronRight className="size-8" strokeWidth={1.25} />
             </button>
-            <motion.img
+            <motion.div
               key={active.id}
-              src={active.src}
-              alt={active.alt}
               initial={reduce ? false : { opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="max-h-[82dvh] max-w-[min(92vw,1100px)] object-contain outline-none"
-            />
+              className="flex max-h-[82dvh] max-w-[min(92vw,1100px)] items-center justify-center"
+            >
+              <Photo
+                src={active.src}
+                alt={active.alt}
+                width={active.width}
+                height={active.height}
+                loading="eager"
+                className="max-h-[82dvh] max-w-[min(92vw,1100px)] object-contain outline-none"
+              />
+            </motion.div>
             <p className="absolute bottom-5 left-1/2 max-w-lg -translate-x-1/2 px-4 text-center text-xs tracking-wide text-fg-muted">
               {active.alt}
             </p>

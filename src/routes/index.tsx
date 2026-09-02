@@ -8,6 +8,7 @@ import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/home/Marquee";
 import { SelectedWork } from "@/components/home/SelectedWork";
 import { Reveal } from "@/components/motion/Reveal";
+import { Photo } from "@/components/media/Photo";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -17,6 +18,14 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content: site.description,
+      },
+    ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/images/hero-poster.webp",
+        type: "image/webp",
       },
     ],
   }),
@@ -90,7 +99,7 @@ function Home() {
                   className="group flex h-full flex-col overflow-hidden bg-bg-elevated"
                 >
                   <div className="aspect-portrait overflow-hidden">
-                    <img
+                    <Photo
                       src={service.image}
                       alt={service.title}
                       className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
@@ -121,7 +130,7 @@ function Home() {
 
       <section className="relative isolate overflow-hidden bg-bg text-fg">
         <div className="absolute inset-0 -z-10">
-          <img
+          <Photo
             src="/images/cyclorama.jpg"
             alt=""
             className="h-full w-full object-cover opacity-50"

@@ -3,6 +3,7 @@ import { amenities, studioFeatures, studioIntro } from "@data/studio";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal } from "@/components/motion/Reveal";
 import { CtaPair } from "@/components/layout/CtaPair";
+import { Photo } from "@/components/media/Photo";
 
 export const Route = createFileRoute("/studio")({
   component: StudioPage,
@@ -45,7 +46,7 @@ function StudioPage() {
                   }
                 >
                   <div className="aspect-photo overflow-hidden bg-paper-muted">
-                    <img
+                    <Photo
                       src={feature.image}
                       alt={feature.title}
                       className="h-full w-full object-cover"

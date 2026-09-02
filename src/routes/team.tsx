@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal } from "@/components/motion/Reveal";
 import { InstagramLink } from "@/components/layout/ContactLinks";
+import { Photo } from "@/components/media/Photo";
 
 export const Route = createFileRoute("/team")({
   component: TeamPage,
@@ -34,7 +35,7 @@ function TeamPage() {
           <Reveal key={member.id} delay={i * 0.06} className="h-full">
             <article className="flex h-full flex-col">
               <div className="aspect-portrait overflow-hidden bg-paper-muted">
-                <img
+                <Photo
                   src={member.image}
                   alt={member.name}
                   className="h-full w-full object-cover"
