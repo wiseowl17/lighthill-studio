@@ -26,6 +26,8 @@ import { Route as DeskInvoicesRouteImport } from './routes/desk/invoices'
 import { Route as DeskNewRouteImport } from './routes/desk/new'
 import { Route as DeskSettingsRouteImport } from './routes/desk/settings'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiGoogleCallbackRouteImport } from './routes/api/google/callback'
+import { Route as ApiGoogleConnectRouteImport } from './routes/api/google/connect'
 import { Route as DeskBookingsIndexRouteImport } from './routes/desk/bookings.index'
 import { Route as DeskBookingsIdRouteImport } from './routes/desk/bookings.$id'
 
@@ -114,6 +116,16 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiGoogleCallbackRoute = ApiGoogleCallbackRouteImport.update({
+  id: '/api/google/callback',
+  path: '/api/google/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGoogleConnectRoute = ApiGoogleConnectRouteImport.update({
+  id: '/api/google/connect',
+  path: '/api/google/connect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DeskBookingsIndexRoute = DeskBookingsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -143,6 +155,8 @@ export interface FileRoutesByFullPath {
   '/desk/settings': typeof DeskSettingsRoute
   '/desk/': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/google/callback': typeof ApiGoogleCallbackRoute
+  '/api/google/connect': typeof ApiGoogleConnectRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings/': typeof DeskBookingsIndexRoute
 }
@@ -162,6 +176,8 @@ export interface FileRoutesByTo {
   '/desk/settings': typeof DeskSettingsRoute
   '/desk': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/google/callback': typeof ApiGoogleCallbackRoute
+  '/api/google/connect': typeof ApiGoogleConnectRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings': typeof DeskBookingsIndexRoute
 }
@@ -184,6 +200,8 @@ export interface FileRoutesById {
   '/desk/settings': typeof DeskSettingsRoute
   '/desk/': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/google/callback': typeof ApiGoogleCallbackRoute
+  '/api/google/connect': typeof ApiGoogleConnectRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings/': typeof DeskBookingsIndexRoute
 }
@@ -207,6 +225,8 @@ export interface FileRouteTypes {
     | '/desk/settings'
     | '/desk/'
     | '/api/auth/$'
+    | '/api/google/callback'
+    | '/api/google/connect'
     | '/desk/bookings/$id'
     | '/desk/bookings/'
   fileRoutesByTo: FileRoutesByTo
@@ -226,6 +246,8 @@ export interface FileRouteTypes {
     | '/desk/settings'
     | '/desk'
     | '/api/auth/$'
+    | '/api/google/callback'
+    | '/api/google/connect'
     | '/desk/bookings/$id'
     | '/desk/bookings'
   id:
@@ -247,6 +269,8 @@ export interface FileRouteTypes {
     | '/desk/settings'
     | '/desk/'
     | '/api/auth/$'
+    | '/api/google/callback'
+    | '/api/google/connect'
     | '/desk/bookings/$id'
     | '/desk/bookings/'
   fileRoutesById: FileRoutesById
@@ -262,6 +286,8 @@ export interface RootRouteChildren {
   StudioRoute: typeof StudioRoute
   TeamRoute: typeof TeamRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiGoogleCallbackRoute: typeof ApiGoogleCallbackRoute
+  ApiGoogleConnectRoute: typeof ApiGoogleConnectRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -385,6 +411,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/google/callback': {
+      id: '/api/google/callback'
+      path: '/api/google/callback'
+      fullPath: '/api/google/callback'
+      preLoaderRoute: typeof ApiGoogleCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/google/connect': {
+      id: '/api/google/connect'
+      path: '/api/google/connect'
+      fullPath: '/api/google/connect'
+      preLoaderRoute: typeof ApiGoogleConnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/desk/bookings/': {
       id: '/desk/bookings/'
       path: '/'
@@ -449,6 +489,8 @@ const rootRouteChildren: RootRouteChildren = {
   StudioRoute: StudioRoute,
   TeamRoute: TeamRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiGoogleCallbackRoute: ApiGoogleCallbackRoute,
+  ApiGoogleConnectRoute: ApiGoogleConnectRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -25,6 +25,14 @@ import {
   type PaymentStatus,
 } from "./catalog";
 import { addMinutes, zonedStart } from "./time";
+import {
+  disconnectGoogle,
+  envGoogleConfigured,
+  loadGoogleApp,
+  mirrorBooking,
+  mirrorDelete,
+  saveGoogleApp,
+} from "./google.server";
 
 type OwnerCtx = { userId: string; email: string };
 
@@ -434,6 +442,7 @@ export const saveBooking = createServerFn({ method: "POST" })
       `;
     }
 
+    void mirrorBooking(userId, id);
     return { id };
   });
 
@@ -471,7 +480,11 @@ export const deleteBooking = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const { userId } = await requireOwner(context.userId);
     const sql = await getSql();
+    const rows = await sql<{ google_event_id: string | null }>`
+      select google_event_id from bookings where id = ${data.id} and user_id = ${userId} limit 1
+    `;
     await sql`delete from bookings where id = ${data.id} and user_id = ${userId}`;
+    void mirrorDelete(userId, rows[0]?.google_event_id ?? null);
     return { ok: true };
   });
 
@@ -810,20 +823,32 @@ export const getSettings = createServerFn({ method: "GET" })
       buffer_minutes: number;
       square_connected: boolean;
       google_calendar_connected: boolean;
+      google_account_email: string | null;
+      google_client_id: string | null;
     }>`
       select timezone, min_rental_hours, buffer_minutes,
-        square_connected, google_calendar_connected
+        square_connected, google_calendar_connected,
+        google_account_email, google_client_id
       from studio_settings
       where user_id = ${userId}
       limit 1
     `;
     const row = rows[0];
+    const app = await loadGoogleApp(userId);
     return {
       timezone: row?.timezone ?? "America/New_York",
       minRentalHours: Number(row?.min_rental_hours ?? 2),
       bufferMinutes: Number(row?.buffer_minutes ?? 0),
       squareConnected: Boolean(row?.square_connected),
       googleCalendarConnected: Boolean(row?.google_calendar_connected),
+      googleAccountEmail: row?.google_account_email ?? null,
+      googleReady: Boolean(app),
+      googleEnvConfigured: envGoogleConfigured(),
+      googleClientIdHint: envGoogleConfigured()
+        ? "env"
+        : row?.google_client_id
+          ? `${row.google_client_id.slice(0, 12)}…`
+          : null,
     };
   });
 
@@ -847,6 +872,30 @@ export const saveSettings = createServerFn({ method: "POST" })
         min_rental_hours = excluded.min_rental_hours,
         buffer_minutes = excluded.buffer_minutes
     `;
+    return { ok: true };
+  });
+
+export const saveGoogleCredentials = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((d: unknown) =>
+    z
+      .object({
+        clientId: z.string().trim().min(12),
+        clientSecret: z.string().trim().min(8),
+      })
+      .parse(d),
+  )
+  .handler(async ({ context, data }) => {
+    const { userId } = await requireOwner(context.userId);
+    await saveGoogleApp(userId, data.clientId, data.clientSecret);
+    return { ok: true };
+  });
+
+export const disconnectGoogleCalendar = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    const { userId } = await requireOwner(context.userId);
+    await disconnectGoogle(userId);
     return { ok: true };
   });
 
