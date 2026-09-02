@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Instagram } from "lucide-react";
 import { team, teamIntro } from "@data/team";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal } from "@/components/motion/Reveal";
-import { InstagramLink } from "@/components/layout/ContactLinks";
 import { Photo } from "@/components/media/Photo";
 
 export const Route = createFileRoute("/team")({
@@ -44,6 +44,15 @@ function TeamPage() {
                   }}
                 />
               </div>
+              <a
+                href={member.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex h-11 w-fit items-center gap-2.5 border border-ink px-4 text-[0.72rem] font-medium tracking-[0.16em] text-ink uppercase transition-colors duration-150 hover:bg-ink hover:text-paper"
+              >
+                <Instagram className="size-4 shrink-0" strokeWidth={1.5} aria-hidden />
+                {member.instagramHandle}
+              </a>
               <p className="mt-5 text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
                 {member.title}
               </p>
@@ -51,9 +60,6 @@ function TeamPage() {
               <p className="mt-4 max-w-lg flex-1 leading-relaxed text-ink-muted">
                 {member.bio}
               </p>
-              {member.instagram ? (
-                <InstagramLink className="mt-4 text-ink hover:opacity-70" />
-              ) : null}
             </article>
           </Reveal>
         ))}

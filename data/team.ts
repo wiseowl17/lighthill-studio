@@ -9,7 +9,8 @@ export type TeamMember = {
   bio: string;
   image: string;
   objectPosition?: string;
-  instagram?: string;
+  instagram: string;
+  instagramHandle: string;
 };
 
 export const team: TeamMember[] = [
@@ -20,7 +21,8 @@ export const team: TeamMember[] = [
     bio: "Luz is a co-owner of Lighthill. She and Hillary work every session side by side — maternity, newborns, families, and personal brands — sharing the directing and the light. She treats the cyclorama like a set, not a box.",
     image: "/images/team-luz.jpg",
     objectPosition: "center 12%",
-    instagram: "https://www.instagram.com/lighthill_studio/",
+    instagram: "https://www.instagram.com/luzreyherphotos/",
+    instagramHandle: "@luzreyherphotos",
   },
   {
     id: "hillary",
@@ -29,7 +31,8 @@ export const team: TeamMember[] = [
     bio: "Hillary is a co-owner of Lighthill. She and Luz work the floor together on seasonal sets, celebrations, branding, and podcast days — keeping the room moving and the light consistent, from a toddler on the cove to a founder at the desk.",
     image: "/images/team-hillary.jpg",
     objectPosition: "64% 18%",
-    instagram: "https://www.instagram.com/lighthill_studio/",
+    instagram: "https://www.instagram.com/safarishoot/",
+    instagramHandle: "@safarishoot",
   },
 ];
 
