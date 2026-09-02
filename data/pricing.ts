@@ -174,7 +174,7 @@ export const rentalRates: RentalRate[] = [
   {
     id: "capacity",
     name: "Capacity",
-    price: "10 guests",
+    price: "20 guests",
     note: "1,200 sq ft. Street-level access and free parking.",
   },
 ];

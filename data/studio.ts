@@ -69,12 +69,12 @@ export const amenities: Amenity[] = [
   { id: "restrooms", title: "Restrooms", detail: "On the floor, not down a hallway in another suite." },
   { id: "paper", title: "Color paper rolls", detail: "A rack of seamless colors when white isn’t the story." },
   { id: "power", title: "Clean power", detail: "Outlets placed for stands, packs, and a tether station." },
-  { id: "capacity", title: "10 people", detail: "Crew, talent, and a client — without stacking cases." },
+  { id: "capacity", title: "20 people", detail: "Crew, talent, and clients — up to twenty on the floor." },
 ];
 
 export const studioSpecs = [
   { label: "Floor", value: "1,200 sq ft" },
-  { label: "Capacity", value: "10 guests" },
+  { label: "Capacity", value: "20 guests" },
   { label: "Cyclorama", value: "White infinity wall" },
   { label: "Light", value: "Godox studio strobes" },
   { label: "Access", value: "Street level" },

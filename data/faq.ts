@@ -25,7 +25,7 @@ export const faq: FaqItem[] = [
     group: "Sessions",
     question: "Can I bring my partner, kids, or a stylist?",
     answer:
-      "Yes. Capacity is ten people including crew. Tell us who is coming when you book so we can plan the floor. Children are welcome; we just keep snacks and markers off the cyclorama.",
+      "Yes. Capacity is twenty people including crew. Tell us who is coming when you book so we can plan the floor. Children are welcome; we just keep snacks and markers off the cyclorama.",
   },
   {
     id: "session-cancel",
@@ -53,7 +53,7 @@ export const faq: FaqItem[] = [
     group: "Rentals",
     question: "Is there a minimum rental?",
     answer:
-      "Yes. Two hours, at $55 per hour. Bookings of eight hours or more receive 20% off. Weekday hours start at 6:00am; weekends at 8:00am. Last call is 7:00pm.",
+      "Yes. Two hours, at $55 per hour. Bookings of eight hours or more receive 20% off. The studio is available 24 hours — the shopping plaza doesn’t close.",
   },
   {
     id: "rental-gear",

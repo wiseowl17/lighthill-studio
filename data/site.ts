@@ -21,10 +21,10 @@ export const site = {
   peerspaceUrl:
     "https://www.peerspace.com/pages/listings/6a74b0ccd2019fc79dd2f88e",
   sqft: 1200,
-  capacity: 10,
+  capacity: 20,
   hours: {
-    weekdays: "Mon–Fri, 6:00am – 7:00pm",
-    weekends: "Sat–Sun, 8:00am – 7:00pm",
+    weekdays: "Open 24 hours",
+    weekends: "The shopping plaza doesn’t close — book any time.",
   },
 } as const;
 
