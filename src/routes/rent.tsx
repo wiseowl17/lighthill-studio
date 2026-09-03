@@ -20,9 +20,10 @@ import { cn } from "@/lib/utils";
 type DaySlots = { date: string; slots: string[] };
 
 export const Route = createFileRoute("/rent")({
-  validateSearch: (search: Record<string, unknown>): { cancelled?: boolean } => ({
-    cancelled: search.cancelled === "1" || search.cancelled === true,
-  }),
+  validateSearch: (search: Record<string, unknown>): { cancelled?: boolean } => {
+    if (search.cancelled === "1" || search.cancelled === true) return { cancelled: true };
+    return {};
+  },
   component: RentPage,
   head: () => ({
     meta: [
