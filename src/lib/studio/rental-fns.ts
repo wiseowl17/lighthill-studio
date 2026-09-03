@@ -1,14 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import {
+  getConfirmedRental,
+  getRentalAvailability,
+  startRentalCheckoutSession,
+} from "./rental.server";
 
 export const listRentalAvailability = createServerFn({ method: "GET" })
   .validator((d: unknown) =>
     z.object({ durationMinutes: z.number().int().min(60).max(12 * 60) }).parse(d),
   )
-  .handler(async ({ data }) => {
-    const { getRentalAvailability } = await import("./rental.server");
-    return getRentalAvailability(data.durationMinutes);
-  });
+  .handler(async ({ data }) => getRentalAvailability(data.durationMinutes));
 
 export const startRentalCheckout = createServerFn({ method: "POST" })
   .validator((d: unknown) =>
@@ -26,14 +28,8 @@ export const startRentalCheckout = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data }) => {
-    const { startRentalCheckoutSession } = await import("./rental.server");
-    return startRentalCheckoutSession(data);
-  });
+  .handler(async ({ data }) => startRentalCheckoutSession(data));
 
 export const confirmRentalCheckout = createServerFn({ method: "GET" })
   .validator((d: unknown) => z.object({ sessionId: z.string().min(8) }).parse(d))
-  .handler(async ({ data }) => {
-    const { getConfirmedRental } = await import("./rental.server");
-    return getConfirmedRental(data.sessionId);
-  });
+  .handler(async ({ data }) => getConfirmedRental(data.sessionId));
