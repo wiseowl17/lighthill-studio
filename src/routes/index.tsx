@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { services } from "@data/services";
 import { studioIntro, studioSpecs } from "@data/studio";
 import { site } from "@data/site";
@@ -58,7 +58,7 @@ function Home() {
             <p className="mt-5 leading-relaxed text-ink-muted">
               When we are not on set, the room is available to other
               photographers, videographers, and small productions. Book the
-              in-house team, or rent the space on Peerspace.
+              in-house team, or rent the space.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button variant="invert" size="lg" asChild>
@@ -87,8 +87,8 @@ function Home() {
               Directed sessions, in a room we know.
             </h2>
             <p className="mt-5 text-fg-muted">
-              Start with the team. If you already have a photographer, the
-              studio is listed for hourly rental.
+              Start with the team. If you already have a photographer, rent the
+              studio by the hour.
             </p>
           </Reveal>
           <div className="mt-10 grid grid-cols-2 items-stretch gap-3 lg:mt-14 lg:grid-cols-4 lg:gap-4">
@@ -151,14 +151,7 @@ function Home() {
                 <Link to="/studio">Tour the studio</Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <a
-                  href={site.peerspaceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Rent on Peerspace
-                  <ArrowUpRight className="size-3.5" />
-                </a>
+                <Link to="/rent">Rent now</Link>
               </Button>
             </div>
           </Reveal>

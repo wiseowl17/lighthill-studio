@@ -26,6 +26,7 @@ import { Route as DeskInboxRouteImport } from './routes/desk/inbox'
 import { Route as DeskInvoicesRouteImport } from './routes/desk/invoices'
 import { Route as DeskNewRouteImport } from './routes/desk/new'
 import { Route as DeskSettingsRouteImport } from './routes/desk/settings'
+import { Route as RentConfirmedRouteImport } from './routes/rent.confirmed'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiGoogleCallbackRouteImport } from './routes/api/google/callback'
 import { Route as ApiGoogleConnectRouteImport } from './routes/api/google/connect'
@@ -118,6 +119,11 @@ const DeskSettingsRoute = DeskSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DeskRoute,
 } as any)
+const RentConfirmedRoute = RentConfirmedRouteImport.update({
+  id: '/confirmed',
+  path: '/confirmed',
+  getParentRoute: () => RentRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -157,7 +163,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
-  '/rent': typeof RentRoute
+  '/rent': typeof RentRouteWithChildren
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/bookings': typeof DeskBookingsRouteWithChildren
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/desk/invoices': typeof DeskInvoicesRoute
   '/desk/new': typeof DeskNewRoute
   '/desk/settings': typeof DeskSettingsRoute
+  '/rent/confirmed': typeof RentConfirmedRoute
   '/desk/': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
@@ -181,7 +188,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
-  '/rent': typeof RentRoute
+  '/rent': typeof RentRouteWithChildren
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/clients': typeof DeskClientsRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/desk/invoices': typeof DeskInvoicesRoute
   '/desk/new': typeof DeskNewRoute
   '/desk/settings': typeof DeskSettingsRoute
+  '/rent/confirmed': typeof RentConfirmedRoute
   '/desk': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
@@ -206,7 +214,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
-  '/rent': typeof RentRoute
+  '/rent': typeof RentRouteWithChildren
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/bookings': typeof DeskBookingsRouteWithChildren
@@ -215,6 +223,7 @@ export interface FileRoutesById {
   '/desk/invoices': typeof DeskInvoicesRoute
   '/desk/new': typeof DeskNewRoute
   '/desk/settings': typeof DeskSettingsRoute
+  '/rent/confirmed': typeof RentConfirmedRoute
   '/desk/': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/desk/invoices'
     | '/desk/new'
     | '/desk/settings'
+    | '/rent/confirmed'
     | '/desk/'
     | '/api/auth/$'
     | '/api/google/callback'
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/desk/invoices'
     | '/desk/new'
     | '/desk/settings'
+    | '/rent/confirmed'
     | '/desk'
     | '/api/auth/$'
     | '/api/google/callback'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/desk/invoices'
     | '/desk/new'
     | '/desk/settings'
+    | '/rent/confirmed'
     | '/desk/'
     | '/api/auth/$'
     | '/api/google/callback'
@@ -307,7 +319,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
-  RentRoute: typeof RentRoute
+  RentRoute: typeof RentRouteWithChildren
   StudioRoute: typeof StudioRoute
   TeamRoute: typeof TeamRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -437,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeskSettingsRouteImport
       parentRoute: typeof DeskRoute
     }
+    '/rent/confirmed': {
+      id: '/rent/confirmed'
+      path: '/confirmed'
+      fullPath: '/rent/confirmed'
+      preLoaderRoute: typeof RentConfirmedRouteImport
+      parentRoute: typeof RentRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -518,6 +537,16 @@ const DeskRouteChildren: DeskRouteChildren = {
 
 const DeskRouteWithChildren = DeskRoute._addFileChildren(DeskRouteChildren)
 
+interface RentRouteChildren {
+  RentConfirmedRoute: typeof RentConfirmedRoute
+}
+
+const RentRouteChildren: RentRouteChildren = {
+  RentConfirmedRoute: RentConfirmedRoute,
+}
+
+const RentRouteWithChildren = RentRoute._addFileChildren(RentRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactRoute: ContactRoute,
@@ -526,7 +555,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
-  RentRoute: RentRoute,
+  RentRoute: RentRouteWithChildren,
   StudioRoute: StudioRoute,
   TeamRoute: TeamRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

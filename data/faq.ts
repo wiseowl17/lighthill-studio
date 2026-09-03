@@ -46,7 +46,7 @@ export const faq: FaqItem[] = [
     group: "Rentals",
     question: "How do I rent the studio?",
     answer:
-      "Rental bookings run through our Peerspace listing — hours, payments, and messages live there. The listed rate is for the cyclorama studio. Lighting, paper rolls, and an assistant are add-ons you can request with the host.",
+      "Book on this site with Rent now — live availability, 50% deposit, instant confirmation. Lighting, paper, and an assistant are add-ons at checkout. Peerspace stays open as a second door.",
   },
   {
     id: "rental-minimum",
@@ -67,7 +67,7 @@ export const faq: FaqItem[] = [
     group: "Rentals",
     question: "What is the rental cancellation policy?",
     answer:
-      "Peerspace’s flexible policy applies. Full refund (including fees) if you cancel at least seven days before start time. 50% refund (excluding fees) between seven days and 24 hours. No refund inside 24 hours. A grace period covers cancels within 24 hours of booking, if that is still 48 hours before the event.",
+      "A 50% deposit confirms the time. Full refund of the deposit if you cancel at least 48 hours before start. Inside 48 hours the deposit is held. Write us if you need to move the date. Peerspace bookings still follow Peerspace’s policy.",
   },
   {
     id: "leave-it",
@@ -88,7 +88,7 @@ export const faq: FaqItem[] = [
     group: "House rules",
     question: "Where do I park, and how do I get in?",
     answer:
-      "Free on-site parking and street-level access. The exact address and entry notes go out with your confirmation — in-house bookings from us, rental bookings from Peerspace.",
+      "Free on-site parking and street-level access. The exact address and entry notes go out with your confirmation.",
   },
 ];
 

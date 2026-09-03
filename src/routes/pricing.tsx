@@ -32,7 +32,7 @@ function PricingPage() {
       <PageHero
         eyebrow="Pricing"
         title="Packages for the work. A rate for the room."
-        lede="In-house sessions are directed by the Lighthill team. Studio rental is booked on Peerspace and does not include a photographer."
+        lede="In-house sessions are directed by the Lighthill team. Studio rental is the room — bring your own photographer."
       />
 
       <section className="bg-paper text-ink">
@@ -117,9 +117,8 @@ function PricingPage() {
               The cyclorama, by the hour.
             </h2>
             <p className="mt-5 max-w-xl text-fg-muted">
-              Bring your own photographer. Rental reservations, payments, and
-              messages run through Peerspace — we do not take rental checkout
-              on this site.
+              Bring your own photographer. Instant-book on this site with a 50%
+              deposit, or keep using Peerspace.
             </p>
           </Reveal>
 
@@ -153,14 +152,17 @@ function PricingPage() {
             ))}
           </div>
 
-          <div className="mt-12">
+          <div className="mt-12 flex flex-wrap gap-3">
             <Button variant="primary" size="lg" asChild>
+              <Link to="/rent">Rent now</Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
               <a
                 href={site.peerspaceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Book on Peerspace
+                Book with Peerspace
                 <ArrowUpRight className="size-3.5" />
               </a>
             </Button>

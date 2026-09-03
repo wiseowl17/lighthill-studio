@@ -119,3 +119,93 @@ export function verifyStripeSignature(payload: string, header: string, secret: s
   );
 }
 
+export type StripeCheckoutSession = {
+  id: string;
+  url: string | null;
+  status: string | null;
+  payment_status: string | null;
+  amount_total: number | null;
+  payment_intent: string | { id?: string } | null;
+  metadata: { bookingId?: string } | null;
+  customer_email: string | null;
+};
+
+function formBody(fields: Record<string, string | number | undefined>): string {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(fields)) {
+    if (value === undefined || value === "") continue;
+    params.append(key, String(value));
+  }
+  return params.toString();
+}
+
+async function stripeRequest<T>(
+  secretKey: string,
+  method: string,
+  path: string,
+  fields?: Record<string, string | number | undefined>,
+): Promise<T> {
+  const response = await fetch(`https://api.stripe.com/v1/${path}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${secretKey}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: fields ? formBody(fields) : undefined,
+  });
+  const json = (await response.json()) as T & { error?: { message?: string } };
+  if (!response.ok) {
+    throw new Error(json.error?.message ?? "Stripe request failed.");
+  }
+  return json;
+}
+
+export async function createCheckoutSession(
+  secretKey: string,
+  input: {
+    amountCents: number;
+    name: string;
+    description: string;
+    email: string;
+    bookingId: string;
+    successUrl: string;
+    cancelUrl: string;
+    expiresAt: number;
+  },
+): Promise<StripeCheckoutSession> {
+  return stripeRequest<StripeCheckoutSession>(secretKey, "POST", "checkout/sessions", {
+    mode: "payment",
+    "line_items[0][quantity]": 1,
+    "line_items[0][price_data][currency]": "usd",
+    "line_items[0][price_data][unit_amount]": input.amountCents,
+    "line_items[0][price_data][product_data][name]": input.name,
+    "line_items[0][price_data][product_data][description]": input.description,
+    success_url: input.successUrl,
+    cancel_url: input.cancelUrl,
+    customer_email: input.email,
+    client_reference_id: input.bookingId,
+    "metadata[bookingId]": input.bookingId,
+    "payment_intent_data[metadata][bookingId]": input.bookingId,
+    "payment_intent_data[description]": input.description,
+    expires_at: input.expiresAt,
+  });
+}
+
+export async function retrieveCheckoutSession(
+  secretKey: string,
+  sessionId: string,
+): Promise<StripeCheckoutSession> {
+  return stripeRequest<StripeCheckoutSession>(
+    secretKey,
+    "GET",
+    `checkout/sessions/${encodeURIComponent(sessionId)}`,
+  );
+}
+
+export function paymentIntentId(value: StripeCheckoutSession["payment_intent"]): string | null {
+  if (typeof value === "string" && value.length > 0) return value;
+  if (value && typeof value === "object" && typeof value.id === "string") return value.id;
+  return null;
+}
+
+

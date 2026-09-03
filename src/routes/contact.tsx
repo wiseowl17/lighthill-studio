@@ -1,5 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { site } from "@data/site";
 import {
   ContactForm,
@@ -45,7 +44,7 @@ function ContactPage() {
         <PageHero
           eyebrow="Contact"
           title="Tell us what you are making."
-          lede="In-house sessions start with a note. Studio rentals can be booked on Peerspace — or ask us anything first."
+          lede="In-house sessions start with a note. Studio rentals book instantly on Rent now — or ask us anything first."
         />
       </div>
       <div className="mx-auto grid max-w-7xl gap-14 px-5 pt-16 md:grid-cols-12 md:px-8">
@@ -71,15 +70,12 @@ function ContactPage() {
               <InstagramLink className="text-ink hover:opacity-70" />
             </li>
           </ul>
-          <a
-            href={site.peerspaceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/rent"
             className="mt-8 inline-flex items-center gap-1 text-sm text-ink underline-offset-4 hover:underline"
           >
-            Prefer to rent? Open Peerspace
-            <ArrowUpRight className="size-3.5" />
-          </a>
+            Prefer to rent? Rent now
+          </Link>
         </aside>
       </div>
     </main>

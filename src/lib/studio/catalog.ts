@@ -56,6 +56,13 @@ export const rentalHourlyCents = 5500;
 export const rentalMinimumHours = 2;
 export const rentalDayDiscountHours = 8;
 export const rentalDayDiscount = 0.2;
+export const rentalDepositRate = 0.5;
+export const rentalLeadMinutes = 120;
+export const rentalHoldMinutes = 45;
+
+export function depositCents(totalCents: number): number {
+  return Math.round(totalCents * rentalDepositRate);
+}
 
 export const catalogAddons: CatalogAddon[] = [
   { id: "paper", name: "Paper roll backdrop", unitCents: 2500, unit: "color" },

@@ -210,7 +210,7 @@ export const addons: Addon[] = [
 
 export const pricingNotes = [
   "In-house sessions are quoted for one photographer and include the studio. Travel days are separate.",
-  "Studio rental is booked on Peerspace. The listed rate is for the cyclorama space; lighting and paper are add-ons.",
+  "Studio rental is $55 / hour with a two-hour minimum. Book on this site with a 50% deposit, or on Peerspace.",
   "A 50% retainer confirms in-house dates. The balance is due the day of the session.",
   "Additional retouching and rush delivery can be added after the gallery lands.",
 ] as const;
