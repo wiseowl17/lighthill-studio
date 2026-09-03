@@ -10,6 +10,11 @@ import {
   saveSettings,
 } from "@/lib/studio/fns";
 import { listGoogleCalendars, saveGoogleCalendar } from "@/lib/studio/gcal-fns";
+import {
+  disconnectStripe,
+  getStripeSettings,
+  saveStripeCredentials,
+} from "@/lib/studio/stripe-fns";
 import { signOut } from "@/lib/auth/client";
 import { STUDIO_TZ } from "@/lib/studio/owner";
 
@@ -17,6 +22,8 @@ const REDIRECT_URIS = [
   "https://lighthillstudio.com/api/google/callback",
   "https://www.lighthillstudio.com/api/google/callback",
 ];
+
+const STRIPE_WEBHOOK = "https://lighthillstudio.com/api/stripe/webhook";
 
 export const Route = createFileRoute("/desk/settings")({
   validateSearch: (search: Record<string, unknown>): { google?: string } => {
@@ -48,7 +55,6 @@ function SettingsPage() {
   const navigate = useNavigate({ from: "/desk/settings" });
   const [minRentalHours, setMinRentalHours] = useState(2);
   const [bufferMinutes, setBufferMinutes] = useState(0);
-  const [square, setSquare] = useState(false);
   const [gcal, setGcal] = useState(false);
   const [gcalEmail, setGcalEmail] = useState<string | null>(null);
   const [googleReady, setGoogleReady] = useState(false);
@@ -66,12 +72,22 @@ function SettingsPage() {
   const [calendarId, setCalendarId] = useState("");
   const [calendarSaved, setCalendarSaved] = useState<string | null>(null);
   const [calendarError, setCalendarError] = useState<string | null>(null);
+  const [stripeReady, setStripeReady] = useState(false);
+  const [stripeHint, setStripeHint] = useState<string | null>(null);
+  const [stripeTest, setStripeTest] = useState<boolean | null>(null);
+  const [stripeHasWebhook, setStripeHasWebhook] = useState(false);
+  const [stripeEnv, setStripeEnv] = useState(false);
+  const [pk, setPk] = useState("");
+  const [sk, setSk] = useState("");
+  const [whsec, setWhsec] = useState("");
+  const [stripeSaved, setStripeSaved] = useState(false);
+  const [stripeError, setStripeError] = useState<string | null>(null);
+  const [confirmStripeOff, setConfirmStripeOff] = useState(false);
 
   function hydrate() {
     void getSettings().then((row) => {
       setMinRentalHours(row.minRentalHours);
       setBufferMinutes(row.bufferMinutes);
-      setSquare(row.squareConnected);
       setGcal(row.googleCalendarConnected);
       setGcalEmail(row.googleAccountEmail);
       setGoogleReady(row.googleReady);
@@ -94,16 +110,25 @@ function SettingsPage() {
         setCalendars([]);
       }
     });
+    void getStripeSettings()
+      .then((stripe) => {
+        setStripeReady(stripe.ready);
+        setStripeHint(stripe.publishableHint);
+        setStripeTest(stripe.testMode);
+        setStripeHasWebhook(stripe.hasWebhook);
+        setStripeEnv(stripe.envConfigured);
+      })
+      .catch(() => undefined);
   }
 
   useEffect(() => {
     hydrate();
   }, []);
 
-  async function copyUri(uri: string) {
+  async function copyText(value: string) {
     try {
-      await navigator.clipboard.writeText(uri);
-      setCopied(uri);
+      await navigator.clipboard.writeText(value);
+      setCopied(value);
       window.setTimeout(() => setCopied(null), 1600);
     } catch {
       /* ignore */
@@ -174,8 +199,54 @@ function SettingsPage() {
     }
   }
 
+  async function onSaveStripe(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPending(true);
+    setStripeSaved(false);
+    setStripeError(null);
+    try {
+      await saveStripeCredentials({
+        data: {
+          publishableKey: pk,
+          secretKey: sk,
+          webhookSecret: whsec || undefined,
+        },
+      });
+      setSk("");
+      setWhsec("");
+      setStripeSaved(true);
+      setConfirmStripeOff(false);
+      hydrate();
+    } catch (err) {
+      setStripeError(err instanceof Error ? err.message : "Could not save Stripe keys.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function onDisconnectStripe() {
+    if (!confirmStripeOff) {
+      setConfirmStripeOff(true);
+      return;
+    }
+    setPending(true);
+    try {
+      await disconnectStripe();
+      setConfirmStripeOff(false);
+      setPk("");
+      hydrate();
+    } finally {
+      setPending(false);
+    }
+  }
+
   const selectedCalendar = calendars.find((item) => item.id === calendarId);
   const notice = googleBanner(google);
+  const stripeLabel = !stripeReady
+    ? "Needs keys"
+    : stripeTest
+      ? "Test mode"
+      : "Live";
 
   return (
     <div className="max-w-2xl">
@@ -315,7 +386,7 @@ function SettingsPage() {
                     <code className="grow border border-ink-border bg-paper-muted px-3 py-2 text-[0.7rem] text-ink break-all">
                       {uri}
                     </code>
-                    <Button type="button" variant="paperOutline" size="sm" onClick={() => void copyUri(uri)}>
+                    <Button type="button" variant="paperOutline" size="sm" onClick={() => void copyText(uri)}>
                       {copied === uri ? "Copied" : "Copy"}
                     </Button>
                   </li>
@@ -372,22 +443,105 @@ function SettingsPage() {
           </div>
         </div>
 
-        <ConnectRow
-          title="Square"
-          body={
-            square
-              ? "Connected. Invoices can take a card."
-              : "Not connected. Keep marking invoices sent or paid by hand. We’ll hook this up once the studio Square account is ready — no public checkout until then."
-          }
-          connected={square}
-        />
+        <div className="border border-ink-border p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="font-medium">Stripe</p>
+            <span className="text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase">
+              {stripeLabel}
+            </span>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+            {stripeReady
+              ? `Keys are saved${stripeTest ? " in test mode" : " in live mode"}${stripeHasWebhook ? ", webhook secret on file" : ""}. Rent now will take a 50% deposit through Stripe Checkout.`
+              : "Paste the studio Stripe keys here. Start in test mode (pk_test_ / sk_test_). Rent now uses these for the 50% deposit — Square is not used."}
+          </p>
+
+          {stripeEnv ? (
+            <p className="mt-4 text-xs text-ink-subtle">
+              Stripe keys are already on the server. You can replace them below if you need to rotate.
+            </p>
+          ) : null}
+
+          <ol className="mt-5 list-decimal space-y-2 pl-5 text-xs leading-relaxed text-ink-subtle">
+            <li>
+              Open{" "}
+              <a
+                href="https://dashboard.stripe.com/apikeys"
+                target="_blank"
+                rel="noreferrer"
+                className="text-ink underline underline-offset-4"
+              >
+                Stripe → Developers → API keys
+              </a>
+              . Turn Test mode on for the first pass.
+            </li>
+            <li>Copy the publishable key (pk_test_…) and secret key (sk_test_…).</li>
+            <li>
+              Optional: Developers → Webhooks → add this endpoint, event{" "}
+              <span className="text-ink">checkout.session.completed</span>, then paste the signing secret.
+            </li>
+          </ol>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <code className="grow border border-ink-border bg-paper-muted px-3 py-2 text-[0.7rem] text-ink break-all">
+              {STRIPE_WEBHOOK}
+            </code>
+            <Button type="button" variant="paperOutline" size="sm" onClick={() => void copyText(STRIPE_WEBHOOK)}>
+              {copied === STRIPE_WEBHOOK ? "Copied" : "Copy"}
+            </Button>
+          </div>
+
+          <form onSubmit={onSaveStripe} className="mt-5 space-y-4">
+            <Field label="Publishable key" htmlFor="stripePk">
+              <Input
+                id="stripePk"
+                autoComplete="off"
+                value={pk}
+                placeholder={stripeHint ?? "pk_test_…"}
+                onChange={(e) => setPk(e.target.value)}
+              />
+            </Field>
+            <Field label="Secret key" htmlFor="stripeSk">
+              <Input
+                id="stripeSk"
+                type="password"
+                autoComplete="off"
+                value={sk}
+                placeholder="sk_test_…"
+                onChange={(e) => setSk(e.target.value)}
+              />
+            </Field>
+            <Field label="Webhook signing secret (optional)" htmlFor="stripeWh">
+              <Input
+                id="stripeWh"
+                type="password"
+                autoComplete="off"
+                value={whsec}
+                placeholder="whsec_…"
+                onChange={(e) => setWhsec(e.target.value)}
+              />
+            </Field>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button type="submit" variant="invert" disabled={pending || !pk || !sk}>
+                {pending ? "Saving…" : "Save Stripe keys"}
+              </Button>
+              {stripeReady ? (
+                <Button type="button" variant="paperOutline" disabled={pending} onClick={() => void onDisconnectStripe()}>
+                  {confirmStripeOff ? "Confirm remove keys" : "Remove keys"}
+                </Button>
+              ) : null}
+              {stripeSaved ? <p className="text-sm text-ink-muted">Saved.</p> : null}
+              {stripeError ? <p className="text-sm text-ink-muted">{stripeError}</p> : null}
+            </div>
+          </form>
+        </div>
       </section>
 
       <section className="mt-14">
         <h2 className="font-display text-3xl">How booking works</h2>
         <ul className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted">
           <li>In-house shoots are booked here by you — never a public self-serve checkout.</li>
-          <li>Studio rentals still go through Peerspace until we turn on in-house rental checkout.</li>
+          <li>Studio rentals take a 50% Stripe deposit on Rent now. Peerspace stays as a second door until you retire it.</li>
           <li>
             Events that already exist on the connected Google calendar appear on
             the desk floor as busy time. They are not turned into invoices.
@@ -407,31 +561,6 @@ function SettingsPage() {
           Sign out
         </Button>
       </div>
-    </div>
-  );
-}
-
-function ConnectRow({
-  title,
-  body,
-  connected,
-}: {
-  title: string;
-  body: string;
-  connected: boolean;
-}) {
-  return (
-    <div className="border border-ink-border p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="font-medium">{title}</p>
-        <span className="text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase">
-          {connected ? "Connected" : "Waiting"}
-        </span>
-      </div>
-      <p className="mt-3 text-sm leading-relaxed text-ink-muted">{body}</p>
-      <Button type="button" variant="paperOutline" className="mt-4" disabled>
-        Connect later
-      </Button>
     </div>
   );
 }

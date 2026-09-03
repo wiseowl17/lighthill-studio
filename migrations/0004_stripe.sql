@@ -1,4 +1,4 @@
--- Stripe keys and rental checkout sessions.
+-- Stripe keys for rental deposits. Square is unused.
 alter table studio_settings
   add column if not exists stripe_publishable_key text,
   add column if not exists stripe_secret_key text,
