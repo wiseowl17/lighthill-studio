@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes } from "node:crypto";
 import { getSql } from "@/lib/db";
 
 function envTrim(key: string): string | undefined {
@@ -98,3 +98,24 @@ export async function clearStripeApp(userId: string): Promise<void> {
     where user_id = ${userId}
   `;
 }
+
+export function verifyStripeSignature(payload: string, header: string, secret: string): boolean {
+  const parts = Object.fromEntries(
+    header.split(",").map((piece) => {
+      const [k, v] = piece.split("=");
+      return [k.trim(), v ?? ""];
+    }),
+  );
+  const timestamp = parts.t;
+  const signature = parts.v1;
+  if (!timestamp || !signature) return false;
+  const age = Math.abs(Date.now() / 1000 - Number(timestamp));
+  if (age > 60 * 5) return false;
+  const expected = createHmac("sha256", secret).update(`${timestamp}.${payload}`).digest("hex");
+  if (expected.length !== signature.length) return false;
+  return (
+    createHmac("sha256", "cmp").update(expected).digest("hex") ===
+    createHmac("sha256", "cmp").update(signature).digest("hex")
+  );
+}
+

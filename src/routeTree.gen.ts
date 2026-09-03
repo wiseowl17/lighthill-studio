@@ -16,6 +16,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as RentRouteImport } from './routes/rent'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as DeskIndexRouteImport } from './routes/desk/index'
@@ -28,6 +29,7 @@ import { Route as DeskSettingsRouteImport } from './routes/desk/settings'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiGoogleCallbackRouteImport } from './routes/api/google/callback'
 import { Route as ApiGoogleConnectRouteImport } from './routes/api/google/connect'
+import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
 import { Route as DeskBookingsIndexRouteImport } from './routes/desk/bookings.index'
 import { Route as DeskBookingsIdRouteImport } from './routes/desk/bookings.$id'
 
@@ -64,6 +66,11 @@ const LoginRoute = LoginRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RentRoute = RentRouteImport.update({
+  id: '/rent',
+  path: '/rent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioRoute = StudioRouteImport.update({
@@ -126,6 +133,11 @@ const ApiGoogleConnectRoute = ApiGoogleConnectRouteImport.update({
   path: '/api/google/connect',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
+  id: '/api/stripe/webhook',
+  path: '/api/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DeskBookingsIndexRoute = DeskBookingsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -145,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
+  '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/bookings': typeof DeskBookingsRouteWithChildren
@@ -157,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
   '/api/google/connect': typeof ApiGoogleConnectRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings/': typeof DeskBookingsIndexRoute
 }
@@ -167,6 +181,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
+  '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/clients': typeof DeskClientsRoute
@@ -178,6 +193,7 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
   '/api/google/connect': typeof ApiGoogleConnectRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings': typeof DeskBookingsIndexRoute
 }
@@ -190,6 +206,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
+  '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/bookings': typeof DeskBookingsRouteWithChildren
@@ -202,6 +219,7 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
   '/api/google/connect': typeof ApiGoogleConnectRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings/': typeof DeskBookingsIndexRoute
 }
@@ -215,6 +233,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/pricing'
+    | '/rent'
     | '/studio'
     | '/team'
     | '/desk/bookings'
@@ -227,6 +246,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/google/callback'
     | '/api/google/connect'
+    | '/api/stripe/webhook'
     | '/desk/bookings/$id'
     | '/desk/bookings/'
   fileRoutesByTo: FileRoutesByTo
@@ -237,6 +257,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/pricing'
+    | '/rent'
     | '/studio'
     | '/team'
     | '/desk/clients'
@@ -248,6 +269,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/google/callback'
     | '/api/google/connect'
+    | '/api/stripe/webhook'
     | '/desk/bookings/$id'
     | '/desk/bookings'
   id:
@@ -259,6 +281,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/pricing'
+    | '/rent'
     | '/studio'
     | '/team'
     | '/desk/bookings'
@@ -271,6 +294,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/google/callback'
     | '/api/google/connect'
+    | '/api/stripe/webhook'
     | '/desk/bookings/$id'
     | '/desk/bookings/'
   fileRoutesById: FileRoutesById
@@ -283,11 +307,13 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
+  RentRoute: typeof RentRoute
   StudioRoute: typeof StudioRoute
   TeamRoute: typeof TeamRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiGoogleCallbackRoute: typeof ApiGoogleCallbackRoute
   ApiGoogleConnectRoute: typeof ApiGoogleConnectRoute
+  ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -339,6 +365,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rent': {
+      id: '/rent'
+      path: '/rent'
+      fullPath: '/rent'
+      preLoaderRoute: typeof RentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studio': {
@@ -425,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiGoogleConnectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/stripe/webhook': {
+      id: '/api/stripe/webhook'
+      path: '/api/stripe/webhook'
+      fullPath: '/api/stripe/webhook'
+      preLoaderRoute: typeof ApiStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/desk/bookings/': {
       id: '/desk/bookings/'
       path: '/'
@@ -486,11 +526,13 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
+  RentRoute: RentRoute,
   StudioRoute: StudioRoute,
   TeamRoute: TeamRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiGoogleCallbackRoute: ApiGoogleCallbackRoute,
   ApiGoogleConnectRoute: ApiGoogleConnectRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
