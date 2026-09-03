@@ -9,7 +9,7 @@ import { confirmRentalCheckout } from "@/lib/studio/rental-fns";
 
 type Search = { session_id?: string };
 
-export const Route = createFileRoute("/rent/confirmed")({
+export const Route = createFileRoute("/rent_/confirmed")({
   validateSearch: (search: Record<string, unknown>): Search => {
     if (typeof search.session_id === "string" && search.session_id.length > 0) {
       return { session_id: search.session_id };

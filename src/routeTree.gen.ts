@@ -26,7 +26,7 @@ import { Route as DeskInboxRouteImport } from './routes/desk/inbox'
 import { Route as DeskInvoicesRouteImport } from './routes/desk/invoices'
 import { Route as DeskNewRouteImport } from './routes/desk/new'
 import { Route as DeskSettingsRouteImport } from './routes/desk/settings'
-import { Route as RentConfirmedRouteImport } from './routes/rent.confirmed'
+import { Route as RentConfirmedRouteImport } from './routes/rent_.confirmed'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiGoogleCallbackRouteImport } from './routes/api/google/callback'
 import { Route as ApiGoogleConnectRouteImport } from './routes/api/google/connect'
@@ -120,9 +120,9 @@ const DeskSettingsRoute = DeskSettingsRouteImport.update({
   getParentRoute: () => DeskRoute,
 } as any)
 const RentConfirmedRoute = RentConfirmedRouteImport.update({
-  id: '/confirmed',
-  path: '/confirmed',
-  getParentRoute: () => RentRoute,
+  id: '/rent_/confirmed',
+  path: '/rent/confirmed',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -163,7 +163,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
-  '/rent': typeof RentRouteWithChildren
+  '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/bookings': typeof DeskBookingsRouteWithChildren
@@ -188,7 +188,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
-  '/rent': typeof RentRouteWithChildren
+  '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/clients': typeof DeskClientsRoute
@@ -214,7 +214,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
-  '/rent': typeof RentRouteWithChildren
+  '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
   '/desk/bookings': typeof DeskBookingsRouteWithChildren
@@ -223,7 +223,7 @@ export interface FileRoutesById {
   '/desk/invoices': typeof DeskInvoicesRoute
   '/desk/new': typeof DeskNewRoute
   '/desk/settings': typeof DeskSettingsRoute
-  '/rent/confirmed': typeof RentConfirmedRoute
+  '/rent_/confirmed': typeof RentConfirmedRoute
   '/desk/': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
@@ -301,7 +301,7 @@ export interface FileRouteTypes {
     | '/desk/invoices'
     | '/desk/new'
     | '/desk/settings'
-    | '/rent/confirmed'
+    | '/rent_/confirmed'
     | '/desk/'
     | '/api/auth/$'
     | '/api/google/callback'
@@ -319,9 +319,10 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
-  RentRoute: typeof RentRouteWithChildren
+  RentRoute: typeof RentRoute
   StudioRoute: typeof StudioRoute
   TeamRoute: typeof TeamRoute
+  RentConfirmedRoute: typeof RentConfirmedRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiGoogleCallbackRoute: typeof ApiGoogleCallbackRoute
   ApiGoogleConnectRoute: typeof ApiGoogleConnectRoute
@@ -449,12 +450,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeskSettingsRouteImport
       parentRoute: typeof DeskRoute
     }
-    '/rent/confirmed': {
-      id: '/rent/confirmed'
-      path: '/confirmed'
+    '/rent_/confirmed': {
+      id: '/rent_/confirmed'
+      path: '/rent/confirmed'
       fullPath: '/rent/confirmed'
       preLoaderRoute: typeof RentConfirmedRouteImport
-      parentRoute: typeof RentRoute
+      parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -537,16 +538,6 @@ const DeskRouteChildren: DeskRouteChildren = {
 
 const DeskRouteWithChildren = DeskRoute._addFileChildren(DeskRouteChildren)
 
-interface RentRouteChildren {
-  RentConfirmedRoute: typeof RentConfirmedRoute
-}
-
-const RentRouteChildren: RentRouteChildren = {
-  RentConfirmedRoute: RentConfirmedRoute,
-}
-
-const RentRouteWithChildren = RentRoute._addFileChildren(RentRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactRoute: ContactRoute,
@@ -555,9 +546,10 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
-  RentRoute: RentRouteWithChildren,
+  RentRoute: RentRoute,
   StudioRoute: StudioRoute,
   TeamRoute: TeamRoute,
+  RentConfirmedRoute: RentConfirmedRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiGoogleCallbackRoute: ApiGoogleCallbackRoute,
   ApiGoogleConnectRoute: ApiGoogleConnectRoute,
