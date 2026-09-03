@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { loadStripeApp, verifyStripeSignature } from "@/lib/studio/stripe.server";
-import { fulfillStripeSession } from "@/lib/studio/rental-fns";
+import { fulfillStripeSession } from "@/lib/studio/rental.server";
 
 export const Route = createFileRoute("/api/stripe/webhook")({
   server: {
