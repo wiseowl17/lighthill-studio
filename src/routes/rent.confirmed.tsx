@@ -16,15 +16,6 @@ export const Route = createFileRoute("/rent/confirmed")({
     }
     return {};
   },
-  loaderDeps: ({ search }) => ({ sessionId: search.session_id }),
-  loader: async ({ deps }) => {
-    if (!deps.sessionId) return { ok: false as const };
-    try {
-      return await confirmRentalCheckout({ data: { sessionId: deps.sessionId } });
-    } catch {
-      return { ok: false as const };
-    }
-  },
   component: ConfirmedPage,
   head: () => ({
     meta: [{ title: "Rental confirmed — Lighthill Studio" }],
@@ -44,25 +35,15 @@ type Confirmed = {
 
 function ConfirmedPage() {
   const { session_id: sessionId } = Route.useSearch();
-  const loaded = Route.useLoaderData();
-  const [state, setState] = useState<{ status: "loading" } | Confirmed | { status: "error" }>(() => {
-    if (loaded.ok) {
-      return {
-        status: "ok",
-        when: loaded.when,
-        name: loaded.name,
-        hours: loaded.hours,
-        guests: loaded.guests,
-        totalCents: loaded.totalCents,
-        depositCents: loaded.depositCents,
-        balanceCents: loaded.balanceCents,
-      };
-    }
-    return sessionId ? { status: "loading" } : { status: "error" };
-  });
+  const [state, setState] = useState<{ status: "loading" } | Confirmed | { status: "error" }>(
+    sessionId ? { status: "loading" } : { status: "error" },
+  );
 
   useEffect(() => {
-    if (state.status === "ok" || !sessionId) return;
+    if (!sessionId) {
+      setState({ status: "error" });
+      return;
+    }
     let live = true;
     async function confirm() {
       try {
@@ -94,7 +75,7 @@ function ConfirmedPage() {
     return () => {
       live = false;
     };
-  }, [sessionId, state.status]);
+  }, [sessionId]);
 
   return (
     <main id="main" className="scheme-light bg-paper pb-24 text-ink">

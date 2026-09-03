@@ -297,7 +297,7 @@ export async function startRentalCheckoutSession(data: CheckoutInput): Promise<{
       description: `${when} · 50% to confirm`,
       email: data.email.trim(),
       bookingId,
-      successUrl: `${origin}/api/stripe/return?session_id={CHECKOUT_SESSION_ID}`,
+      successUrl: `${origin}/api/stripe/complete?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${origin}/rent?cancelled=1`,
       expiresAt: Math.floor(Date.now() / 1000) + rentalHoldMinutes * 60,
       origin,
