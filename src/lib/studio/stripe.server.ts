@@ -189,6 +189,7 @@ export async function createCheckoutSession(
     success_url: input.successUrl,
     cancel_url: input.cancelUrl,
     customer_email: input.email,
+    "payment_intent_data[receipt_email]": input.email,
     client_reference_id: input.bookingId,
     "metadata[bookingId]": input.bookingId,
     "payment_intent_data[metadata][bookingId]": input.bookingId,
@@ -196,6 +197,8 @@ export async function createCheckoutSession(
     expires_at: input.expiresAt,
     "custom_text[submit][message]":
       "This is the 50% deposit. The remaining balance is due when you arrive at the studio.",
+    "custom_text[after_submit][message]":
+      "You're booked. Stripe will email a receipt for the deposit. The rest is due at the studio.",
   };
   const branded = {
     ...base,

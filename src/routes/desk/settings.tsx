@@ -480,6 +480,18 @@ function SettingsPage() {
               Optional: Developers → Webhooks → add this endpoint, event{" "}
               <span className="text-ink">checkout.session.completed</span>, then paste the signing secret.
             </li>
+            <li>
+              For the renter confirmation email, open{" "}
+              <a
+                href="https://dashboard.stripe.com/settings/emails"
+                target="_blank"
+                rel="noreferrer"
+                className="text-ink underline underline-offset-4"
+              >
+                Stripe → Settings → Customer emails
+              </a>{" "}
+              and turn on <span className="text-ink">Successful payments</span>.
+            </li>
           </ol>
 
           <div className="mt-3 flex flex-wrap items-center gap-2">

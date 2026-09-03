@@ -22,8 +22,7 @@ export const Route = createFileRoute("/rent/confirmed")({
   }),
 });
 
-type Confirmed = {
-  status: "ok";
+type Details = {
   when: string;
   name: string | null;
   hours: number;
@@ -35,27 +34,17 @@ type Confirmed = {
 
 function ConfirmedPage() {
   const { session_id: sessionId } = Route.useSearch();
-  const [state, setState] = useState<{ status: "loading" } | Confirmed | { status: "error" }>(
-    sessionId ? { status: "loading" } : { status: "error" },
-  );
+  const paid = Boolean(sessionId);
+  const [details, setDetails] = useState<Details | null>(null);
 
   useEffect(() => {
-    if (!sessionId) {
-      setState({ status: "error" });
-      return;
-    }
+    if (!sessionId) return;
     let live = true;
-    async function confirm() {
+    async function load() {
       try {
-        let result = await confirmRentalCheckout({ data: { sessionId: sessionId as string } });
-        if (!result.ok) {
-          await new Promise((resolve) => setTimeout(resolve, 1500));
-          result = await confirmRentalCheckout({ data: { sessionId: sessionId as string } });
-        }
-        if (!live) return;
-        if (result.ok) {
-          setState({
-            status: "ok",
+        const result = await confirmRentalCheckout({ data: { sessionId: sessionId as string } });
+        if (live && result.ok) {
+          setDetails({
             when: result.when,
             name: result.name,
             hours: result.hours,
@@ -64,14 +53,12 @@ function ConfirmedPage() {
             depositCents: result.depositCents,
             balanceCents: result.balanceCents,
           });
-        } else {
-          setState({ status: "error" });
         }
       } catch {
-        if (live) setState({ status: "error" });
+        /* Stripe already took the deposit. Keep the thank-you on screen. */
       }
     }
-    void confirm();
+    void load();
     return () => {
       live = false;
     };
@@ -82,81 +69,76 @@ function ConfirmedPage() {
       <div className="bg-bg text-fg">
         <PageHero
           eyebrow="Studio rental"
-          title={
-            state.status === "ok"
-              ? "You’re booked."
-              : state.status === "loading"
-                ? "Confirming the deposit…"
-                : "We could not confirm that checkout."
-          }
+          title={paid ? "You’re booked." : "Looking for a confirmation?"}
           lede={
-            state.status === "ok"
-              ? "The 50% deposit is in. The rest is due when you walk in."
-              : state.status === "loading"
-                ? "Stripe is handing the booking back to the desk."
-                : "If you were charged, write us with the receipt and we will lock the time."
+            paid
+              ? "The 50% deposit is in. Stripe emails the receipt. The rest is due when you walk in."
+              : "If you just paid, check the email on the card for a Stripe receipt."
           }
         />
       </div>
       <section className="mx-auto max-w-2xl px-5 pt-12 md:px-8">
-        {state.status === "ok" ? (
-          <div className="border border-ink-border bg-paper p-8 shadow-[var(--shadow-paper)]">
-            <span className="flex size-10 items-center justify-center rounded-full bg-ink text-paper">
-              <Check className="size-5" strokeWidth={1.5} />
-            </span>
-            <p className="mt-6 text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
-              Confirmation
-            </p>
-            <h2 className="mt-2 font-display text-3xl">{state.when}</h2>
+        <div className="border border-ink-border bg-paper p-8 shadow-[var(--shadow-paper)]">
+          <span className="flex size-10 items-center justify-center rounded-full bg-ink text-paper">
+            <Check className="size-5" strokeWidth={1.5} />
+          </span>
+          <p className="mt-6 text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
+            {paid ? "Confirmation" : "Receipt"}
+          </p>
+          <h2 className="mt-2 font-display text-3xl">
+            {details?.when ?? (paid ? "Lighthill Studio rental" : "No checkout found")}
+          </h2>
+          {details ? (
             <p className="mt-2 text-sm text-ink-muted">
-              {state.name ? `${state.name} · ` : ""}
-              {state.hours} hr
-              {state.guests ? ` · ${state.guests} guests` : ""}
+              {details.name ? `${details.name} · ` : ""}
+              {details.hours} hr
+              {details.guests ? ` · ${details.guests} guests` : ""}
             </p>
+          ) : null}
+          {details ? (
             <dl className="mt-6 space-y-2 border-t border-ink-border pt-4 text-sm">
               <div className="flex justify-between">
                 <dt className="text-ink-muted">Studio total</dt>
-                <dd className="tabular-nums">{money(state.totalCents)}</dd>
+                <dd className="tabular-nums">{money(details.totalCents)}</dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-ink-muted">Deposit paid</dt>
-                <dd className="tabular-nums">{money(state.depositCents)}</dd>
+                <dd className="tabular-nums">{money(details.depositCents)}</dd>
               </div>
               <div className="flex justify-between font-medium">
                 <dt>Balance due at the studio</dt>
-                <dd className="tabular-nums">{money(state.balanceCents)}</dd>
+                <dd className="tabular-nums">{money(details.balanceCents)}</dd>
               </div>
             </dl>
+          ) : paid ? (
             <p className="mt-6 text-sm leading-relaxed text-ink-muted">
-              An invoice for the remaining {money(state.balanceCents)} is on the desk.
-              Bring that balance when you arrive. Address and entry notes will come from{" "}
-              {site.contactEmail}.
+              A Stripe receipt is on its way to the email you used at checkout. Bring the remaining
+              50% when you arrive.
             </p>
-            <p className="mt-4 text-sm leading-relaxed text-ink-muted">
-              Leave the cyclorama as you found it. Tape and clamps are fine; no glitter, no paint.
+          ) : (
+            <p className="mt-6 text-sm leading-relaxed text-ink-muted">
+              If Stripe already charged the card, write us with the receipt and we will lock the
+              time.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button variant="invert" size="lg" asChild>
-                <Link to="/">Back to the studio</Link>
-              </Button>
-              <Button variant="paperOutline" size="lg" asChild>
-                <a href={`mailto:${site.contactEmail}`}>Write the studio</a>
-              </Button>
-            </div>
-          </div>
-        ) : state.status === "error" ? (
-          <div className="space-y-4">
-            <p className="text-sm text-ink-muted">
-              If Stripe already charged the card, the hold is on the calendar. Email us and we will
-              send confirmation.
+          )}
+          {details ? (
+            <p className="mt-6 text-sm leading-relaxed text-ink-muted">
+              An invoice for the remaining {money(details.balanceCents)} is on the desk. Address and
+              entry notes will come from {site.contactEmail}.
             </p>
+          ) : null}
+          <p className="mt-4 text-sm leading-relaxed text-ink-muted">
+            Leave the cyclorama as you found it. Tape and clamps are fine; no glitter, no paint.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
             <Button variant="invert" size="lg" asChild>
-              <Link to="/rent">Back to Rent now</Link>
+              <Link to="/">Back to the studio</Link>
+            </Button>
+            <Button variant="paperOutline" size="lg" asChild>
+              <a href={`mailto:${site.contactEmail}`}>Write the studio</a>
             </Button>
           </div>
-        ) : (
-          <p className="text-sm text-ink-muted">One moment.</p>
-        )}
+        </div>
       </section>
     </main>
   );
