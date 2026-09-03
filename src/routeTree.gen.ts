@@ -30,7 +30,6 @@ import { Route as RentConfirmedRouteImport } from './routes/rent.confirmed'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiGoogleCallbackRouteImport } from './routes/api/google/callback'
 import { Route as ApiGoogleConnectRouteImport } from './routes/api/google/connect'
-import { Route as ApiStripeCompleteRouteImport } from './routes/api/stripe/complete'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
 import { Route as DeskBookingsIndexRouteImport } from './routes/desk/bookings.index'
 import { Route as DeskBookingsIdRouteImport } from './routes/desk/bookings.$id'
@@ -140,11 +139,6 @@ const ApiGoogleConnectRoute = ApiGoogleConnectRouteImport.update({
   path: '/api/google/connect',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiStripeCompleteRoute = ApiStripeCompleteRouteImport.update({
-  id: '/api/stripe/complete',
-  path: '/api/stripe/complete',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
   id: '/api/stripe/webhook',
   path: '/api/stripe/webhook',
@@ -183,7 +177,6 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
   '/api/google/connect': typeof ApiGoogleConnectRoute
-  '/api/stripe/complete': typeof ApiStripeCompleteRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings/': typeof DeskBookingsIndexRoute
@@ -208,7 +201,6 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
   '/api/google/connect': typeof ApiGoogleConnectRoute
-  '/api/stripe/complete': typeof ApiStripeCompleteRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings': typeof DeskBookingsIndexRoute
@@ -236,7 +228,6 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/google/callback': typeof ApiGoogleCallbackRoute
   '/api/google/connect': typeof ApiGoogleConnectRoute
-  '/api/stripe/complete': typeof ApiStripeCompleteRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/desk/bookings/$id': typeof DeskBookingsIdRoute
   '/desk/bookings/': typeof DeskBookingsIndexRoute
@@ -265,7 +256,6 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/google/callback'
     | '/api/google/connect'
-    | '/api/stripe/complete'
     | '/api/stripe/webhook'
     | '/desk/bookings/$id'
     | '/desk/bookings/'
@@ -290,7 +280,6 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/google/callback'
     | '/api/google/connect'
-    | '/api/stripe/complete'
     | '/api/stripe/webhook'
     | '/desk/bookings/$id'
     | '/desk/bookings'
@@ -317,7 +306,6 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/google/callback'
     | '/api/google/connect'
-    | '/api/stripe/complete'
     | '/api/stripe/webhook'
     | '/desk/bookings/$id'
     | '/desk/bookings/'
@@ -337,7 +325,6 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiGoogleCallbackRoute: typeof ApiGoogleCallbackRoute
   ApiGoogleConnectRoute: typeof ApiGoogleConnectRoute
-  ApiStripeCompleteRoute: typeof ApiStripeCompleteRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
 }
 
@@ -490,13 +477,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiGoogleConnectRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/stripe/complete': {
-      id: '/api/stripe/complete'
-      path: '/api/stripe/complete'
-      fullPath: '/api/stripe/complete'
-      preLoaderRoute: typeof ApiStripeCompleteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/stripe/webhook': {
       id: '/api/stripe/webhook'
       path: '/api/stripe/webhook'
@@ -581,7 +561,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiGoogleCallbackRoute: ApiGoogleCallbackRoute,
   ApiGoogleConnectRoute: ApiGoogleConnectRoute,
-  ApiStripeCompleteRoute: ApiStripeCompleteRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport

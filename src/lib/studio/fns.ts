@@ -178,8 +178,6 @@ export const listBookings = createServerFn({ method: "GET" })
   .validator((d: unknown) => rangeSchema.parse(d))
   .handler(async ({ context, data }) => {
     const { userId } = await requireOwner(context.userId);
-    const { recoverPaidHolds } = await import("./rental.server");
-    await recoverPaidHolds(userId);
     const sql = await getSql();
     const rows = await sql.query<Parameters<typeof mapBooking>[0]>(
       `select ${bookingSelect}
