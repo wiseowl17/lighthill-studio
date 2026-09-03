@@ -279,6 +279,7 @@ export async function startRentalCheckoutSession(data: CheckoutInput): Promise<{
       successUrl: `${origin}/rent/confirmed?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${origin}/rent?cancelled=1`,
       expiresAt: Math.floor(Date.now() / 1000) + rentalHoldMinutes * 60,
+      origin,
     });
     if (!session.url) throw new Error("Stripe did not return a checkout URL.");
     await sql`
@@ -297,7 +298,8 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
   const stripe = await loadStripeApp(userId);
   if (!stripe) return { ok: false };
   const session = await retrieveCheckoutSession(stripe.secretKey, sessionId);
-  if (session.payment_status !== "paid") return { ok: false };
+  const paid = session.payment_status === "paid" || session.status === "complete";
+  if (!paid) return { ok: false };
 
   const sql = await getSql();
   const bookingId = session.metadata?.bookingId;
@@ -318,7 +320,10 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
   `;
   const booking = rows[0];
   if (!booking) return { ok: false };
-  if (session.amount_total != null && session.amount_total !== booking.deposit_cents) {
+  if (
+    session.amount_total != null &&
+    Math.abs(session.amount_total - booking.deposit_cents) > 50
+  ) {
     return { ok: false };
   }
   if (booking.status === "confirmed" || booking.status === "completed") {
@@ -347,12 +352,18 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
       addons,
     });
     const remaining = Math.max(0, quote.totalCents - booking.deposit_cents);
+    const lines = [
+      ...quote.lines,
+      { label: "Deposit paid via Stripe", cents: -booking.deposit_cents },
+    ];
     await sql`
-      insert into invoices (id, user_id, booking_id, client_id, status, amount_cents, line_items, notes)
-      values (
+      insert into invoices (
+        id, user_id, booking_id, client_id, status, amount_cents, line_items, notes, sent_at
+      ) values (
         ${crypto.randomUUID()}, ${userId}, ${booking.id}, ${booking.client_id},
-        'draft', ${remaining}, ${JSON.stringify(quote.lines)}::jsonb,
-        ${"Balance after 50% Stripe deposit"}
+        'sent', ${remaining}, ${JSON.stringify(lines)}::jsonb,
+        ${"Balance due on arrival. Deposit collected through Stripe."},
+        now()
       )
     `;
   }
@@ -373,18 +384,35 @@ export async function getConfirmedRental(sessionId: string) {
     total_cents: number;
     deposit_cents: number;
     guest_count: number | null;
+    duration_minutes: number;
+    client_name: string | null;
+    client_email: string | null;
   }>`
-    select title, starts_at, ends_at, total_cents, deposit_cents, guest_count
-    from bookings where id = ${result.bookingId} and user_id = ${userId} limit 1
+    select b.title, b.starts_at, b.ends_at, b.total_cents, b.deposit_cents,
+      b.guest_count, b.duration_minutes, c.name as client_name, c.email as client_email
+    from bookings b
+    left join clients c on c.id = b.client_id
+    where b.id = ${result.bookingId} and b.user_id = ${userId}
+    limit 1
   `;
   const row = rows[0];
   if (!row) return { ok: false as const };
+  const invoice = await sql<{ id: string; amount_cents: number }>`
+    select id, amount_cents from invoices
+    where booking_id = ${result.bookingId}
+    order by created_at desc
+    limit 1
+  `;
   return {
     ok: true as const,
     when: formatRange(row.starts_at, row.ends_at),
     title: "Studio rental",
+    name: row.client_name,
+    email: row.client_email,
+    guests: row.guest_count,
+    hours: row.duration_minutes / 60,
     totalCents: row.total_cents,
     depositCents: row.deposit_cents,
-    guests: row.guest_count,
+    balanceCents: invoice[0]?.amount_cents ?? Math.max(0, row.total_cents - row.deposit_cents),
   };
 }

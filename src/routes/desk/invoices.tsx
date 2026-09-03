@@ -52,8 +52,8 @@ function InvoicesPage() {
       <p className="text-[0.7rem] tracking-[0.2em] text-ink-muted uppercase">Desk</p>
       <h1 className="mt-2 font-display text-4xl">Invoices</h1>
       <p className="mt-3 max-w-xl text-sm text-ink-muted">
-        Drafts live here. Mark them sent or paid by hand for now — rental
-        deposits will land through Stripe.
+        Drafts live here. Rental balances appear as sent invoices after a Stripe
+        deposit — mark them paid when the remainder is collected at the studio.
       </p>
 
       {rows.length === 0 ? (

@@ -144,12 +144,14 @@ async function stripeRequest<T>(
   method: string,
   path: string,
   fields?: Record<string, string | number | undefined>,
+  extraHeaders?: Record<string, string>,
 ): Promise<T> {
   const response = await fetch(`https://api.stripe.com/v1/${path}`, {
     method,
     headers: {
       Authorization: `Bearer ${secretKey}`,
       "Content-Type": "application/x-www-form-urlencoded",
+      ...extraHeaders,
     },
     body: fields ? formBody(fields) : undefined,
   });
@@ -171,15 +173,18 @@ export async function createCheckoutSession(
     successUrl: string;
     cancelUrl: string;
     expiresAt: number;
+    origin: string;
   },
 ): Promise<StripeCheckoutSession> {
-  return stripeRequest<StripeCheckoutSession>(secretKey, "POST", "checkout/sessions", {
+  const origin = input.origin.replace(/\/$/, "");
+  const base: Record<string, string | number | undefined> = {
     mode: "payment",
     "line_items[0][quantity]": 1,
     "line_items[0][price_data][currency]": "usd",
     "line_items[0][price_data][unit_amount]": input.amountCents,
     "line_items[0][price_data][product_data][name]": input.name,
     "line_items[0][price_data][product_data][description]": input.description,
+    "line_items[0][price_data][product_data][images][0]": `${origin}/images/cyclorama.webp`,
     success_url: input.successUrl,
     cancel_url: input.cancelUrl,
     customer_email: input.email,
@@ -188,7 +193,30 @@ export async function createCheckoutSession(
     "payment_intent_data[metadata][bookingId]": input.bookingId,
     "payment_intent_data[description]": input.description,
     expires_at: input.expiresAt,
-  });
+    "custom_text[submit][message]":
+      "This is the 50% deposit. The remaining balance is due when you arrive at the studio.",
+  };
+  const branded = {
+    ...base,
+    "branding_settings[display_name]": "Lighthill Studio",
+    "branding_settings[background_color]": "#f4f1ea",
+    "branding_settings[button_color]": "#141210",
+    "branding_settings[font_family]": "lora",
+    "branding_settings[border_style]": "rectangular",
+    "branding_settings[logo][type]": "url",
+    "branding_settings[logo][url]": `${origin}/brand/logo-black.png`,
+  };
+  try {
+    return await stripeRequest<StripeCheckoutSession>(
+      secretKey,
+      "POST",
+      "checkout/sessions",
+      branded,
+      { "Stripe-Version": "2025-09-30.clover" },
+    );
+  } catch {
+    return stripeRequest<StripeCheckoutSession>(secretKey, "POST", "checkout/sessions", base);
+  }
 }
 
 export async function retrieveCheckoutSession(
