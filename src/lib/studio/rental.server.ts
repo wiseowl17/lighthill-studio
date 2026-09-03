@@ -56,6 +56,26 @@ async function expireStaleHolds(userId: string): Promise<void> {
   `;
 }
 
+export async function recoverPaidHolds(userId: string): Promise<void> {
+  const sql = await getSql();
+  const rows = await sql<{ stripe_session_id: string }>`
+    select stripe_session_id from bookings
+    where user_id = ${userId}
+      and kind = 'rental'
+      and status in ('tentative', 'cancelled')
+      and payment_status = 'unpaid'
+      and stripe_session_id is not null
+  `;
+  for (const row of rows) {
+    if (!row.stripe_session_id) continue;
+    try {
+      await fulfillStripeSession(row.stripe_session_id);
+    } catch (err) {
+      console.error("[stripe] recover", row.stripe_session_id, err);
+    }
+  }
+}
+
 async function loadFloorRules(userId: string): Promise<{ minHours: number; buffer: number }> {
   const sql = await getSql();
   const rows = await sql<{ min_rental_hours: number; buffer_minutes: number }>`
@@ -159,6 +179,7 @@ function storedAddons(addons: AddonSelection[]) {
 
 export async function getRentalAvailability(durationMinutes: number) {
   const userId = await ownerUserId();
+  await recoverPaidHolds(userId);
   await expireStaleHolds(userId);
   const stripe = await loadStripeApp(userId);
   const rules = await loadFloorRules(userId);
@@ -276,7 +297,7 @@ export async function startRentalCheckoutSession(data: CheckoutInput): Promise<{
       description: `${when} · 50% to confirm`,
       email: data.email.trim(),
       bookingId,
-      successUrl: `${origin}/rent/confirmed?session_id={CHECKOUT_SESSION_ID}`,
+      successUrl: `${origin}/api/stripe/return?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${origin}/rent?cancelled=1`,
       expiresAt: Math.floor(Date.now() / 1000) + rentalHoldMinutes * 60,
       origin,
@@ -294,15 +315,33 @@ export async function startRentalCheckoutSession(data: CheckoutInput): Promise<{
 }
 
 export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boolean; bookingId?: string }> {
+  const cleanId = sessionId.trim();
+  if (!cleanId.startsWith("cs_")) {
+    console.error("[stripe] fulfill bad session id");
+    return { ok: false };
+  }
   const userId = await ownerUserId();
   const stripe = await loadStripeApp(userId);
-  if (!stripe) return { ok: false };
-  const session = await retrieveCheckoutSession(stripe.secretKey, sessionId);
+  if (!stripe) {
+    console.error("[stripe] fulfill missing keys");
+    return { ok: false };
+  }
+
+  let session: Awaited<ReturnType<typeof retrieveCheckoutSession>>;
+  try {
+    session = await retrieveCheckoutSession(stripe.secretKey, cleanId);
+  } catch (err) {
+    console.error("[stripe] retrieve", err);
+    return { ok: false };
+  }
   const paid = session.payment_status === "paid" || session.status === "complete";
-  if (!paid) return { ok: false };
+  if (!paid) {
+    console.error("[stripe] fulfill not paid", session.status, session.payment_status);
+    return { ok: false };
+  }
 
   const sql = await getSql();
-  const bookingId = session.metadata?.bookingId;
+  const bookingId = session.metadata?.bookingId || session.client_reference_id || "";
   const rows = await sql<{
     id: string;
     status: string;
@@ -315,15 +354,16 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
     select id, status, deposit_cents, total_cents, client_id, duration_minutes, addons
     from bookings
     where user_id = ${userId}
-      and (stripe_session_id = ${sessionId} or id = ${bookingId ?? ""})
+      and (
+        stripe_session_id = ${cleanId}
+        or stripe_session_id = ${session.id}
+        or id = ${bookingId}
+      )
     limit 1
   `;
   const booking = rows[0];
-  if (!booking) return { ok: false };
-  if (
-    session.amount_total != null &&
-    Math.abs(session.amount_total - booking.deposit_cents) > 50
-  ) {
+  if (!booking) {
+    console.error("[stripe] fulfill no booking", cleanId, bookingId);
     return { ok: false };
   }
   if (booking.status === "confirmed" || booking.status === "completed") {
@@ -335,7 +375,7 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
     update bookings set
       status = 'confirmed',
       payment_status = 'deposit',
-      stripe_session_id = ${sessionId},
+      stripe_session_id = ${session.id},
       stripe_payment_intent = ${intent},
       updated_at = now()
     where id = ${booking.id} and user_id = ${userId}
@@ -348,13 +388,14 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
     const addons = Array.isArray(booking.addons) ? (booking.addons as AddonSelection[]) : [];
     const quote = quoteBooking({
       kind: "rental",
-      durationMinutes: booking.duration_minutes,
+      durationMinutes: Number(booking.duration_minutes),
       addons,
     });
-    const remaining = Math.max(0, quote.totalCents - booking.deposit_cents);
+    const deposit = Number(booking.deposit_cents);
+    const remaining = Math.max(0, quote.totalCents - deposit);
     const lines = [
       ...quote.lines,
-      { label: "Deposit paid via Stripe", cents: -booking.deposit_cents },
+      { label: "Deposit paid via Stripe", cents: -deposit },
     ];
     await sql`
       insert into invoices (
@@ -368,7 +409,11 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
     `;
   }
 
-  await mirrorBooking(userId, booking.id);
+  try {
+    await mirrorBooking(userId, booking.id);
+  } catch (err) {
+    console.error("[stripe] mirror after pay", err);
+  }
   return { ok: true, bookingId: booking.id };
 }
 

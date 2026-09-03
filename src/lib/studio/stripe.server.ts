@@ -127,6 +127,7 @@ export type StripeCheckoutSession = {
   amount_total: number | null;
   payment_intent: string | { id?: string } | null;
   metadata: { bookingId?: string } | null;
+  client_reference_id: string | null;
   customer_email: string | null;
 };
 
@@ -146,15 +147,16 @@ async function stripeRequest<T>(
   fields?: Record<string, string | number | undefined>,
   extraHeaders?: Record<string, string>,
 ): Promise<T> {
-  const response = await fetch(`https://api.stripe.com/v1/${path}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${secretKey}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-      ...extraHeaders,
-    },
-    body: fields ? formBody(fields) : undefined,
-  });
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${secretKey}`,
+    ...extraHeaders,
+  };
+  const init: RequestInit = { method, headers };
+  if (method !== "GET" && fields) {
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    init.body = formBody(fields);
+  }
+  const response = await fetch(`https://api.stripe.com/v1/${path}`, init);
   const json = (await response.json()) as T & { error?: { message?: string } };
   if (!response.ok) {
     throw new Error(json.error?.message ?? "Stripe request failed.");
@@ -184,7 +186,6 @@ export async function createCheckoutSession(
     "line_items[0][price_data][unit_amount]": input.amountCents,
     "line_items[0][price_data][product_data][name]": input.name,
     "line_items[0][price_data][product_data][description]": input.description,
-    "line_items[0][price_data][product_data][images][0]": `${origin}/images/cyclorama.webp`,
     success_url: input.successUrl,
     cancel_url: input.cancelUrl,
     customer_email: input.email,
@@ -198,13 +199,12 @@ export async function createCheckoutSession(
   };
   const branded = {
     ...base,
-    "branding_settings[display_name]": "Lighthill Studio",
     "branding_settings[background_color]": "#f4f1ea",
     "branding_settings[button_color]": "#141210",
     "branding_settings[font_family]": "lora",
     "branding_settings[border_style]": "rectangular",
     "branding_settings[logo][type]": "url",
-    "branding_settings[logo][url]": `${origin}/brand/logo-black.png`,
+    "branding_settings[logo][url]": `${origin}/brand/checkout-logo.png`,
   };
   try {
     return await stripeRequest<StripeCheckoutSession>(
@@ -214,7 +214,8 @@ export async function createCheckoutSession(
       branded,
       { "Stripe-Version": "2025-09-30.clover" },
     );
-  } catch {
+  } catch (err) {
+    console.error("[stripe] branded checkout failed", err);
     return stripeRequest<StripeCheckoutSession>(secretKey, "POST", "checkout/sessions", base);
   }
 }
@@ -235,5 +236,3 @@ export function paymentIntentId(value: StripeCheckoutSession["payment_intent"]):
   if (value && typeof value === "object" && typeof value.id === "string") return value.id;
   return null;
 }
-
-

@@ -7,12 +7,23 @@ import { Button } from "@/components/ui/button";
 import { money } from "@/lib/studio/catalog";
 import { confirmRentalCheckout } from "@/lib/studio/rental-fns";
 
+type Search = { session_id?: string };
+
 export const Route = createFileRoute("/rent/confirmed")({
-  validateSearch: (search: Record<string, unknown>): { session_id?: string } => {
+  validateSearch: (search: Record<string, unknown>): Search => {
     if (typeof search.session_id === "string" && search.session_id.length > 0) {
       return { session_id: search.session_id };
     }
     return {};
+  },
+  loaderDeps: ({ search }) => ({ sessionId: search.session_id }),
+  loader: async ({ deps }) => {
+    if (!deps.sessionId) return { ok: false as const };
+    try {
+      return await confirmRentalCheckout({ data: { sessionId: deps.sessionId } });
+    } catch {
+      return { ok: false as const };
+    }
   },
   component: ConfirmedPage,
   head: () => ({
@@ -33,15 +44,25 @@ type Confirmed = {
 
 function ConfirmedPage() {
   const { session_id: sessionId } = Route.useSearch();
-  const [state, setState] = useState<{ status: "loading" } | Confirmed | { status: "error" }>({
-    status: "loading",
+  const loaded = Route.useLoaderData();
+  const [state, setState] = useState<{ status: "loading" } | Confirmed | { status: "error" }>(() => {
+    if (loaded.ok) {
+      return {
+        status: "ok",
+        when: loaded.when,
+        name: loaded.name,
+        hours: loaded.hours,
+        guests: loaded.guests,
+        totalCents: loaded.totalCents,
+        depositCents: loaded.depositCents,
+        balanceCents: loaded.balanceCents,
+      };
+    }
+    return sessionId ? { status: "loading" } : { status: "error" };
   });
 
   useEffect(() => {
-    if (!sessionId) {
-      setState({ status: "error" });
-      return;
-    }
+    if (state.status === "ok" || !sessionId) return;
     let live = true;
     async function confirm() {
       try {
@@ -73,7 +94,7 @@ function ConfirmedPage() {
     return () => {
       live = false;
     };
-  }, [sessionId]);
+  }, [sessionId, state.status]);
 
   return (
     <main id="main" className="scheme-light bg-paper pb-24 text-ink">

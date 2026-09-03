@@ -30,6 +30,6 @@ export const startRentalCheckout = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => startRentalCheckoutSession(data));
 
-export const confirmRentalCheckout = createServerFn({ method: "GET" })
+export const confirmRentalCheckout = createServerFn({ method: "POST" })
   .validator((d: unknown) => z.object({ sessionId: z.string().min(8) }).parse(d))
   .handler(async ({ data }) => getConfirmedRental(data.sessionId));
