@@ -195,6 +195,7 @@ export async function createCheckoutSession(
     "payment_intent_data[metadata][bookingId]": input.bookingId,
     "payment_intent_data[description]": input.description,
     expires_at: input.expiresAt,
+    allow_promotion_codes: "true",
     "custom_text[submit][message]":
       "This is the 50% deposit. The remaining balance is due when you arrive at the studio.",
     "custom_text[after_submit][message]":
@@ -331,6 +332,7 @@ export async function createPriceCheckoutSession(
     "metadata[kind]": "ticket",
     "payment_intent_data[metadata][kind]": "ticket",
     "payment_intent_data[description]": input.name,
+    allow_promotion_codes: "true",
     "custom_text[submit][message]": "Your ticket confirmation is the Stripe receipt.",
   };
   const branded = {
