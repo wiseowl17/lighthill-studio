@@ -137,7 +137,7 @@ const en = {
     inHouse: "Section A — In-house",
     inHouseTitle: "Photography with the studio team.",
     inquire: "Inquire",
-    writeUs: "Write us",
+    writeUs: "Contact us",
     rental: "Section B — Studio rental",
     rentalTitle: "The cyclorama, by the hour.",
     rentalLede:
