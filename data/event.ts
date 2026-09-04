@@ -51,16 +51,16 @@ export const colorfulTickets = [
     tone: "sage",
   },
   {
+    id: "tattoo",
+    match: /tattoo|flash/i,
+    priceLabel: "$180",
+    tone: "rose",
+  },
+  {
     id: "photo",
     match: /photo/i,
     priceLabel: "$80",
     tone: "sky",
-  },
-  {
-    id: "tattoo",
-    match: /tattoo|flash/i,
-    priceLabel: "$80–$100",
-    tone: "rose",
   },
 ] as const;
 

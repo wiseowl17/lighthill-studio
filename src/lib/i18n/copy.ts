@@ -738,7 +738,7 @@ const es: typeof en = {
     dayToCreate: "Un día para crear",
     limited: "Boletos limitados",
     tattooNote:
-      "El precio del tattoo puede variar entre $80 y $100 dependiendo del diseño, y si quieres uno o dos flash tattoos. Los diseños estarán disponibles el día del evento.",
+      "Los diseños de flash tattoo estarán disponibles el día del evento. El precio puede variar si eliges uno o dos tatuajes.",
     photoNote: "Seis fotos editadas. La mini sesión dura 10–15 minutos máximo.",
     packages: {
       full: {

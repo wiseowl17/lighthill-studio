@@ -273,7 +273,7 @@ function productIdOf(product: StripePrice["product"]): string {
 
 function looksLikeEventTicket(product: StripeProduct): boolean {
   const blob = `${product.name} ${product.description ?? ""} ${product.metadata?.event ?? ""} ${product.metadata?.kind ?? ""}`.toLowerCase();
-  return /colorful|ticket|boleto|experience|evento/.test(blob);
+  return /full experience|photo experience|flash tattoo|tattoo experience|colorful/.test(blob);
 }
 
 export async function listOneTimePrices(secretKey: string): Promise<StripeProductPrice[]> {

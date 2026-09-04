@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Photo } from "@/components/media/Photo";
 import { money } from "@/lib/studio/catalog";
 import { listEventTickets, startEventCheckout } from "@/lib/studio/ticket-fns";
-import { useI18n } from "@/lib/i18n/provider";
+import { dictionaries } from "@/lib/i18n/copy";
 import { cn } from "@/lib/utils";
 
 type Search = { cancelled?: boolean };
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/colorful")({
       {
         name: "description",
         content:
-          "Lighthill Studio presents The Colorful Experience in Atlanta. September 26, 2–6 PM. Mini photos, flash tattoos, drinks, and açaí.",
+          "Lighthill Studio presenta The Colorful Experience en Atlanta. 26 de septiembre, 2–6 PM. Mini fotos, flash tattoos, bebidas y açaí.",
       },
     ],
   }),
@@ -38,8 +38,9 @@ export const Route = createFileRoute("/colorful")({
 
 function matchStripe(tickets: StripeTicket[], id: ColorfulTicketId): StripeTicket | undefined {
   const used = new Set<string>();
+  const blob = (ticket: StripeTicket) => `${ticket.name} ${ticket.description ?? ""}`;
   const byName = (pattern: RegExp) =>
-    tickets.find((ticket) => pattern.test(ticket.name) && !used.has(ticket.priceId));
+    tickets.find((ticket) => pattern.test(blob(ticket)) && !used.has(ticket.priceId));
 
   const full = byName(/full/i);
   if (full) used.add(full.priceId);
@@ -48,18 +49,23 @@ function matchStripe(tickets: StripeTicket[], id: ColorfulTicketId): StripeTicke
   const photo = byName(/photo/i);
   if (photo) used.add(photo.priceId);
 
-  const mapped: Record<ColorfulTicketId, StripeTicket | undefined> = { full, photo, tattoo };
+  const mapped: Record<ColorfulTicketId, StripeTicket | undefined> = { full, tattoo, photo };
   if (mapped[id]) return mapped[id];
 
-  const leftover = [...tickets].sort((a, b) => b.amountCents - a.amountCents);
-  if (id === "full") return leftover[0];
-  if (id === "photo") return leftover[1] ?? leftover.find((t) => t.amountCents === 8000);
-  return leftover[2] ?? leftover.find((t) => t.amountCents >= 8000 && t.amountCents <= 10000);
+  const leftover = tickets
+    .filter((ticket) => !used.has(ticket.priceId))
+    .sort((a, b) => b.amountCents - a.amountCents);
+  const fallback: Record<ColorfulTicketId, StripeTicket | undefined> = {
+    full: leftover[0],
+    tattoo: leftover[1],
+    photo: leftover[2],
+  };
+  return fallback[id];
 }
 
 function ColorfulPage() {
   const { cancelled } = Route.useSearch();
-  const { copy } = useI18n();
+  const copy = dictionaries.es;
   const [stripeTickets, setStripeTickets] = useState<StripeTicket[]>([]);
   const [ready, setReady] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -109,13 +115,13 @@ function ColorfulPage() {
       });
       window.location.assign(result.url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not start checkout.");
+      setError(err instanceof Error ? err.message : "No se pudo abrir el checkout.");
       setPending(false);
     }
   }
 
   return (
-    <main id="main" className="colorful-event pb-24">
+    <main id="main" lang="es" className="colorful-event pb-24">
       <section className="pt-24 md:pt-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-10 md:grid-cols-12 md:px-8 md:py-16">
           <div className="md:col-span-5">
@@ -220,7 +226,9 @@ function ColorfulPage() {
                     )}
                   >
                     <p className="font-display text-2xl leading-tight">{text.name}</p>
-                    <p className="mt-2 font-display text-4xl tracking-tight">{pack.priceLabel}</p>
+                    <p className="mt-2 font-display text-4xl tracking-tight">
+                      {stripe ? money(stripe.amountCents) : pack.priceLabel}
+                    </p>
                     <ul className="mt-5 flex-1 space-y-2 text-sm leading-relaxed">
                       {text.includes.map((item) => (
                         <li key={item} className="flex gap-2">
@@ -229,11 +237,6 @@ function ColorfulPage() {
                         </li>
                       ))}
                     </ul>
-                    {stripe && stripe.amountCents && pack.id !== "tattoo" ? (
-                      <p className="mt-4 text-xs tracking-wide uppercase opacity-70">
-                        {money(stripe.amountCents)}
-                      </p>
-                    ) : null}
                   </button>
                 );
               })}

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Button } from "@/components/ui/button";
-import { useI18n } from "@/lib/i18n/provider";
+import { dictionaries } from "@/lib/i18n/copy";
 
 type Search = { session_id?: string };
 
@@ -15,14 +15,14 @@ export const Route = createFileRoute("/colorful_/confirmed")({
   },
   component: ConfirmedPage,
   head: () => ({
-    meta: [{ title: "Ticket confirmed — The Colorful Experience" }],
+    meta: [{ title: "Boleto confirmado — The Colorful Experience" }],
   }),
 });
 
 function ConfirmedPage() {
-  const { copy } = useI18n();
+  const copy = dictionaries.es;
   return (
-    <main id="main" className="scheme-light bg-paper pb-24 text-ink">
+    <main id="main" lang="es" className="scheme-light bg-paper pb-24 text-ink">
       <div className="bg-bg text-fg">
         <PageHero eyebrow={copy.event.eyebrow} title={copy.event.confirmedTitle} lede={copy.event.confirmedLede} />
       </div>
