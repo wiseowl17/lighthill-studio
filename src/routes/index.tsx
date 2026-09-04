@@ -94,7 +94,8 @@ function Home() {
               return (
                 <Reveal key={service.id} delay={i * 0.03} className="h-full">
                   <Link
-                    to="/pricing"
+                    to="/contact"
+                    search={{ type: "shoot" }}
                     className="group flex h-full flex-col overflow-hidden bg-bg-elevated"
                   >
                     <div className="aspect-portrait overflow-hidden">

@@ -32,7 +32,6 @@ export const nav = [
   { id: "event", to: "/colorful" },
   { id: "studio", to: "/studio" },
   { id: "gallery", to: "/gallery" },
-  { id: "pricing", to: "/pricing" },
   { id: "team", to: "/team" },
   { id: "faq", to: "/faq" },
   { id: "contact", to: "/contact" },
