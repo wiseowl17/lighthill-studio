@@ -56,7 +56,7 @@ const en = {
     readyLede:
       "Tell us about the session. We will come back with dates, a brief, and a clear next step — in-house or a rental.",
     startInquiry: "Start an inquiry",
-    eventBanner: "The Colorful Experience — September 26",
+    eventBanner: "The Colorful Experience — Sept 26 · 2–6 PM",
     eventCta: "Get tickets",
   },
   studio: {
@@ -329,15 +329,15 @@ const en = {
     paying: "Opening checkout…",
   },
   event: {
-    eyebrow: "September 26, 2026",
+    eyebrow: "Lighthill Studio presents",
     title: "The Colorful Experience",
-    lede: "A night of color at Lighthill Studio. Pick a ticket, pay on Stripe, and you’re in.",
+    lede: "An experience made to come, enjoy, make memories, and leave with something that stays with you.",
     whenLabel: "When",
-    when: "Saturday, September 26, 2026",
+    when: "Saturday, September 26 · 2:00–6:00 PM",
     whereLabel: "Where",
-    where: "Lighthill Studio, Lawrenceville, Georgia",
+    where: "Lighthill Studio · Atlanta, GA",
     tickets: "Tickets",
-    ticketsLede: "Choose a ticket. Stripe takes the payment. Your receipt is the confirmation.",
+    ticketsLede: "Limited tickets. Pay on Stripe. Your receipt is the confirmation.",
     qty: "Quantity",
     buy: "Buy ticket",
     buying: "Opening checkout…",
@@ -346,9 +346,42 @@ const en = {
     emptyHint: "If you just switched to live mode, paste the live keys in Desk → Settings.",
     cancelled: "Checkout was cancelled. Nothing was charged.",
     confirmedTitle: "You’re in.",
-    confirmedLede: "The Colorful Experience — September 26. Stripe emailed your receipt.",
+    confirmedLede: "The Colorful Experience — September 26, 2:00–6:00 PM. Stripe emailed your receipt.",
     confirmedBody: "Bring the receipt to the door. We’ll send arrival notes to the email on the ticket.",
     backHome: "Back to the studio",
+    creators: "Meet the creators",
+    dayToCreate: "A day to create",
+    limited: "Limited tickets available",
+    tattooNote:
+      "Tattoo price can run $80–$100 depending on the design, and whether you want one or two flash tattoos. Designs are shown the day of the event.",
+    photoNote: "Six edited photos. Mini session is 10–15 minutes max.",
+    packages: {
+      full: {
+        name: "The Full Experience",
+        includes: [
+          "Mini photo session",
+          "Two flash tattoos",
+          "Drink (matcha, cold brew, or refresher)",
+          "Açaí bowl",
+        ],
+      },
+      photo: {
+        name: "Photo Experience",
+        includes: [
+          "Mini photo session",
+          "Drink (matcha, cold brew, or refresher)",
+          "Açaí bowl",
+        ],
+      },
+      tattoo: {
+        name: "Flash Tattoo Experience",
+        includes: [
+          "One or two flash tattoos",
+          "Drink (matcha, cold brew, or refresher)",
+          "Açaí bowl",
+        ],
+      },
+    },
   },
 };
 
@@ -408,7 +441,7 @@ const es: typeof en = {
     readyLede:
       "Cuéntanos la sesión. Respondemos con fechas, un brief y el siguiente paso — de casa o una renta.",
     startInquiry: "Empezar una consulta",
-    eventBanner: "The Colorful Experience — 26 de septiembre",
+    eventBanner: "The Colorful Experience — 26 sept · 2–6 PM",
     eventCta: "Boletos",
   },
   studio: {
@@ -681,15 +714,15 @@ const es: typeof en = {
     paying: "Abriendo checkout…",
   },
   event: {
-    eyebrow: "26 de septiembre, 2026",
+    eyebrow: "Lighthill Studio presenta",
     title: "The Colorful Experience",
-    lede: "Una noche de color en Lighthill Studio. Elige un boleto, paga en Stripe, y ya estás dentro.",
+    lede: "Una experiencia creada para venir, disfrutar, crear recuerdos y salir con algo que te acompañe para siempre.",
     whenLabel: "Cuándo",
-    when: "Sábado 26 de septiembre, 2026",
+    when: "Sábado 26 de septiembre · 2:00–6:00 PM",
     whereLabel: "Dónde",
-    where: "Lighthill Studio, Lawrenceville, Georgia",
+    where: "Lighthill Studio · Atlanta, GA",
     tickets: "Boletos",
-    ticketsLede: "Elige un boleto. Stripe cobra. El recibo es la confirmación.",
+    ticketsLede: "Boletos limitados. Pagas en Stripe. El recibo es la confirmación.",
     qty: "Cantidad",
     buy: "Comprar boleto",
     buying: "Abriendo checkout…",
@@ -698,9 +731,42 @@ const es: typeof en = {
     emptyHint: "Si acabas de pasar a modo live, pega las llaves live en Desk → Settings.",
     cancelled: "Se canceló el checkout. No se cobró nada.",
     confirmedTitle: "Ya estás dentro.",
-    confirmedLede: "The Colorful Experience — 26 de septiembre. Stripe te mandó el recibo.",
+    confirmedLede: "The Colorful Experience — 26 de septiembre, 2:00–6:00 PM. Stripe te mandó el recibo.",
     confirmedBody: "Lleva el recibo a la puerta. Mandaremos notas de llegada al correo del boleto.",
     backHome: "Volver al estudio",
+    creators: "Conoce a las creadoras",
+    dayToCreate: "Un día para crear",
+    limited: "Boletos limitados",
+    tattooNote:
+      "El precio del tattoo puede variar entre $80 y $100 dependiendo del diseño, y si quieres uno o dos flash tattoos. Los diseños estarán disponibles el día del evento.",
+    photoNote: "Seis fotos editadas. La mini sesión dura 10–15 minutos máximo.",
+    packages: {
+      full: {
+        name: "The Full Experience",
+        includes: [
+          "Mini sesión de fotos",
+          "Dos flash tattoos",
+          "Bebida (matcha, cold brew o refresher)",
+          "Açaí",
+        ],
+      },
+      photo: {
+        name: "Photo Experience",
+        includes: [
+          "Mini sesión de fotos",
+          "Bebida (matcha, cold brew o refresher)",
+          "Açaí",
+        ],
+      },
+      tattoo: {
+        name: "Flash Tattoo Experience",
+        includes: [
+          "Uno o dos flash tattoos",
+          "Bebida (matcha, cold brew o refresher)",
+          "Açaí",
+        ],
+      },
+    },
   },
 };
 

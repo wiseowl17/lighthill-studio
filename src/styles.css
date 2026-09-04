@@ -123,6 +123,37 @@
   animation: marquee 48s linear infinite;
 }
 
+.colorful-event {
+  --ce-paper: #f6f1e8;
+  --ce-red: #8f1d1a;
+  --ce-blue: #2c4ad6;
+  --ce-sage: #c8d6a4;
+  --ce-sky: #9fd3df;
+  --ce-rose: #f0b6bb;
+  --ce-ink: #1c1714;
+  background: var(--ce-paper);
+  color: var(--ce-ink);
+}
+
+.colorful-event .ce-kicker {
+  color: var(--ce-blue);
+}
+.colorful-event .ce-title {
+  color: var(--ce-red);
+}
+.colorful-event .ce-muted {
+  color: rgb(28 23 20 / 0.75);
+}
+.colorful-event .ticket-sage {
+  background: var(--ce-sage);
+}
+.colorful-event .ticket-sky {
+  background: var(--ce-sky);
+}
+.colorful-event .ticket-rose {
+  background: var(--ce-rose);
+}
+
 .grain {
   pointer-events: none;
   position: absolute;
