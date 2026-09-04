@@ -12,7 +12,6 @@ import {
 import { Logo } from "@/components/layout/Logo";
 import { CtaPair } from "@/components/layout/CtaPair";
 import { InstagramLink, PhoneLink } from "@/components/layout/ContactLinks";
-import { LangToggle } from "@/components/layout/LangToggle";
 import { useI18n } from "@/lib/i18n/provider";
 
 export function Header() {
@@ -78,7 +77,6 @@ export function Header() {
                 {copy.nav[item.id]}
               </Link>
             ))}
-            <LangToggle />
           </nav>
 
           <div className="hidden lg:block">
@@ -101,7 +99,6 @@ export function Header() {
               ))}
             </nav>
             <div className="mt-auto flex flex-col gap-5">
-              <LangToggle />
               <CtaPair stacked />
               <div className="flex flex-col gap-3 text-sm text-fg-muted">
                 <PhoneLink />

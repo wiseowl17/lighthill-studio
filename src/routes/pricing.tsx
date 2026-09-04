@@ -66,9 +66,6 @@ function PricingPage() {
                 <h3 className="mt-3 font-display text-3xl">
                   {copy.packages[pkg.id as keyof typeof copy.packages] ?? pkg.name}
                 </h3>
-                <p className="mt-3 font-display text-4xl tracking-tight">
-                  {copy.pricing.inquire}
-                </p>
                 <p
                   className={cn(
                     "mt-4 text-sm leading-relaxed",
@@ -126,7 +123,9 @@ function PricingPage() {
                 <p className="text-[0.68rem] tracking-[0.16em] text-fg-subtle uppercase">
                   {rate.name}
                 </p>
-                <p className="mt-3 font-display text-3xl">{rate.price}</p>
+                {rate.id !== "hourly" ? (
+                  <p className="mt-3 font-display text-3xl">{rate.price}</p>
+                ) : null}
                 <p className="mt-3 text-sm text-fg-muted">{rate.note}</p>
               </div>
             ))}
@@ -140,11 +139,8 @@ function PricingPage() {
                 className="grid gap-2 py-6 md:grid-cols-12 md:items-baseline"
               >
                 <p className="font-medium md:col-span-4">{addon.name}</p>
-                <p className="text-sm text-fg-muted md:col-span-5">
+                <p className="text-sm text-fg-muted md:col-span-8">
                   {addon.description}
-                </p>
-                <p className="font-display text-xl tabular-nums md:col-span-3 md:text-right">
-                  {addon.price}
                 </p>
               </div>
             ))}

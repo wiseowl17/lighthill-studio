@@ -145,7 +145,7 @@ const en = {
     addons: "Add-ons",
     notes: [
       "In-house sessions are quoted for one photographer and include the studio. Travel days are separate. Write us for availability and a number that fits the work.",
-      "Studio rental is $55 / hour with a two-hour minimum. Book on this site with a 50% deposit, or on Peerspace.",
+      "Studio rental has a two-hour minimum. Book on this site with a 50% deposit, or on Peerspace.",
       "A retainer confirms in-house dates. The balance is due the day of the session. We will send terms with the quote.",
       "Additional retouching and rush delivery can be added after the gallery lands.",
     ],
