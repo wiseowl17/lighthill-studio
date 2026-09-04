@@ -29,12 +29,13 @@ export const site = {
 } as const;
 
 export const nav = [
-  { label: "Studio", to: "/studio" },
-  { label: "Gallery", to: "/gallery" },
-  { label: "Pricing", to: "/pricing" },
-  { label: "Team", to: "/team" },
-  { label: "FAQ", to: "/faq" },
-  { label: "Contact", to: "/contact" },
+  { id: "event", to: "/colorful" },
+  { id: "studio", to: "/studio" },
+  { id: "gallery", to: "/gallery" },
+  { id: "pricing", to: "/pricing" },
+  { id: "team", to: "/team" },
+  { id: "faq", to: "/faq" },
+  { id: "contact", to: "/contact" },
 ] as const;
 
 export type NavItem = (typeof nav)[number];

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ColorfulRouteImport } from './routes/colorful'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DeskRouteImport } from './routes/desk'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -19,6 +20,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as RentRouteImport } from './routes/rent'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as TeamRouteImport } from './routes/team'
+import { Route as ColorfulConfirmedRouteImport } from './routes/colorful_.confirmed'
 import { Route as DeskIndexRouteImport } from './routes/desk/index'
 import { Route as DeskBookingsRouteImport } from './routes/desk/bookings'
 import { Route as DeskClientsRouteImport } from './routes/desk/clients'
@@ -37,6 +39,11 @@ import { Route as DeskBookingsIdRouteImport } from './routes/desk/bookings.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ColorfulRoute = ColorfulRouteImport.update({
+  id: '/colorful',
+  path: '/colorful',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -82,6 +89,11 @@ const StudioRoute = StudioRouteImport.update({
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ColorfulConfirmedRoute = ColorfulConfirmedRouteImport.update({
+  id: '/colorful_/confirmed',
+  path: '/colorful/confirmed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeskIndexRoute = DeskIndexRouteImport.update({
@@ -157,6 +169,7 @@ const DeskBookingsIdRoute = DeskBookingsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/colorful': typeof ColorfulRoute
   '/contact': typeof ContactRoute
   '/desk': typeof DeskRouteWithChildren
   '/faq': typeof FaqRoute
@@ -166,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
+  '/colorful/confirmed': typeof ColorfulConfirmedRoute
   '/desk/bookings': typeof DeskBookingsRouteWithChildren
   '/desk/clients': typeof DeskClientsRoute
   '/desk/inbox': typeof DeskInboxRoute
@@ -183,6 +197,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/colorful': typeof ColorfulRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
@@ -191,6 +206,7 @@ export interface FileRoutesByTo {
   '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
+  '/colorful/confirmed': typeof ColorfulConfirmedRoute
   '/desk/clients': typeof DeskClientsRoute
   '/desk/inbox': typeof DeskInboxRoute
   '/desk/invoices': typeof DeskInvoicesRoute
@@ -208,6 +224,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/colorful': typeof ColorfulRoute
   '/contact': typeof ContactRoute
   '/desk': typeof DeskRouteWithChildren
   '/faq': typeof FaqRoute
@@ -217,6 +234,7 @@ export interface FileRoutesById {
   '/rent': typeof RentRoute
   '/studio': typeof StudioRoute
   '/team': typeof TeamRoute
+  '/colorful_/confirmed': typeof ColorfulConfirmedRoute
   '/desk/bookings': typeof DeskBookingsRouteWithChildren
   '/desk/clients': typeof DeskClientsRoute
   '/desk/inbox': typeof DeskInboxRoute
@@ -236,6 +254,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/colorful'
     | '/contact'
     | '/desk'
     | '/faq'
@@ -245,6 +264,7 @@ export interface FileRouteTypes {
     | '/rent'
     | '/studio'
     | '/team'
+    | '/colorful/confirmed'
     | '/desk/bookings'
     | '/desk/clients'
     | '/desk/inbox'
@@ -262,6 +282,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/colorful'
     | '/contact'
     | '/faq'
     | '/gallery'
@@ -270,6 +291,7 @@ export interface FileRouteTypes {
     | '/rent'
     | '/studio'
     | '/team'
+    | '/colorful/confirmed'
     | '/desk/clients'
     | '/desk/inbox'
     | '/desk/invoices'
@@ -286,6 +308,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/colorful'
     | '/contact'
     | '/desk'
     | '/faq'
@@ -295,6 +318,7 @@ export interface FileRouteTypes {
     | '/rent'
     | '/studio'
     | '/team'
+    | '/colorful_/confirmed'
     | '/desk/bookings'
     | '/desk/clients'
     | '/desk/inbox'
@@ -313,6 +337,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ColorfulRoute: typeof ColorfulRoute
   ContactRoute: typeof ContactRoute
   DeskRoute: typeof DeskRouteWithChildren
   FaqRoute: typeof FaqRoute
@@ -322,6 +347,7 @@ export interface RootRouteChildren {
   RentRoute: typeof RentRoute
   StudioRoute: typeof StudioRoute
   TeamRoute: typeof TeamRoute
+  ColorfulConfirmedRoute: typeof ColorfulConfirmedRoute
   RentConfirmedRoute: typeof RentConfirmedRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiGoogleCallbackRoute: typeof ApiGoogleCallbackRoute
@@ -336,6 +362,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/colorful': {
+      id: '/colorful'
+      path: '/colorful'
+      fullPath: '/colorful'
+      preLoaderRoute: typeof ColorfulRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -399,6 +432,13 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/team'
       preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/colorful_/confirmed': {
+      id: '/colorful_/confirmed'
+      path: '/colorful/confirmed'
+      fullPath: '/colorful/confirmed'
+      preLoaderRoute: typeof ColorfulConfirmedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/desk/': {
@@ -540,6 +580,7 @@ const DeskRouteWithChildren = DeskRoute._addFileChildren(DeskRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ColorfulRoute: ColorfulRoute,
   ContactRoute: ContactRoute,
   DeskRoute: DeskRouteWithChildren,
   FaqRoute: FaqRoute,
@@ -549,6 +590,7 @@ const rootRouteChildren: RootRouteChildren = {
   RentRoute: RentRoute,
   StudioRoute: StudioRoute,
   TeamRoute: TeamRoute,
+  ColorfulConfirmedRoute: ColorfulConfirmedRoute,
   RentConfirmedRoute: RentConfirmedRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiGoogleCallbackRoute: ApiGoogleCallbackRoute,

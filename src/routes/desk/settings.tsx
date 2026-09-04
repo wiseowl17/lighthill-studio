@@ -473,9 +473,12 @@ function SettingsPage() {
               >
                 Stripe → Developers → API keys
               </a>
-              . Turn Test mode on for the first pass.
+              . Turn Test mode <span className="text-ink">off</span> to go live.
             </li>
-            <li>Copy the publishable key (pk_test_…) and secret key (sk_test_…).</li>
+            <li>
+              Paste the live publishable key (pk_live_…) and secret key (sk_live_…). The Colorful
+              Experience page pulls the three ticket products from this Stripe account.
+            </li>
             <li>
               Optional: Developers → Webhooks → add this endpoint, event{" "}
               <span className="text-ink">checkout.session.completed</span>, then paste the signing secret.

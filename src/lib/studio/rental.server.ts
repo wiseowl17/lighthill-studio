@@ -363,6 +363,7 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
   `;
   const booking = rows[0];
   if (!booking) {
+    if (session.metadata?.kind === "ticket" || !bookingId) return { ok: true };
     console.error("[stripe] fulfill no booking", cleanId, bookingId);
     return { ok: false };
   }

@@ -3,7 +3,6 @@ import { ArrowUpRight } from "lucide-react";
 import {
   addons,
   photographyPackages,
-  pricingNotes,
   rentalRates,
 } from "@data/pricing";
 import { site } from "@data/site";
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -27,23 +27,22 @@ export const Route = createFileRoute("/pricing")({
 });
 
 function PricingPage() {
+  const { copy } = useI18n();
   return (
     <main id="main">
       <PageHero
-        eyebrow="Pricing"
-        title="Packages for the work. A rate for the room."
-        lede="In-house sessions are directed by the Lighthill team. Studio rental is the room — bring your own photographer."
+        eyebrow={copy.pricing.eyebrow}
+        title={copy.pricing.title}
+        lede={copy.pricing.lede}
       />
 
       <section className="bg-paper text-ink">
         <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
           <Reveal>
             <p className="text-[0.7rem] tracking-[0.2em] text-ink-muted uppercase">
-              Section A — In-house
+              {copy.pricing.inHouse}
             </p>
-            <h2 className="mt-4 font-display text-headline">
-              Photography with the studio team.
-            </h2>
+            <h2 className="mt-4 font-display text-headline">{copy.pricing.inHouseTitle}</h2>
           </Reveal>
           <div className="mt-12 grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-3">
             {photographyPackages.map((pkg) => (
@@ -64,9 +63,11 @@ function PricingPage() {
                 >
                   {pkg.duration}
                 </p>
-                <h3 className="mt-3 font-display text-3xl">{pkg.name}</h3>
-                <p className="mt-3 font-display text-4xl tracking-tight tabular-nums">
-                  {pkg.price}
+                <h3 className="mt-3 font-display text-3xl">
+                  {copy.packages[pkg.id as keyof typeof copy.packages] ?? pkg.name}
+                </h3>
+                <p className="mt-3 font-display text-4xl tracking-tight">
+                  {copy.pricing.inquire}
                 </p>
                 <p
                   className={cn(
@@ -97,7 +98,7 @@ function PricingPage() {
                     asChild
                   >
                     <Link to="/contact" search={{ type: "shoot" }}>
-                      Inquire
+                      {copy.pricing.writeUs}
                     </Link>
                   </Button>
                 </div>
@@ -111,15 +112,12 @@ function PricingPage() {
         <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
           <Reveal>
             <p className="text-[0.7rem] tracking-[0.2em] text-fg-muted uppercase">
-              Section B — Studio rental
+              {copy.pricing.rental}
             </p>
             <h2 className="mt-4 max-w-2xl font-display text-headline">
-              The cyclorama, by the hour.
+              {copy.pricing.rentalTitle}
             </h2>
-            <p className="mt-5 max-w-xl text-fg-muted">
-              Bring your own photographer. Instant-book on this site with a 50%
-              deposit, or keep using Peerspace.
-            </p>
+            <p className="mt-5 max-w-xl text-fg-muted">{copy.pricing.rentalLede}</p>
           </Reveal>
 
           <div className="mt-12 grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
@@ -134,7 +132,7 @@ function PricingPage() {
             ))}
           </div>
 
-          <h3 className="mt-16 font-display text-title">Add-ons</h3>
+          <h3 className="mt-16 font-display text-title">{copy.pricing.addons}</h3>
           <div className="mt-6 divide-y divide-border border-y border-border">
             {addons.map((addon) => (
               <div
@@ -154,7 +152,7 @@ function PricingPage() {
 
           <div className="mt-12 flex flex-wrap gap-3">
             <Button variant="primary" size="lg" asChild>
-              <Link to="/rent">Rent now</Link>
+              <Link to="/rent">{copy.cta.rent}</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <a
@@ -162,7 +160,7 @@ function PricingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Book with Peerspace
+                {copy.cta.peerspace}
                 <ArrowUpRight className="size-3.5" />
               </a>
             </Button>
@@ -173,7 +171,7 @@ function PricingPage() {
       <section className="bg-paper text-ink">
         <div className="mx-auto max-w-7xl px-5 py-16 md:px-8">
           <ul className="grid gap-4 text-sm leading-relaxed text-ink-muted md:grid-cols-2">
-            {pricingNotes.map((note) => (
+            {copy.pricing.notes.map((note) => (
               <li key={note}>{note}</li>
             ))}
           </ul>

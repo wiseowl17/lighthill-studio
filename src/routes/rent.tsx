@@ -16,6 +16,7 @@ import {
 import { listRentalAvailability, startRentalCheckout } from "@/lib/studio/rental-fns";
 import { pad, todayInTz } from "@/lib/studio/time";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/provider";
 
 type DaySlots = { date: string; slots: string[] };
 
@@ -60,6 +61,7 @@ function monthLabel(iso: string): string {
 
 function RentPage() {
   const { cancelled } = Route.useSearch();
+  const { copy } = useI18n();
   const [hours, setHours] = useState(rentalMinimumHours);
   const [days, setDays] = useState<DaySlots[]>([]);
   const [ready, setReady] = useState(true);
@@ -166,34 +168,34 @@ function RentPage() {
     <main id="main" className="scheme-light bg-paper pb-24 text-ink">
       <div className="bg-bg text-fg">
         <PageHero
-          eyebrow="Studio rental"
-          title="The cyclorama, by the hour."
-          lede="Instant book. $55 an hour, two-hour minimum, 50% deposit due now. The floor stays in step with the studio calendar."
+          eyebrow={copy.rent.eyebrow}
+          title={copy.rent.title}
+          lede={copy.rent.lede}
         />
       </div>
 
       <div className="mx-auto max-w-7xl px-5 pt-12 md:px-8 md:pt-16">
         {cancelled ? (
           <p className="mb-8 border border-ink-border bg-paper-muted px-4 py-3 text-sm">
-            Checkout was cancelled. Nothing was charged — pick a time again when you are ready.
+            {copy.rent.cancelled}
           </p>
         ) : null}
 
         {!ready && !loading ? (
           <div className="max-w-xl space-y-4">
             <p className="text-sm leading-relaxed text-ink-muted">
-              Direct checkout is paused. Book the room on Peerspace, or write us.
+              {copy.rent.paused}
             </p>
             <div className="flex flex-wrap gap-3">
               <Button variant="invert" size="lg" asChild>
                 <a href={site.peerspaceUrl} target="_blank" rel="noopener noreferrer">
-                  Book with Peerspace
+                  {copy.cta.peerspace}
                   <ArrowUpRight className="size-3.5" />
                 </a>
               </Button>
               <Button variant="paperOutline" size="lg" asChild>
                 <Link to="/contact" search={{ type: "rental" }}>
-                  Write the studio
+                  {copy.rent.write}
                 </Link>
               </Button>
             </div>
@@ -202,7 +204,7 @@ function RentPage() {
           <form onSubmit={onSubmit} className="grid gap-12 lg:grid-cols-12">
             <div className="space-y-10 lg:col-span-7">
               <fieldset>
-                <Label>Hours</Label>
+                <Label>{copy.rent.hours}</Label>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {Array.from({ length: 13 - minHours }, (_, i) => i + minHours).map((value) => (
                     <button
@@ -221,17 +223,17 @@ function RentPage() {
                   ))}
                 </div>
                 <p className="mt-3 text-xs text-ink-subtle">
-                  {hours >= 8 ? "8+ hour day includes 20% off." : "Two-hour minimum. 20% off at 8 hours."}
+                  {hours >= 8 ? copy.rent.dayNote : copy.rent.minNote}
                 </p>
               </fieldset>
 
               <fieldset>
-                <Label>Date</Label>
+                <Label>{copy.rent.date}</Label>
                 {loading ? (
-                  <p className="mt-3 text-sm text-ink-muted">Checking the floor…</p>
+                  <p className="mt-3 text-sm text-ink-muted">{copy.rent.checking}</p>
                 ) : days.length === 0 ? (
                   <p className="mt-3 text-sm text-ink-muted">
-                    No openings of {hours} hours in the next 60 days. Try a shorter block.
+                    {copy.rent.noOpenings}
                   </p>
                 ) : (
                   <div className="mt-4 space-y-8">
@@ -253,7 +255,7 @@ function RentPage() {
 
               {selected ? (
                 <fieldset>
-                  <Label>Start time · {prettyDate(selected.date)}</Label>
+                  <Label>{copy.rent.startTime} · {prettyDate(selected.date)}</Label>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {selected.slots.map((slot) => (
                       <button
@@ -275,9 +277,9 @@ function RentPage() {
               ) : null}
 
               <fieldset className="space-y-4">
-                <Label>Add-ons</Label>
+                <Label>{copy.rent.addons}</Label>
                 <label className="flex items-center justify-between gap-4 border border-ink-border px-4 py-3 text-sm">
-                  <span>Studio flashes · $40</span>
+                  <span>{copy.rent.flashes}</span>
                   <input
                     type="checkbox"
                     checked={flashes}
@@ -286,7 +288,7 @@ function RentPage() {
                   />
                 </label>
                 <label className="flex items-center justify-between gap-4 border border-ink-border px-4 py-3 text-sm">
-                  <span>Softboxes & modifiers · $30</span>
+                  <span>{copy.rent.softboxes}</span>
                   <input
                     type="checkbox"
                     checked={softboxes}
@@ -295,7 +297,7 @@ function RentPage() {
                   />
                 </label>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Paper roll colors" htmlFor="paper">
+                  <Field label={copy.rent.paper} htmlFor="paper">
                     <Input
                       id="paper"
                       type="number"
@@ -305,7 +307,7 @@ function RentPage() {
                       onChange={(e) => setPaper(Math.max(0, Number(e.target.value)))}
                     />
                   </Field>
-                  <Field label="Assistant hours" htmlFor="assistant">
+                  <Field label={copy.rent.assistant} htmlFor="assistant">
                     <Input
                       id="assistant"
                       type="number"
@@ -319,7 +321,7 @@ function RentPage() {
               </fieldset>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Your name" htmlFor="renterName">
+                <Field label={copy.rent.yourName} htmlFor="renterName">
                   <Input
                     id="renterName"
                     required
@@ -328,7 +330,7 @@ function RentPage() {
                     autoComplete="name"
                   />
                 </Field>
-                <Field label="Guests" htmlFor="guests">
+                <Field label={copy.rent.guests} htmlFor="guests">
                   <Input
                     id="guests"
                     type="number"
@@ -338,7 +340,7 @@ function RentPage() {
                     onChange={(e) => setGuests(Math.max(1, Number(e.target.value)))}
                   />
                 </Field>
-                <Field label="Email" htmlFor="renterEmail">
+                <Field label={copy.rent.email} htmlFor="renterEmail">
                   <Input
                     id="renterEmail"
                     type="email"
@@ -348,7 +350,7 @@ function RentPage() {
                     autoComplete="email"
                   />
                 </Field>
-                <Field label="Phone" htmlFor="renterPhone">
+                <Field label={copy.rent.phone} htmlFor="renterPhone">
                   <Input
                     id="renterPhone"
                     type="tel"
@@ -358,7 +360,7 @@ function RentPage() {
                   />
                 </Field>
               </div>
-              <Field label="Notes for the studio (optional)" htmlFor="renterNotes">
+              <Field label={copy.rent.notes} htmlFor="renterNotes">
                 <Textarea
                   id="renterNotes"
                   value={notes}
@@ -408,7 +410,7 @@ function RentPage() {
                   className="mt-8 w-full"
                   disabled={pending || !date || !time || !name || !email}
                 >
-                  {pending ? "Sending you to Stripe…" : `Pay ${money(dueNow)} deposit`}
+                  {pending ? copy.rent.paying : `${copy.rent.pay} · ${money(dueNow)}`}
                 </Button>
                 {error ? <p className="mt-3 text-sm text-ink-muted">{error}</p> : null}
                 <p className="mt-4 text-xs leading-relaxed text-ink-subtle">

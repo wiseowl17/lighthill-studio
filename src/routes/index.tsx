@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { services } from "@data/services";
-import { studioIntro, studioSpecs } from "@data/studio";
+import { studioSpecs } from "@data/studio";
 import { site } from "@data/site";
 import { Button } from "@/components/ui/button";
 import { Hero } from "@/components/home/Hero";
@@ -9,6 +9,7 @@ import { Marquee } from "@/components/home/Marquee";
 import { SelectedWork } from "@/components/home/SelectedWork";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo } from "@/components/media/Photo";
+import { useI18n } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -32,44 +33,45 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { copy } = useI18n();
   return (
     <main id="main">
       <Hero />
+      <Link
+        to="/colorful"
+        className="flex items-center justify-between gap-4 border-b border-border bg-bg-elevated px-5 py-4 text-fg transition-colors hover:bg-bg md:px-8"
+      >
+        <span className="text-[0.72rem] font-medium tracking-[0.16em] uppercase">
+          {copy.home.eventBanner}
+        </span>
+        <span className="inline-flex items-center gap-1 text-[0.72rem] tracking-[0.14em] uppercase">
+          {copy.home.eventCta}
+          <ArrowRight className="size-3.5" />
+        </span>
+      </Link>
       <Marquee />
 
       <section className="bg-paper text-ink">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-12 md:gap-16 md:px-8 md:py-28">
           <Reveal className="md:col-span-5">
             <p className="text-xs font-medium tracking-[0.2em] text-ink-muted uppercase">
-              The studio
+              {copy.home.studioEyebrow}
             </p>
-            <h2 className="mt-4 font-display text-headline">
-              An infinity wall. Controlled light. A floor that stays out of the way.
-            </h2>
+            <h2 className="mt-4 font-display text-headline">{copy.home.studioTitle}</h2>
           </Reveal>
           <Reveal delay={0.08} className="md:col-span-6 md:col-start-7">
-            <p className="text-lead leading-relaxed text-ink-muted">
-              Lighthill is a 1,200 square-foot photography studio in
-              Lawrenceville — just outside Atlanta. We built it first for our
-              own sessions: maternity, newborns, brands, headshots, families,
-              seasonals, celebrations, and podcasts. The cyclorama and the
-              strobes are the reason the work looks the way it does.
-            </p>
-            <p className="mt-5 leading-relaxed text-ink-muted">
-              When we are not on set, the room is available to other
-              photographers, videographers, and small productions. Book the
-              in-house team, or rent the space.
-            </p>
+            <p className="text-lead leading-relaxed text-ink-muted">{copy.home.studioP1}</p>
+            <p className="mt-5 leading-relaxed text-ink-muted">{copy.home.studioP2}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button variant="invert" size="lg" asChild>
                 <Link to="/studio">
-                  See the space
+                  {copy.home.seeSpace}
                   <ArrowRight className="size-3.5" />
                 </Link>
               </Button>
               <Button variant="paperOutline" size="lg" asChild>
                 <Link to="/contact" search={{ type: "shoot" }}>
-                  Book the team
+                  {copy.home.bookTeam}
                 </Link>
               </Button>
             </div>
@@ -81,49 +83,47 @@ function Home() {
         <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
           <Reveal className="max-w-2xl">
             <p className="text-xs font-medium tracking-[0.2em] text-fg-muted uppercase">
-              In-house
+              {copy.home.inHouse}
             </p>
-            <h2 className="mt-4 font-display text-headline">
-              Directed sessions, in a room we know.
-            </h2>
-            <p className="mt-5 text-fg-muted">
-              Start with the team. If you already have a photographer, rent the
-              studio by the hour.
-            </p>
+            <h2 className="mt-4 font-display text-headline">{copy.home.inHouseTitle}</h2>
+            <p className="mt-5 text-fg-muted">{copy.home.inHouseLede}</p>
           </Reveal>
           <div className="mt-10 grid grid-cols-2 items-stretch gap-3 lg:mt-14 lg:grid-cols-4 lg:gap-4">
-            {services.map((service, i) => (
-              <Reveal key={service.id} delay={i * 0.03} className="h-full">
-                <Link
-                  to="/pricing"
-                  className="group flex h-full flex-col overflow-hidden bg-bg-elevated"
-                >
-                  <div className="aspect-portrait overflow-hidden">
-                    <Photo
-                      src={service.image}
-                      alt={service.title}
-                      className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
-                      style={
-                        service.objectPosition
-                          ? { objectPosition: service.objectPosition }
-                          : undefined
-                      }
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col p-3 sm:p-5">
-                    <p className="hidden text-xs tracking-[0.16em] text-fg-subtle uppercase sm:block">
-                      {service.kicker}
-                    </p>
-                    <h3 className="font-display text-lg leading-tight sm:mt-2 sm:text-2xl">
-                      {service.title}
-                    </h3>
-                    <p className="mt-2 hidden flex-1 text-sm leading-relaxed text-fg-muted sm:block">
-                      {service.description}
-                    </p>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
+            {services.map((service, i) => {
+              const text = copy.services[service.id as keyof typeof copy.services];
+              return (
+                <Reveal key={service.id} delay={i * 0.03} className="h-full">
+                  <Link
+                    to="/pricing"
+                    className="group flex h-full flex-col overflow-hidden bg-bg-elevated"
+                  >
+                    <div className="aspect-portrait overflow-hidden">
+                      <Photo
+                        src={service.image}
+                        alt={text.title}
+                        className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                        style={
+                          service.objectPosition
+                            ? { objectPosition: service.objectPosition }
+                            : undefined
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col p-3 sm:p-5">
+                      <p className="hidden text-xs tracking-[0.16em] text-fg-subtle uppercase sm:block">
+                        {text.kicker}
+                      </p>
+                      <h3 className="font-display text-lg leading-tight sm:mt-2 sm:text-2xl">
+                        {text.title}
+                      </h3>
+                      <p className="mt-2 hidden flex-1 text-sm leading-relaxed text-fg-muted sm:block">
+                        {text.description}
+                      </p>
+                    </div>
+                  </Link>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -140,18 +140,16 @@ function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 px-5 py-24 md:grid-cols-12 md:px-8 md:py-32">
           <Reveal className="md:col-span-7">
             <p className="text-xs font-medium tracking-[0.2em] text-fg-muted uppercase">
-              {studioIntro.eyebrow}
+              {copy.studio.eyebrow}
             </p>
-            <h2 className="mt-4 font-display text-headline">{studioIntro.title}</h2>
-            <p className="mt-6 max-w-xl text-lead text-fg-muted">
-              {studioIntro.body}
-            </p>
+            <h2 className="mt-4 font-display text-headline">{copy.studio.introTitle}</h2>
+            <p className="mt-6 max-w-xl text-lead text-fg-muted">{copy.studio.introBody}</p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Button variant="primary" size="lg" asChild>
-                <Link to="/studio">Tour the studio</Link>
+                <Link to="/studio">{copy.home.tour}</Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link to="/rent">Rent now</Link>
+                <Link to="/rent">{copy.cta.rent}</Link>
               </Button>
             </div>
           </Reveal>
@@ -163,7 +161,7 @@ function Home() {
                   className="flex items-baseline justify-between gap-4 py-4"
                 >
                   <dt className="text-xs tracking-[0.16em] text-fg-subtle uppercase">
-                    {spec.label}
+                    {copy.studio.specs[spec.label as keyof typeof copy.studio.specs] ?? spec.label}
                   </dt>
                   <dd className="text-sm text-fg">{spec.value}</dd>
                 </div>
@@ -178,18 +176,13 @@ function Home() {
       <section className="bg-paper text-ink">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-8 px-5 py-24 md:flex-row md:items-end md:justify-between md:px-8 md:py-32">
           <Reveal className="max-w-2xl">
-            <h2 className="font-display text-headline">
-              Ready when you are.
-            </h2>
-            <p className="mt-5 text-lead text-ink-muted">
-              Tell us about the session. We will come back with dates, a brief,
-              and a clear next step — in-house or a rental.
-            </p>
+            <h2 className="font-display text-headline">{copy.home.readyTitle}</h2>
+            <p className="mt-5 text-lead text-ink-muted">{copy.home.readyLede}</p>
           </Reveal>
           <Reveal delay={0.08}>
             <Button variant="invert" size="lg" asChild>
               <Link to="/contact" search={{ type: "shoot" }}>
-                Start an inquiry
+                {copy.home.startInquiry}
                 <ArrowRight className="size-3.5" />
               </Link>
             </Button>

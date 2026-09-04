@@ -12,12 +12,15 @@ import {
 import { Logo } from "@/components/layout/Logo";
 import { CtaPair } from "@/components/layout/CtaPair";
 import { InstagramLink, PhoneLink } from "@/components/layout/ContactLinks";
+import { LangToggle } from "@/components/layout/LangToggle";
+import { useI18n } from "@/lib/i18n/provider";
 
 export function Header() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { copy } = useI18n();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -60,21 +63,22 @@ export function Header() {
             </SheetTrigger>
           </div>
 
-          <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
             {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 className={cn(
                   "text-[0.72rem] font-medium tracking-[0.16em] uppercase transition-colors duration-150",
-                  pathname === item.to
+                  pathname === item.to || (item.to === "/colorful" && pathname.startsWith("/colorful"))
                     ? "text-fg"
                     : "text-fg-muted hover:text-fg",
                 )}
               >
-                {item.label}
+                {copy.nav[item.id]}
               </Link>
             ))}
+            <LangToggle />
           </nav>
 
           <div className="hidden lg:block">
@@ -91,12 +95,13 @@ export function Header() {
                     to={item.to}
                     className="py-3 font-display text-4xl text-fg"
                   >
-                    {item.label}
+                    {copy.nav[item.id]}
                   </Link>
                 </SheetClose>
               ))}
             </nav>
             <div className="mt-auto flex flex-col gap-5">
+              <LangToggle />
               <CtaPair stacked />
               <div className="flex flex-col gap-3 text-sm text-fg-muted">
                 <PhoneLink />

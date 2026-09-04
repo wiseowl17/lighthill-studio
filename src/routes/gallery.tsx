@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/PageHero";
 import { MasonryGallery } from "@/components/gallery/MasonryGallery";
+import { useI18n } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
@@ -17,13 +18,14 @@ export const Route = createFileRoute("/gallery")({
 });
 
 function GalleryPage() {
+  const { copy } = useI18n();
   return (
     <main id="main" className="scheme-light bg-paper pb-24 text-ink">
       <div className="bg-bg text-fg">
         <PageHero
-          eyebrow="Gallery"
-          title="The work, and the room it was made in."
-          lede="Sessions made here — maternity, newborns, families, brands, headshots, seasonals, celebrations. Tap any frame."
+          eyebrow={copy.gallery.eyebrow}
+          title={copy.gallery.title}
+          lede={copy.gallery.lede}
         />
       </div>
       <div className="mx-auto max-w-7xl px-5 pt-8 md:px-8 md:pt-10">

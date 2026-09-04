@@ -11,25 +11,25 @@ import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AppErrorComponent } from "@/lib/error-component";
+import { LanguageProvider, useI18n } from "@/lib/i18n/provider";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Lighthill Studio";
 
 function NotFound() {
+  const { copy } = useI18n();
   return (
     <main
       id="main"
       className="flex min-h-[70dvh] flex-col items-center justify-center bg-bg px-6 pt-32 text-center text-fg"
     >
-      <p className="text-xs tracking-[0.2em] text-fg-muted uppercase">404</p>
-      <h1 className="mt-4 font-display text-headline">
-        This page has left the frame.
-      </h1>
+      <p className="text-xs tracking-[0.2em] text-fg-muted uppercase">{copy.notFoundEyebrow}</p>
+      <h1 className="mt-4 font-display text-headline">{copy.notFoundTitle}</h1>
       <Link
         to="/"
         className="mt-8 text-sm tracking-[0.14em] uppercase underline underline-offset-4"
       >
-        Back to the studio
+        {copy.notFoundBack}
       </Link>
     </main>
   );
@@ -84,18 +84,27 @@ function RootComponent() {
       </head>
       <body className="bg-bg font-sans text-fg">
         <PreviewHostBridge />
-        <a
-          href="#main"
-          className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-3 focus-visible:left-3 focus-visible:z-50 focus-visible:bg-paper focus-visible:px-4 focus-visible:py-2 focus-visible:text-ink"
-        >
-          Skip to content
-        </a>
-        <AuthProvider>
-          <AppChrome />
-        </AuthProvider>
+        <LanguageProvider>
+          <SkipLink />
+          <AuthProvider>
+            <AppChrome />
+          </AuthProvider>
+        </LanguageProvider>
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function SkipLink() {
+  const { copy } = useI18n();
+  return (
+    <a
+      href="#main"
+      className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-3 focus-visible:left-3 focus-visible:z-50 focus-visible:bg-paper focus-visible:px-4 focus-visible:py-2 focus-visible:text-ink"
+    >
+      {copy.skip}
+    </a>
   );
 }
 

@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { site } from "@data/site";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/provider";
 
 type ButtonVariant =
   | "primary"
@@ -25,6 +26,7 @@ export function CtaPair({
   rentVariant = "outline",
   stacked = false,
 }: CtaPairProps) {
+  const { copy } = useI18n();
   return (
     <div className={cn("flex flex-col gap-3", className)}>
       <div
@@ -35,11 +37,13 @@ export function CtaPair({
       >
         <Button variant={shootVariant} size="lg" className="w-full" asChild>
           <Link to="/contact" search={{ type: "shoot" }}>
-            Book a Shoot
+            {copy.cta.shoot}
           </Link>
         </Button>
         <Button variant={rentVariant} size="lg" className="w-full" asChild>
-          <Link to="/rent">Rent now</Link>
+          <Link to="/rent">
+            {copy.cta.rent}
+          </Link>
         </Button>
       </div>
       <Button
@@ -49,7 +53,7 @@ export function CtaPair({
         asChild
       >
         <a href={site.peerspaceUrl} target="_blank" rel="noopener noreferrer">
-          Book with Peerspace
+          {copy.cta.peerspace}
           <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
         </a>
       </Button>

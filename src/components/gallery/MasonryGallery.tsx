@@ -9,11 +9,13 @@ import {
 } from "@data/gallery";
 import { cn } from "@/lib/utils";
 import { Photo } from "@/components/media/Photo";
+import { useI18n } from "@/lib/i18n/provider";
 
 export function MasonryGallery() {
   const [filter, setFilter] = useState<GalleryCategory>("All");
   const [active, setActive] = useState<GalleryImage | null>(null);
   const reduce = useReducedMotion();
+  const { copy } = useI18n();
 
   const items = useMemo(
     () =>
@@ -65,7 +67,7 @@ export function MasonryGallery() {
                 : "bg-transparent text-ink-muted hover:text-ink",
             )}
           >
-            {cat}
+            {cat === "All" ? copy.gallery.all : copy.gallery.cats[cat]}
           </button>
         ))}
       </div>

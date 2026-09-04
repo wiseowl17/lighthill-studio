@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Instagram } from "lucide-react";
-import { team, teamIntro } from "@data/team";
+import { team } from "@data/team";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo } from "@/components/media/Photo";
+import { useI18n } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/team")({
   component: TeamPage,
@@ -21,13 +22,14 @@ export const Route = createFileRoute("/team")({
 });
 
 function TeamPage() {
+  const { copy } = useI18n();
   return (
     <main id="main" className="scheme-light bg-paper pb-24 text-ink">
       <div className="bg-bg text-fg">
         <PageHero
-          eyebrow={teamIntro.eyebrow}
-          title={teamIntro.title}
-          lede={teamIntro.body}
+          eyebrow={copy.team.eyebrow}
+          title={copy.team.title}
+          lede={copy.team.body}
         />
       </div>
       <div className="mx-auto grid max-w-7xl items-stretch gap-10 px-5 pt-16 md:grid-cols-2 md:px-8">
@@ -54,11 +56,11 @@ function TeamPage() {
                 {member.instagramHandle}
               </a>
               <p className="mt-5 text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
-                {member.title}
+                {copy.team.coOwner}
               </p>
               <h2 className="mt-2 font-display text-4xl">{member.name}</h2>
               <p className="mt-4 max-w-lg flex-1 leading-relaxed text-ink-muted">
-                {member.bio}
+                {member.id === "luz" ? copy.team.luz : copy.team.hillary}
               </p>
             </article>
           </Reveal>
@@ -67,7 +69,7 @@ function TeamPage() {
       <div className="mx-auto max-w-7xl px-5 pt-16 md:px-8">
         <Button variant="invert" size="lg" asChild>
           <Link to="/contact" search={{ type: "shoot" }}>
-            Work with us
+            {copy.team.workWithUs}
           </Link>
         </Button>
       </div>

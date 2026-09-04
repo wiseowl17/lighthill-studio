@@ -126,7 +126,7 @@ export type StripeCheckoutSession = {
   payment_status: string | null;
   amount_total: number | null;
   payment_intent: string | { id?: string } | null;
-  metadata: { bookingId?: string } | null;
+  metadata: { bookingId?: string; kind?: string } | null;
   client_reference_id: string | null;
   customer_email: string | null;
 };
@@ -238,4 +238,120 @@ export function paymentIntentId(value: StripeCheckoutSession["payment_intent"]):
   if (typeof value === "string" && value.length > 0) return value;
   if (value && typeof value === "object" && typeof value.id === "string") return value.id;
   return null;
+}
+
+export type StripeProductPrice = {
+  productId: string;
+  priceId: string;
+  name: string;
+  description: string | null;
+  amountCents: number;
+  image: string | null;
+};
+
+type StripeProduct = {
+  id: string;
+  name: string;
+  description: string | null;
+  images?: string[];
+  metadata?: Record<string, string>;
+};
+
+type StripePrice = {
+  id: string;
+  unit_amount: number | null;
+  product: string | { id?: string };
+  type?: string;
+  nickname: string | null;
+};
+
+function productIdOf(product: StripePrice["product"]): string {
+  if (typeof product === "string") return product;
+  return product?.id ?? "";
+}
+
+function looksLikeEventTicket(product: StripeProduct): boolean {
+  const blob = `${product.name} ${product.description ?? ""} ${product.metadata?.event ?? ""} ${product.metadata?.kind ?? ""}`.toLowerCase();
+  return /colorful|ticket|boleto|experience|evento/.test(blob);
+}
+
+export async function listOneTimePrices(secretKey: string): Promise<StripeProductPrice[]> {
+  const productsRes = await stripeRequest<{ data: StripeProduct[] }>(
+    secretKey,
+    "GET",
+    "products?active=true&limit=100",
+  );
+  const pricesRes = await stripeRequest<{ data: StripePrice[] }>(
+    secretKey,
+    "GET",
+    "prices?active=true&limit=100",
+  );
+  const products = new Map(productsRes.data.map((product) => [product.id, product]));
+  const rows: StripeProductPrice[] = [];
+  for (const price of pricesRes.data) {
+    if (price.type && price.type !== "one_time") continue;
+    if (!price.unit_amount || price.unit_amount <= 0) continue;
+    const product = products.get(productIdOf(price.product));
+    if (!product) continue;
+    rows.push({
+      productId: product.id,
+      priceId: price.id,
+      name: price.nickname?.trim() || product.name,
+      description: product.description,
+      amountCents: price.unit_amount,
+      image: product.images?.[0] ?? null,
+    });
+  }
+  const eventRows = rows.filter((row) => {
+    const product = products.get(row.productId);
+    return product ? looksLikeEventTicket(product) : false;
+  });
+  const picked = eventRows.length > 0 ? eventRows : rows;
+  return picked.sort((a, b) => a.amountCents - b.amountCents);
+}
+
+export async function createPriceCheckoutSession(
+  secretKey: string,
+  input: {
+    priceId: string;
+    quantity: number;
+    name: string;
+    successUrl: string;
+    cancelUrl: string;
+    origin: string;
+  },
+): Promise<StripeCheckoutSession> {
+  const origin = input.origin.replace(/\/$/, "");
+  const base: Record<string, string | number | undefined> = {
+    mode: "payment",
+    "line_items[0][price]": input.priceId,
+    "line_items[0][quantity]": input.quantity,
+    success_url: input.successUrl,
+    cancel_url: input.cancelUrl,
+    "metadata[kind]": "ticket",
+    "payment_intent_data[metadata][kind]": "ticket",
+    "payment_intent_data[description]": input.name,
+    "custom_text[submit][message]": "Your ticket confirmation is the Stripe receipt.",
+  };
+  const branded = {
+    ...base,
+    "branding_settings[background_color]": "#f4f1ea",
+    "branding_settings[button_color]": "#141210",
+    "branding_settings[font_family]": "lora",
+    "branding_settings[border_style]": "rectangular",
+    "branding_settings[logo][type]": "url",
+    "branding_settings[logo][url]": `${origin}/brand/checkout-logo.png`,
+  };
+  try {
+    return await stripeRequest<StripeCheckoutSession>(
+      secretKey,
+      "POST",
+      "checkout/sessions",
+      branded,
+      { "Stripe-Version": "2025-09-30.clover" },
+    );
+  } catch (err) {
+    console.error("[stripe] branded ticket checkout failed", err);
+    return stripeRequest<StripeCheckoutSession>(secretKey, "POST", "checkout/sessions", base);
+  }
 }

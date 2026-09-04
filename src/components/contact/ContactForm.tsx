@@ -4,13 +4,9 @@ import { site } from "@data/site";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { submitInquiry } from "@/lib/studio/fns";
+import { useI18n } from "@/lib/i18n/provider";
 
 export type InquiryType = "shoot" | "rental";
-
-const TYPE_LABEL: Record<InquiryType, string> = {
-  shoot: "In-House Shoot",
-  rental: "Studio Rental Inquiry",
-};
 
 type ContactFormProps = {
   defaultType?: InquiryType;
@@ -21,6 +17,7 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
     "idle",
   );
   const [type, setType] = useState<InquiryType>(defaultType);
+  const { copy } = useI18n();
 
   useEffect(() => {
     setType(defaultType);
@@ -34,9 +31,9 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
       name: String(data.get("name") ?? ""),
       email: String(data.get("email") ?? ""),
       phone: String(data.get("phone") ?? ""),
-      projectType: TYPE_LABEL[type],
+      projectType: type === "shoot" ? copy.contact.shoot : copy.contact.rental,
       message: String(data.get("message") ?? ""),
-      _subject: `Lighthill Studio — ${TYPE_LABEL[type]}`,
+      _subject: `Lighthill Studio — ${type === "shoot" ? copy.contact.shoot : copy.contact.rental}`,
     };
 
     setStatus("sending");
@@ -76,18 +73,16 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
         <span className="flex size-10 items-center justify-center rounded-full bg-ink text-paper">
           <Check className="size-5" strokeWidth={1.5} />
         </span>
-        <h3 className="font-display text-3xl text-ink">Message received.</h3>
+        <h3 className="font-display text-3xl text-ink">{copy.contact.received}</h3>
         <p className="max-w-md text-sm leading-relaxed text-ink-muted">
-          Thank you. We read every note and will reply within one business day
-          with next steps — dates, a brief, or a Peerspace link if you are
-          renting the floor.
+          {copy.contact.thanks}
         </p>
         <Button
           type="button"
           variant="paperOutline"
           onClick={() => setStatus("idle")}
         >
-          Send another
+          {copy.contact.another}
         </Button>
       </div>
     );
@@ -96,12 +91,12 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
   return (
     <form onSubmit={onSubmit} className="grid gap-5">
       <div className="grid gap-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="name">{copy.contact.name}</Label>
         <Input id="name" name="name" required autoComplete="name" />
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{copy.contact.email}</Label>
           <Input
             id="email"
             name="email"
@@ -111,7 +106,7 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="phone">{copy.contact.phone}</Label>
           <Input
             id="phone"
             name="phone"
@@ -122,7 +117,7 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
         </div>
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="projectType">Project type</Label>
+        <Label htmlFor="projectType">{copy.contact.projectType}</Label>
         <div className="relative">
           <select
             id="projectType"
@@ -131,8 +126,8 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
             onChange={(e) => setType(e.target.value as InquiryType)}
             className="h-12 w-full appearance-none rounded-md border border-ink-border bg-paper px-3.5 pr-10 font-sans text-sm text-ink outline-none focus-visible:border-ink/40 focus-visible:ring-2 focus-visible:ring-ink/15"
           >
-            <option value="shoot">In-House Shoot</option>
-            <option value="rental">Studio Rental Inquiry</option>
+            <option value="shoot">{copy.contact.shoot}</option>
+            <option value="rental">{copy.contact.rental}</option>
           </select>
           <ChevronDown
             className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted"
@@ -141,18 +136,17 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
         </div>
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="message">Message</Label>
+        <Label htmlFor="message">{copy.contact.message}</Label>
         <Textarea
           id="message"
           name="message"
           required
-          placeholder="Tell us the date, the kind of session, and anything we should know."
+          placeholder={copy.contact.placeholder}
         />
       </div>
       {status === "error" ? (
         <p className="text-sm text-ink-muted">
-          Something went sideways. Email us directly at {site.contactEmail}, or
-          try again in a moment.
+          {copy.contact.error} {site.contactEmail}
         </p>
       ) : null}
       <Button
@@ -161,7 +155,7 @@ export function ContactForm({ defaultType = "shoot" }: ContactFormProps) {
         size="lg"
         disabled={status === "sending"}
       >
-        {status === "sending" ? "Sending…" : "Send inquiry"}
+        {status === "sending" ? copy.contact.sending : copy.contact.send}
       </Button>
     </form>
   );

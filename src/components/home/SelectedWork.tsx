@@ -4,26 +4,28 @@ import { galleryImages } from "@data/gallery";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo } from "@/components/media/Photo";
+import { useI18n } from "@/lib/i18n/provider";
 
 const picks = galleryImages.filter((img) => img.featured);
 
 export function SelectedWork() {
+  const { copy } = useI18n();
   return (
     <section className="bg-bg text-fg">
       <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal className="max-w-2xl">
             <p className="text-xs font-medium tracking-[0.2em] text-fg-muted uppercase">
-              Selected work
+              {copy.home.selectedEyebrow}
             </p>
             <h2 className="mt-4 font-display text-headline">
-              Quiet direction. Light that does the talking.
+              {copy.home.selectedTitle}
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
             <Button variant="outline" size="lg" asChild>
               <Link to="/gallery">
-                View the gallery
+                {copy.home.viewGallery}
                 <ArrowRight className="size-3.5" />
               </Link>
             </Button>

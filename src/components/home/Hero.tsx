@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { CtaPair } from "@/components/layout/CtaPair";
 import { Photo } from "@/components/media/Photo";
+import { useI18n } from "@/lib/i18n/provider";
 
 type ExtraVideoAttrs = {
   "webkit-playsinline"?: string;
@@ -37,6 +38,7 @@ export function Hero() {
   const liveRef = useRef(false);
   const [videoLive, setVideoLive] = useState(false);
   const [useMotionImage, setUseMotionImage] = useState(false);
+  const { copy } = useI18n();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -166,7 +168,7 @@ export function Hero() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="text-xs font-medium tracking-[0.22em] text-fg-muted uppercase"
         >
-          In-house photography
+          {copy.hero.eyebrow}
         </motion.p>
         <motion.h1
           initial={reduce ? false : { opacity: 0, y: 18 }}
@@ -174,7 +176,7 @@ export function Hero() {
           transition={{ duration: 0.65, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
           className="mt-4 max-w-5xl font-display text-display text-fg italic"
         >
-          A studio made of light.
+          {copy.hero.title}
         </motion.h1>
         <motion.p
           initial={reduce ? false : { opacity: 0, y: 14 }}
@@ -182,8 +184,7 @@ export function Hero() {
           transition={{ duration: 0.55, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
           className="mt-5 max-w-lg text-lead leading-relaxed text-fg-muted"
         >
-          Directed sessions on the cyclorama — maternity, newborns, families,
-          brands, headshots, celebrations. Or take the room yourself.
+          {copy.hero.lede}
         </motion.p>
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 12 }}

@@ -1,7 +1,10 @@
-import { marqueeItems } from "@data/services";
+import { services } from "@data/services";
+import { useI18n } from "@/lib/i18n/provider";
 
 function MarqueeGroup({ hidden = false }: { hidden?: boolean }) {
-  const items = [...marqueeItems, ...marqueeItems];
+  const { copy } = useI18n();
+  const labels = services.map((service) => copy.services[service.id as keyof typeof copy.services].title);
+  const items = [...labels, ...labels];
   return (
     <div
       className="flex shrink-0 items-center gap-x-12 pr-12"
