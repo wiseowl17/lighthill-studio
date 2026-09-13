@@ -65,3 +65,12 @@ export const colorfulTickets = [
 ] as const;
 
 export type ColorfulTicketId = (typeof colorfulTickets)[number]["id"];
+
+export const refundDisclaimer = {
+  title: "Refund Policy",
+  titleEs: "Política de Reembolso",
+  content:
+    "All ticket sales are final. No refunds or exchanges are permitted. If an event is cancelled by Lighthill Studio, ticket holders will receive a full refund or credit toward a future event.",
+  contentEs:
+    "Todas las ventas de entradas son finales. No se permiten reembolsos ni cambios. Si Lighthill Studio cancela un evento, los titulares de entradas recibirán un reembolso completo o un crédito para un evento futuro.",
+};
