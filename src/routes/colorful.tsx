@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { colorfulCreators, colorfulTickets, type ColorfulTicketId } from "@data/event";
+import { colorfulCreators, colorfulTickets, refundDisclaimer, type ColorfulTicketId } from "@data/event";
 import { Button } from "@/components/ui/button";
 import { Photo } from "@/components/media/Photo";
 import { money } from "@/lib/studio/catalog";
@@ -246,6 +246,16 @@ function ColorfulPage() {
               <p>{copy.event.tattooNote}</p>
               <p>{copy.event.photoNote}</p>
             </div>
+
+            <aside
+              className="mt-8 max-w-3xl border border-ink-border bg-white px-4 py-4 shadow-[0_10px_24px_rgb(28_23_20/0.06)]"
+              aria-label={refundDisclaimer.titleEs}
+            >
+              <h3 className="ce-kicker text-[0.68rem] font-medium tracking-[0.16em] uppercase">
+                {refundDisclaimer.titleEs}
+              </h3>
+              <p className="ce-muted mt-2 text-sm leading-relaxed">{refundDisclaimer.contentEs}</p>
+            </aside>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-end">
               <div>
