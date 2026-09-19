@@ -1,12 +1,5 @@
 export const colorfulCreators = [
   {
-    id: "luz",
-    src: "/images/colorful/photos-luz.jpg",
-    alt: "Mini photo sessions with Luz Reyes",
-    handle: "@luzreyherphotos",
-    url: "https://www.instagram.com/luzreyherphotos/",
-  },
-  {
     id: "hillary",
     src: "/images/colorful/photos-hillary.jpg",
     alt: "Mini photo sessions with Hillary Urgelles",
@@ -26,13 +19,6 @@ export const colorfulCreators = [
     alt: "Flash tattoos by Byas",
     handle: "@byas.tattoo",
     url: "https://www.instagram.com/byas.tattoo/",
-  },
-  {
-    id: "shai",
-    src: "/images/colorful/drinks-shai.jpg",
-    alt: "Handcrafted drinks by Maison Shai",
-    handle: "@maison.shai",
-    url: "https://www.instagram.com/maison.shai/",
   },
   {
     id: "junglou",

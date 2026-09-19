@@ -170,7 +170,7 @@ function ColorfulPage() {
             {copy.event.dayToCreate}
           </p>
           <h2 className="ce-title mt-3 font-display text-title italic">{copy.event.creators}</h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {colorfulCreators.map((creator) => (
               <a
                 key={creator.id}
