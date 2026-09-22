@@ -39,33 +39,21 @@ function Home() {
       <Hero />
       <Link
         to="/colorful"
-        className="relative isolate block overflow-hidden md:hidden"
+        className="group relative isolate block overflow-hidden border-b border-border md:grid md:grid-cols-2"
       >
         <Photo
           src="/images/colorful/poster.jpg"
           alt="The Colorful Experience — September 26, 2 to 6 PM at Lighthill Studio"
-          className="h-auto w-full object-cover"
+          className="h-auto w-full object-cover md:h-full md:min-h-[32rem] md:object-top"
         />
-        <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-linear-to-t from-bg via-bg/70 to-transparent px-5 pb-5 pt-16">
-          <span className="max-w-[14rem] text-[0.72rem] font-medium tracking-[0.16em] text-fg uppercase">
+        <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-linear-to-t from-bg via-bg/70 to-transparent px-5 pb-5 pt-16 md:static md:flex-col md:items-start md:justify-end md:gap-6 md:bg-bg-elevated md:bg-none md:px-10 md:py-12 lg:px-14">
+          <span className="max-w-[14rem] text-[0.72rem] font-medium tracking-[0.16em] text-fg uppercase md:max-w-sm md:font-display md:text-4xl md:tracking-[-0.03em] md:normal-case lg:text-5xl">
             {copy.home.eventBanner}
           </span>
-          <span className="inline-flex shrink-0 items-center gap-1 text-[0.72rem] tracking-[0.14em] text-fg uppercase">
+          <span className="inline-flex shrink-0 items-center gap-1 text-[0.72rem] tracking-[0.14em] text-fg uppercase md:gap-2 md:border md:border-border-strong md:px-7 md:py-4 md:transition-colors md:group-hover:bg-fg md:group-hover:text-bg">
             {copy.home.eventCta}
             <ArrowRight className="size-3.5" />
           </span>
-        </span>
-      </Link>
-      <Link
-        to="/colorful"
-        className="hidden items-center justify-between gap-4 border-b border-border bg-bg-elevated px-5 py-4 text-fg transition-colors hover:bg-bg md:flex md:px-8"
-      >
-        <span className="text-[0.72rem] font-medium tracking-[0.16em] uppercase">
-          {copy.home.eventBanner}
-        </span>
-        <span className="inline-flex items-center gap-1 text-[0.72rem] tracking-[0.14em] uppercase">
-          {copy.home.eventCta}
-          <ArrowRight className="size-3.5" />
         </span>
       </Link>
       <Marquee />
