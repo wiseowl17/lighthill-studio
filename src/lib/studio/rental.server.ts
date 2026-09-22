@@ -415,7 +415,74 @@ export async function fulfillStripeSession(sessionId: string): Promise<{ ok: boo
   } catch (err) {
     console.error("[stripe] mirror after pay", err);
   }
+  try {
+    await notifyStudioOfRental(userId, booking.id);
+  } catch (err) {
+    console.error("[stripe] rental email", err);
+  }
   return { ok: true, bookingId: booking.id };
+}
+
+function dollars(cents: number) {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+async function notifyStudioOfRental(userId: string, bookingId: string) {
+  const sql = await getSql();
+  const rows = await sql<{
+    starts_at: string;
+    ends_at: string;
+    total_cents: number;
+    deposit_cents: number;
+    guest_count: number | null;
+    duration_minutes: number;
+    notes: string | null;
+    client_name: string | null;
+    client_email: string | null;
+    client_phone: string | null;
+  }>`
+    select b.starts_at, b.ends_at, b.total_cents, b.deposit_cents,
+      b.guest_count, b.duration_minutes, b.notes,
+      c.name as client_name, c.email as client_email, c.phone as client_phone
+    from bookings b
+    left join clients c on c.id = b.client_id
+    where b.id = ${bookingId} and b.user_id = ${userId}
+    limit 1
+  `;
+  const row = rows[0];
+  if (!row) return;
+  const { site } = await import("@data/site");
+  const when = formatRange(row.starts_at, row.ends_at);
+  const balance = Math.max(0, Number(row.total_cents) - Number(row.deposit_cents));
+  const res = await fetch(
+    `https://formsubmit.co/ajax/${encodeURIComponent(site.contactEmail)}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        _subject: `Studio rental — ${row.client_name || "Guest"} · ${when}`,
+        _template: "table",
+        _captcha: "false",
+        _replyto: row.client_email || undefined,
+        name: row.client_name || "",
+        email: row.client_email || "",
+        phone: row.client_phone || "",
+        when,
+        hours: String(Number(row.duration_minutes) / 60),
+        guests: row.guest_count ?? "",
+        deposit_paid: dollars(Number(row.deposit_cents)),
+        total: dollars(Number(row.total_cents)),
+        balance_due_on_arrival: dollars(balance),
+        notes: row.notes || "",
+      }),
+    },
+  );
+  if (!res.ok) {
+    console.error("[stripe] rental email", res.status, await res.text());
+  }
 }
 
 export async function getConfirmedRental(sessionId: string) {
