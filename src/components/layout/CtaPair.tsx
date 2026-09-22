@@ -40,12 +40,12 @@ export function CtaPair({
           stacked ? "w-full grid-cols-1" : "w-full grid-cols-1 sm:inline-grid sm:w-max sm:grid-cols-2",
         )}
       >
-        <Button variant={shootVariant} size="lg" className="w-full" asChild>
+        <Button variant={shootVariant} size="xl" className="w-full" asChild>
           <Link to="/contact" search={{ type: "shoot" }}>
             {copy.cta.shoot}
           </Link>
         </Button>
-        <Button variant={rentVariant} size="lg" className="w-full" asChild>
+        <Button variant={rentVariant} size="xl" className="w-full" asChild>
           <Link to="/rent">{copy.cta.rent}</Link>
         </Button>
       </div>

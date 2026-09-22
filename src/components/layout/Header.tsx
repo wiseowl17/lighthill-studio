@@ -9,6 +9,7 @@ import {
   SheetClose,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/layout/Logo";
 import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
 import { InstagramLink, PhoneLink } from "@/components/layout/ContactLinks";
@@ -47,7 +48,7 @@ export function Header() {
       )}
     >
       <Sheet open={open} onOpenChange={setOpen}>
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 md:h-24 md:px-8 lg:h-20">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 md:h-24 md:px-8 lg:h-24">
           <div className="flex items-center gap-1 md:gap-2">
             <Logo variant="white" imgClassName="h-16 md:h-20 lg:h-12" />
             <SheetTrigger asChild>
@@ -65,7 +66,7 @@ export function Header() {
             </SheetTrigger>
           </div>
 
-          <nav className="hidden items-center gap-4 xl:gap-5 lg:flex" aria-label="Primary">
+          <nav className="hidden min-w-0 items-center gap-4 xl:gap-5 lg:flex" aria-label="Primary">
             {nav.map((item) => (
               <Link
                 key={item.to}
@@ -80,27 +81,19 @@ export function Header() {
                 {copy.nav[item.id]}
               </Link>
             ))}
-            <Link
-              to="/contact"
-              search={{ type: "shoot" }}
-              className={cn(
-                navLink,
-                pathname === "/contact" ? "text-fg" : "text-fg-muted hover:text-fg",
-              )}
-            >
-              {copy.cta.shoot}
-            </Link>
-            <Link
-              to="/rent"
-              className={cn(
-                navLink,
-                pathname.startsWith("/rent") ? "text-fg" : "text-fg-muted hover:text-fg",
-              )}
-            >
-              {copy.cta.rent}
-            </Link>
-            <PeerspaceMark iconClassName="h-7 w-7" />
           </nav>
+
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
+            <Button variant="primary" size="xl" asChild>
+              <Link to="/contact" search={{ type: "shoot" }}>
+                {copy.cta.shoot}
+              </Link>
+            </Button>
+            <Button variant="outline" size="xl" asChild>
+              <Link to="/rent">{copy.cta.rent}</Link>
+            </Button>
+            <PeerspaceMark iconClassName="h-11 w-11" />
+          </div>
         </div>
 
         <SheetContent hideClose>
@@ -113,24 +106,22 @@ export function Header() {
                   </Link>
                 </SheetClose>
               ))}
-              <SheetClose asChild>
-                <Link
-                  to="/contact"
-                  search={{ type: "shoot" }}
-                  className="py-3 font-display text-4xl text-fg"
-                >
-                  {copy.cta.shoot}
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link to="/rent" className="py-3 font-display text-4xl text-fg">
-                  {copy.cta.rent}
-                </Link>
-              </SheetClose>
             </nav>
-            <div className="mt-auto flex flex-col gap-5">
-              <PeerspaceMark iconClassName="h-11 w-11" />
-              <div className="flex flex-col gap-3 text-sm text-fg-muted">
+            <div className="mt-auto flex flex-col gap-3">
+              <SheetClose asChild>
+                <Button variant="primary" size="xl" className="w-full" asChild>
+                  <Link to="/contact" search={{ type: "shoot" }}>
+                    {copy.cta.shoot}
+                  </Link>
+                </Button>
+              </SheetClose>
+              <SheetClose asChild>
+                <Button variant="outline" size="xl" className="w-full" asChild>
+                  <Link to="/rent">{copy.cta.rent}</Link>
+                </Button>
+              </SheetClose>
+              <PeerspaceMark className="mt-2 self-start" iconClassName="h-12 w-12" />
+              <div className="mt-4 flex flex-col gap-3 text-sm text-fg-muted">
                 <PhoneLink />
                 <InstagramLink />
               </div>

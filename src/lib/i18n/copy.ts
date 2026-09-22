@@ -19,7 +19,7 @@ const en = {
   },
   cta: {
     shoot: "Book a Shoot",
-    rent: "Rent now",
+    rent: "Rent Studio",
     peerspace: "Book with Peerspace",
   },
   footer: {
@@ -404,7 +404,7 @@ const es: typeof en = {
   },
   cta: {
     shoot: "Reservar sesión",
-    rent: "Rentar ahora",
+    rent: "Rentar estudio",
     peerspace: "Reservar en Peerspace",
   },
   footer: {
