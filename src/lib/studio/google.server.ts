@@ -206,7 +206,13 @@ async function authHeader(userId: string): Promise<{ token: string; calendarId: 
   `;
   const row = rows[0];
   if (!row?.google_calendar_connected || !row.google_refresh_token) return null;
-  const refresh = decrypt(row.google_refresh_token);
+  let refresh: string;
+  try {
+    refresh = decrypt(row.google_refresh_token);
+  } catch (err) {
+    console.error("[gcal] decrypt refresh token", err);
+    throw new Error("Google Calendar login is unreadable. Disconnect and connect again in Settings.");
+  }
   const token = await refreshAccess(creds, refresh);
   return { token, calendarId: row.google_calendar_id || "primary" };
 }
@@ -231,23 +237,29 @@ function mapCalendarList(
     }));
 }
 
-async function listCalendarsWithToken(accessToken: string): Promise<GoogleCalendarOption[]> {
+async function listCalendarsWithToken(
+  accessToken: string,
+  minAccessRole: "reader" | "writer" = "writer",
+): Promise<GoogleCalendarOption[]> {
   const list = await googleJson<{
     items?: Array<{ id?: string; summary?: string; summaryOverride?: string; primary?: boolean }>;
-  }>("https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=writer", {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
+  }>(
+    `https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=${minAccessRole}&showHidden=true`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  );
   return mapCalendarList(list.items);
 }
 
 async function pickTargetCalendar(accessToken: string): Promise<string> {
   const calendars = await listCalendarsWithToken(accessToken);
+  const primary = calendars.find((item) => item.primary);
+  if (primary) return primary.id;
   for (const name of PREFERRED_CALENDAR_NAMES) {
     const match = calendars.find((item) => item.name.toLowerCase() === name.toLowerCase());
     if (match) return match.id;
   }
-  const primary = calendars.find((item) => item.primary);
-  if (primary) return primary.id;
   if (calendars[0]) return calendars[0].id;
   const created = await googleJson<{ id: string }>("https://www.googleapis.com/calendar/v3/calendars", {
     method: "POST",
@@ -280,6 +292,13 @@ export type GoogleFloorEvent = {
   htmlLink: string | null;
 };
 
+export type GoogleFloorResult = {
+  connected: boolean;
+  events: GoogleFloorEvent[];
+  error: string | null;
+  sources: string[];
+};
+
 type GoogleEventItem = {
   id?: string;
   status?: string;
@@ -300,13 +319,63 @@ function parseGoogleSlot(
   return null;
 }
 
+function skipCalendarName(name: string, id: string): boolean {
+  const blob = `${name} ${id}`.toLowerCase();
+  return (
+    blob.includes("holiday") ||
+    blob.includes("#contacts@") ||
+    blob.includes("birthday") ||
+    blob.includes("weather")
+  );
+}
+
+async function fetchCalendarEvents(
+  token: string,
+  calendarId: string,
+  fromIso: string,
+  toIso: string,
+): Promise<GoogleEventItem[]> {
+  const items: GoogleEventItem[] = [];
+  let pageToken: string | undefined;
+  do {
+    const url = new URL(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
+    );
+    url.searchParams.set("timeMin", fromIso);
+    url.searchParams.set("timeMax", toIso);
+    url.searchParams.set("singleEvents", "true");
+    url.searchParams.set("orderBy", "startTime");
+    url.searchParams.set("maxResults", "250");
+    url.searchParams.set("timeZone", STUDIO_TZ);
+    if (pageToken) url.searchParams.set("pageToken", pageToken);
+    const data = await googleJson<{ items?: GoogleEventItem[]; nextPageToken?: string }>(url.toString(), {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    items.push(...(data.items ?? []));
+    pageToken = data.nextPageToken;
+  } while (pageToken && items.length < 500);
+  return items;
+}
+
 export async function listGoogleFloorEvents(
   userId: string,
   fromIso: string,
   toIso: string,
-): Promise<GoogleFloorEvent[]> {
-  const authz = await authHeader(userId);
-  if (!authz) return [];
+): Promise<GoogleFloorResult> {
+  let authz: { token: string; calendarId: string } | null;
+  try {
+    authz = await authHeader(userId);
+  } catch (err) {
+    console.error("[gcal] auth", err);
+    return {
+      connected: true,
+      events: [],
+      error: err instanceof Error ? err.message : "Google Calendar login failed. Reconnect in Settings.",
+      sources: [],
+    };
+  }
+  if (!authz) return { connected: false, events: [], error: null, sources: [] };
+
   try {
     const sql = await getSql();
     const known = await sql<{ google_event_id: string | null }>`
@@ -317,49 +386,88 @@ export async function listGoogleFloorEvents(
       known.map((row) => row.google_event_id).filter((id): id is string => Boolean(id)),
     );
 
-    const items: GoogleEventItem[] = [];
-    let pageToken: string | undefined;
-    do {
-      const url = new URL(
-        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(authz.calendarId)}/events`,
-      );
-      url.searchParams.set("timeMin", fromIso);
-      url.searchParams.set("timeMax", toIso);
-      url.searchParams.set("singleEvents", "true");
-      url.searchParams.set("orderBy", "startTime");
-      url.searchParams.set("maxResults", "250");
-      if (pageToken) url.searchParams.set("pageToken", pageToken);
-      const data = await googleJson<{ items?: GoogleEventItem[]; nextPageToken?: string }>(
-        url.toString(),
-        { headers: { Authorization: `Bearer ${authz.token}` } },
-      );
-      items.push(...(data.items ?? []));
-      pageToken = data.nextPageToken;
-    } while (pageToken && items.length < 500);
-
-    const out: GoogleFloorEvent[] = [];
-    for (const item of items) {
-      if (!item.id || item.status === "cancelled") continue;
-      if (item.transparency === "transparent") continue;
-      if (skip.has(item.id)) continue;
-      const priv = item.extendedProperties?.private;
-      if (priv?.lighthill === "desk" || priv?.lighthillBookingId) continue;
-      const start = parseGoogleSlot(item.start);
-      const end = parseGoogleSlot(item.end);
-      if (!start || !end) continue;
-      out.push({
-        id: item.id,
-        title: item.summary?.trim() || "Busy",
-        startsAt: start.iso,
-        endsAt: end.iso,
-        allDay: start.allDay || end.allDay,
-        htmlLink: item.htmlLink ?? null,
+    const calendars = await listCalendarsWithToken(authz.token, "writer");
+    const selected = calendars.find((item) => item.id === authz.calendarId);
+    const targets: GoogleCalendarOption[] = [];
+    const addTarget = (item: GoogleCalendarOption) => {
+      if (skipCalendarName(item.name, item.id)) return;
+      if (targets.some((row) => row.id === item.id)) return;
+      targets.push(item);
+    };
+    addTarget({ id: "primary", name: "Primary", primary: true });
+    if (authz.calendarId) {
+      addTarget({
+        id: authz.calendarId,
+        name: selected?.name || "Selected calendar",
+        primary: Boolean(selected?.primary),
       });
     }
-    return out;
+    for (const calendar of calendars) addTarget(calendar);
+
+    const seen = new Set<string>();
+    const out: GoogleFloorEvent[] = [];
+    const sources: string[] = [];
+    const errors: string[] = [];
+
+    const batches = await Promise.all(
+      targets.map(async (calendar) => {
+        try {
+          const items = await fetchCalendarEvents(authz.token, calendar.id, fromIso, toIso);
+          return { calendar, items, error: null as string | null };
+        } catch (err) {
+          console.error("[gcal] events", calendar.id, err);
+          return { calendar, items: [] as GoogleEventItem[], error: calendar.name };
+        }
+      }),
+    );
+
+    for (const batch of batches) {
+      if (batch.error) errors.push(batch.error);
+      let used = false;
+      for (const item of batch.items) {
+        if (!item.id || item.status === "cancelled") continue;
+        if (item.transparency === "transparent") continue;
+        if (skip.has(item.id)) continue;
+        const priv = item.extendedProperties?.private;
+        if (priv?.lighthill === "desk" || priv?.lighthillBookingId) continue;
+        const start = parseGoogleSlot(item.start);
+        const end = parseGoogleSlot(item.end);
+        if (!start || !end) continue;
+        const key = `${batch.calendar.id}:${item.id}`;
+        if (seen.has(item.id) || seen.has(key)) continue;
+        seen.add(item.id);
+        seen.add(key);
+        used = true;
+        out.push({
+          id: key,
+          title: item.summary?.trim() || "Busy",
+          startsAt: start.iso,
+          endsAt: end.iso,
+          allDay: start.allDay || end.allDay,
+          htmlLink: item.htmlLink ?? null,
+        });
+      }
+      if (used && !sources.includes(batch.calendar.name)) sources.push(batch.calendar.name);
+    }
+
+    out.sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+    return {
+      connected: true,
+      events: out,
+      error:
+        out.length === 0 && errors.length > 0
+          ? `Could not read ${errors.join(", ")}. Reconnect Google in Settings if this keeps happening.`
+          : null,
+      sources,
+    };
   } catch (err) {
     console.error("[gcal] events", err);
-    return [];
+    return {
+      connected: true,
+      events: [],
+      error: err instanceof Error ? err.message : "Could not read Google Calendar.",
+      sources: [],
+    };
   }
 }
 
@@ -368,7 +476,7 @@ export async function findGoogleOverlap(
   start: Date,
   end: Date,
 ): Promise<{ title: string } | null> {
-  const events = await listGoogleFloorEvents(
+  const { events } = await listGoogleFloorEvents(
     userId,
     new Date(start.getTime() - 12 * 60 * 60 * 1000).toISOString(),
     new Date(end.getTime() + 12 * 60 * 60 * 1000).toISOString(),

@@ -101,7 +101,7 @@ async function listBusy(userId: string, from: Date, to: Date): Promise<BusyWindo
     end: new Date(row.ends_at),
   }));
   const google = await listGoogleFloorEvents(userId, from.toISOString(), to.toISOString());
-  for (const event of google) {
+  for (const event of google.events) {
     busy.push({ start: new Date(event.startsAt), end: new Date(event.endsAt) });
   }
   return busy;

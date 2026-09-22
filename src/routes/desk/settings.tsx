@@ -102,8 +102,8 @@ function SettingsPage() {
               return row.googleCalendarId;
             }
             if (current && items.some((item) => item.id === current)) return current;
-            const studio = items.find((item) => item.name.toLowerCase() === "lighthill studio");
-            return studio?.id || items[0]?.id || current;
+            const primary = items.find((item) => item.primary);
+            return primary?.id || items[0]?.id || current;
           });
         });
       } else {

@@ -8,9 +8,10 @@ import {
   listWritableCalendars,
   setTargetCalendar,
   type GoogleFloorEvent,
+  type GoogleFloorResult,
 } from "./google.server";
 
-export type { GoogleFloorEvent };
+export type { GoogleFloorEvent, GoogleFloorResult };
 
 async function requireOwner(userId: string): Promise<void> {
   const sql = await getSql();

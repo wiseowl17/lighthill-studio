@@ -238,7 +238,7 @@ export const getDeskSummary = createServerFn({ method: "GET" })
       zonedStart(addDays(day, 1), "00:00").toISOString(),
     );
     return {
-      todayCount: Number(today[0]?.count ?? 0) + googleToday.length,
+      todayCount: Number(today[0]?.count ?? 0) + googleToday.events.length,
       unpaidInvoices: Number(unpaid[0]?.count ?? 0),
       newInquiries: Number(inbox[0]?.count ?? 0),
     };

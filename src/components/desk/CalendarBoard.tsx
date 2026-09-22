@@ -55,6 +55,7 @@ export function CalendarBoard() {
   const [mode, setMode] = useState<"week" | "day">("week");
   const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [google, setGoogle] = useState<GoogleFloorEvent[]>([]);
+  const [googleNote, setGoogleNote] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const weekStart = startOfWeekMonday(mode === "day" ? cursor : cursor);
@@ -68,12 +69,25 @@ export function CalendarBoard() {
     const to = zonedStart(rangeTo, "00:00").toISOString();
     void Promise.all([
       listBookings({ data: { from, to } }).catch(() => [] as BookingRow[]),
-      listGoogleEvents({ data: { from, to } }).catch(() => [] as GoogleFloorEvent[]),
+      listGoogleEvents({ data: { from, to } }).catch(() => ({
+        connected: false,
+        events: [] as GoogleFloorEvent[],
+        error: null,
+        sources: [] as string[],
+      })),
     ])
-      .then(([rows, events]) => {
+      .then(([rows, gcal]) => {
         if (!alive) return;
         setBookings(rows);
-        setGoogle(events);
+        setGoogle(gcal.events);
+        if (gcal.error) setGoogleNote(gcal.error);
+        else if (gcal.connected && gcal.events.length === 0) {
+          setGoogleNote("No Google events in this view. Check which calendar is selected in Settings.");
+        } else if (gcal.connected && gcal.sources.length > 0) {
+          setGoogleNote(`Google: ${gcal.events.length} from ${gcal.sources.slice(0, 3).join(", ")}`);
+        } else {
+          setGoogleNote(null);
+        }
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -246,6 +260,8 @@ export function CalendarBoard() {
 
       {loading ? (
         <p className="mt-4 text-sm text-ink-muted">Loading the floor…</p>
+      ) : googleNote ? (
+        <p className="mt-4 text-sm text-ink-muted">{googleNote}</p>
       ) : null}
 
       <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2">

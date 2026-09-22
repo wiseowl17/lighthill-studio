@@ -29,7 +29,7 @@ function DeskHome() {
     const from = new Date().toISOString();
     const to = zonedStart(addDays(todayInTz(), 14), "00:00").toISOString();
     void listGoogleEvents({ data: { from, to } })
-      .then(setGoogleUpcoming)
+      .then((result) => setGoogleUpcoming(result.events))
       .catch(() => setGoogleUpcoming([]));
   }, []);
 
