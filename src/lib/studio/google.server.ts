@@ -143,7 +143,6 @@ export function buildGoogleAuthUrl(clientId: string, redirectUri: string, state:
     scope: SCOPES,
     access_type: "offline",
     prompt: "consent",
-    include_granted_scopes: "true",
     login_hint: OWNER_EMAIL,
     state,
   });
