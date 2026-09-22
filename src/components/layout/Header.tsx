@@ -48,7 +48,7 @@ export function Header() {
       )}
     >
       <Sheet open={open} onOpenChange={setOpen}>
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 md:h-24 md:px-8 lg:h-24">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-center gap-4 px-5 md:h-24 md:px-8 lg:h-24 lg:justify-between">
           <div className="flex items-center gap-1 md:gap-2">
             <Logo variant="white" imgClassName="h-16 md:h-20 lg:h-12" />
             <SheetTrigger asChild>
@@ -64,6 +64,7 @@ export function Header() {
                 )}
               </button>
             </SheetTrigger>
+            <PeerspaceMark className="lg:hidden" iconClassName="h-10 w-10 md:h-11 md:w-11" />
           </div>
 
           <nav className="hidden min-w-0 items-center gap-4 xl:gap-5 lg:flex" aria-label="Primary">
@@ -120,7 +121,7 @@ export function Header() {
                   <Link to="/rent">{copy.cta.rent}</Link>
                 </Button>
               </SheetClose>
-              <PeerspaceMark className="mt-2 self-start" iconClassName="h-12 w-12" />
+              <PeerspaceMark className="mt-2 self-center" iconClassName="h-12 w-12" />
               <div className="mt-4 flex flex-col gap-3 text-sm text-fg-muted">
                 <PhoneLink />
                 <InstagramLink />
