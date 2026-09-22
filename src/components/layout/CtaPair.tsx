@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
-import { site } from "@data/site";
 import { Button } from "@/components/ui/button";
+import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/provider";
 
@@ -28,7 +27,13 @@ export function CtaPair({
 }: CtaPairProps) {
   const { copy } = useI18n();
   return (
-    <div className={cn("flex flex-col gap-3", className)}>
+    <div
+      className={cn(
+        "flex items-center gap-3",
+        stacked ? "w-full flex-col" : "flex-wrap",
+        className,
+      )}
+    >
       <div
         className={cn(
           "grid gap-3",
@@ -41,22 +46,10 @@ export function CtaPair({
           </Link>
         </Button>
         <Button variant={rentVariant} size="lg" className="w-full" asChild>
-          <Link to="/rent">
-            {copy.cta.rent}
-          </Link>
+          <Link to="/rent">{copy.cta.rent}</Link>
         </Button>
       </div>
-      <Button
-        variant={stacked ? "outline" : "ghost"}
-        size="lg"
-        className={cn("w-full", !stacked && "sm:w-max")}
-        asChild
-      >
-        <a href={site.peerspaceUrl} target="_blank" rel="noopener noreferrer">
-          {copy.cta.peerspace}
-          <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
-        </a>
-      </Button>
+      <PeerspaceMark className={cn(stacked ? "self-start" : "shrink-0")} />
     </div>
   );
 }

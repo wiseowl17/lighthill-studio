@@ -10,9 +10,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Logo } from "@/components/layout/Logo";
-import { CtaPair } from "@/components/layout/CtaPair";
+import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
 import { InstagramLink, PhoneLink } from "@/components/layout/ContactLinks";
 import { useI18n } from "@/lib/i18n/provider";
+
+const navLink =
+  "whitespace-nowrap text-[0.72rem] font-medium tracking-[0.14em] uppercase transition-colors duration-150";
 
 export function Header() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -44,7 +47,7 @@ export function Header() {
       )}
     >
       <Sheet open={open} onOpenChange={setOpen}>
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-center px-5 md:h-24 md:px-8 lg:h-20 lg:justify-between">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 md:h-24 md:px-8 lg:h-20">
           <div className="flex items-center gap-1 md:gap-2">
             <Logo variant="white" imgClassName="h-16 md:h-20 lg:h-12" />
             <SheetTrigger asChild>
@@ -62,13 +65,13 @@ export function Header() {
             </SheetTrigger>
           </div>
 
-          <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-4 xl:gap-5 lg:flex" aria-label="Primary">
             {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 className={cn(
-                  "text-[0.72rem] font-medium tracking-[0.16em] uppercase transition-colors duration-150",
+                  navLink,
                   pathname === item.to || (item.to === "/colorful" && pathname.startsWith("/colorful"))
                     ? "text-fg"
                     : "text-fg-muted hover:text-fg",
@@ -77,11 +80,27 @@ export function Header() {
                 {copy.nav[item.id]}
               </Link>
             ))}
+            <Link
+              to="/contact"
+              search={{ type: "shoot" }}
+              className={cn(
+                navLink,
+                pathname === "/contact" ? "text-fg" : "text-fg-muted hover:text-fg",
+              )}
+            >
+              {copy.cta.shoot}
+            </Link>
+            <Link
+              to="/rent"
+              className={cn(
+                navLink,
+                pathname.startsWith("/rent") ? "text-fg" : "text-fg-muted hover:text-fg",
+              )}
+            >
+              {copy.cta.rent}
+            </Link>
+            <PeerspaceMark iconClassName="h-7 w-7" />
           </nav>
-
-          <div className="hidden lg:block">
-            <CtaPair />
-          </div>
         </div>
 
         <SheetContent hideClose>
@@ -89,17 +108,28 @@ export function Header() {
             <nav className="flex flex-col gap-1" aria-label="Mobile">
               {nav.map((item) => (
                 <SheetClose asChild key={item.to}>
-                  <Link
-                    to={item.to}
-                    className="py-3 font-display text-4xl text-fg"
-                  >
+                  <Link to={item.to} className="py-3 font-display text-4xl text-fg">
                     {copy.nav[item.id]}
                   </Link>
                 </SheetClose>
               ))}
+              <SheetClose asChild>
+                <Link
+                  to="/contact"
+                  search={{ type: "shoot" }}
+                  className="py-3 font-display text-4xl text-fg"
+                >
+                  {copy.cta.shoot}
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link to="/rent" className="py-3 font-display text-4xl text-fg">
+                  {copy.cta.rent}
+                </Link>
+              </SheetClose>
             </nav>
             <div className="mt-auto flex flex-col gap-5">
-              <CtaPair stacked />
+              <PeerspaceMark iconClassName="h-11 w-11" />
               <div className="flex flex-col gap-3 text-sm text-fg-muted">
                 <PhoneLink />
                 <InstagramLink />

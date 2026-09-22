@@ -1,13 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
 import {
   addons,
   photographyPackages,
   rentalRates,
 } from "@data/pricing";
-import { site } from "@data/site";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/PageHero";
+import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
 import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/provider";
@@ -146,20 +145,11 @@ function PricingPage() {
             ))}
           </div>
 
-          <div className="mt-12 flex flex-wrap gap-3">
+          <div className="mt-12 flex flex-wrap items-center gap-3">
             <Button variant="primary" size="lg" asChild>
               <Link to="/rent">{copy.cta.rent}</Link>
             </Button>
-            <Button variant="outline" size="lg" asChild>
-              <a
-                href={site.peerspaceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {copy.cta.peerspace}
-                <ArrowUpRight className="size-3.5" />
-              </a>
-            </Button>
+            <PeerspaceMark />
           </div>
         </div>
       </section>

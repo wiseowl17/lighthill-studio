@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
-import { site } from "@data/site";
 import { PageHero } from "@/components/layout/PageHero";
+import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Field } from "@/components/desk/Field";
@@ -186,13 +185,8 @@ function RentPage() {
             <p className="text-sm leading-relaxed text-ink-muted">
               {copy.rent.paused}
             </p>
-            <div className="flex flex-wrap gap-3">
-              <Button variant="invert" size="lg" asChild>
-                <a href={site.peerspaceUrl} target="_blank" rel="noopener noreferrer">
-                  {copy.cta.peerspace}
-                  <ArrowUpRight className="size-3.5" />
-                </a>
-              </Button>
+            <div className="flex flex-wrap items-center gap-3">
+              <PeerspaceMark iconClassName="h-10 w-10" />
               <Button variant="paperOutline" size="lg" asChild>
                 <Link to="/contact" search={{ type: "rental" }}>
                   {copy.rent.write}
@@ -417,15 +411,9 @@ function RentPage() {
                   Instant confirmation. The hold drops if checkout is not finished in 45
                   minutes. Balance is due when you arrive.
                 </p>
-                <a
-                  href={site.peerspaceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-1 text-xs text-ink-muted underline-offset-4 hover:underline"
-                >
-                  Prefer Peerspace
-                  <ArrowUpRight className="size-3" />
-                </a>
+                <div className="mt-4">
+                  <PeerspaceMark />
+                </div>
               </div>
             </aside>
           </form>
