@@ -64,7 +64,6 @@ export function Header() {
                 )}
               </button>
             </SheetTrigger>
-            <PeerspaceMark className="lg:hidden" iconClassName="h-10 w-10 md:h-11 md:w-11" />
           </div>
 
           <nav className="hidden min-w-0 items-center gap-4 xl:gap-5 lg:flex" aria-label="Primary">
