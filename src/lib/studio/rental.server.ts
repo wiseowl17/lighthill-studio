@@ -451,11 +451,11 @@ async function notifyStudioOfRental(userId: string, bookingId: string) {
   `;
   const row = rows[0];
   if (!row) return;
-  const { site } = await import("@data/site");
+  const studioEmail = "studiolighthill@gmail.com";
   const when = formatRange(row.starts_at, row.ends_at);
   const balance = Math.max(0, Number(row.total_cents) - Number(row.deposit_cents));
   const res = await fetch(
-    `https://formsubmit.co/ajax/${encodeURIComponent(site.contactEmail)}`,
+    `https://formsubmit.co/ajax/${encodeURIComponent(studioEmail)}`,
     {
       method: "POST",
       headers: {
