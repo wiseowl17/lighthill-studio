@@ -29,12 +29,16 @@ jobs:
           body=""
           for _ in 1 2 3 4 5 6; do
             code=$(curl -sS -m 25 -o /tmp/smoke-body.txt -w "%{http_code}" "${TARGET}/" || echo "000")
-            body=$(head -c 400 /tmp/smoke-body.txt || true)
+            body=$(cat /tmp/smoke-body.txt || true)
             echo "status ${code}"
             if [ "${code}" -ge 200 ] && [ "${code}" -lt 500 ]; then
               case "${body}" in
                 *ssr_exports*|*'"unhandled": true'*|*'"unhandled":true'*) ;;
-                *) echo "ok"; exit 0 ;;
+                *)
+                  case "${body}" in
+                    *"<main"*) echo "ok"; exit 0 ;;
+                  esac
+                  ;;
               esac
             fi
             sleep 5

@@ -71,7 +71,8 @@ try {
           response.status >= 500 ||
           text.includes("ssr_exports") ||
           text.includes('"unhandled": true') ||
-          text.includes('"unhandled":true');
+          text.includes('"unhandled":true') ||
+          (path === "/" && !text.includes("<main"));
         if (crashed) {
           failure = `${path} crashed: ${last}`;
           break;

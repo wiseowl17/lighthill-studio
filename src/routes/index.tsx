@@ -8,6 +8,7 @@ import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/home/Marquee";
 import { SelectedWork } from "@/components/home/SelectedWork";
 import { Reveal } from "@/components/motion/Reveal";
+import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/")({
