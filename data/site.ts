@@ -29,7 +29,6 @@ export const site = {
 } as const;
 
 export const nav = [
-  { id: "event", to: "/colorful" },
   { id: "studio", to: "/studio" },
   { id: "gallery", to: "/gallery" },
   { id: "team", to: "/team" },

@@ -73,9 +73,7 @@ export function Header() {
                 to={item.to}
                 className={cn(
                   navLink,
-                  pathname === item.to || (item.to === "/colorful" && pathname.startsWith("/colorful"))
-                    ? "text-fg"
-                    : "text-fg-muted hover:text-fg",
+                  pathname === item.to ? "text-fg" : "text-fg-muted hover:text-fg",
                 )}
               >
                 {copy.nav[item.id]}

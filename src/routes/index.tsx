@@ -8,7 +8,6 @@ import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/home/Marquee";
 import { SelectedWork } from "@/components/home/SelectedWork";
 import { Reveal } from "@/components/motion/Reveal";
-import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
 
 export const Route = createFileRoute("/")({
@@ -37,37 +36,6 @@ function Home() {
   return (
     <main id="main">
       <Hero />
-      <Link
-        to="/colorful"
-        className="relative isolate block overflow-hidden md:hidden"
-      >
-        <Photo
-          src="/images/colorful/poster.jpg"
-          alt="The Colorful Experience — September 26, 2 to 6 PM at Lighthill Studio"
-          className="h-auto w-full object-cover"
-        />
-        <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-linear-to-t from-bg via-bg/70 to-transparent px-5 pb-5 pt-16">
-          <span className="max-w-[14rem] text-[0.72rem] font-medium tracking-[0.16em] text-fg uppercase">
-            {copy.home.eventBanner}
-          </span>
-          <span className="inline-flex shrink-0 items-center gap-1 text-[0.72rem] tracking-[0.14em] text-fg uppercase">
-            {copy.home.eventCta}
-            <ArrowRight className="size-3.5" />
-          </span>
-        </span>
-      </Link>
-      <Link
-        to="/colorful"
-        className="hidden items-center justify-between gap-4 border-b border-border bg-bg-elevated px-5 py-4 text-fg transition-colors hover:bg-bg md:flex md:px-8"
-      >
-        <span className="text-[0.72rem] font-medium tracking-[0.16em] uppercase">
-          {copy.home.eventBanner}
-        </span>
-        <span className="inline-flex items-center gap-1 text-[0.72rem] tracking-[0.14em] uppercase">
-          {copy.home.eventCta}
-          <ArrowRight className="size-3.5" />
-        </span>
-      </Link>
       <Marquee />
 
       <section className="bg-paper text-ink">
