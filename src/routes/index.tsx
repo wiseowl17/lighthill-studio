@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { services } from "@data/services";
 import { studioSpecs } from "@data/studio";
-import { site } from "@data/site";
 import { Button } from "@/components/ui/button";
 import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/home/Marquee";
@@ -10,26 +9,31 @@ import { SelectedWork } from "@/components/home/SelectedWork";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
+import { businessJsonLd, pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   component: Home,
-  head: () => ({
-    meta: [
-      { title: "Lighthill Studio — Lawrenceville, GA" },
-      {
-        name: "description",
-        content: site.description,
-      },
-    ],
-    links: [
-      {
-        rel: "preload",
-        as: "image",
-        href: "/images/hero-poster.webp",
-        type: "image/webp",
-      },
-    ],
-  }),
+  head: () => {
+    const seo = pageHead({
+      path: "/",
+      title: "Cyclorama Photo Studio in Lawrenceville, GA | Lighthill",
+      description:
+        "1,200 sq ft cyclorama photo studio in Lawrenceville, GA, near Atlanta. Book maternity, newborn, family and branding shoots, or rent the studio from $55/hr.",
+    });
+    return {
+      meta: seo.meta,
+      scripts: [businessJsonLd()],
+      links: [
+        ...seo.links,
+        {
+          rel: "preload",
+          as: "image",
+          href: "/images/hero-poster.webp",
+          type: "image/webp",
+        },
+      ],
+    };
+  },
 });
 
 function Home() {

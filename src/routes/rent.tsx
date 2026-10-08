@@ -16,6 +16,7 @@ import { listRentalAvailability, startRentalCheckout } from "@/lib/studio/rental
 import { pad, todayInTz } from "@/lib/studio/time";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/provider";
+import { pageHead } from "@/lib/seo";
 
 type DaySlots = { date: string; slots: string[] };
 
@@ -25,16 +26,13 @@ export const Route = createFileRoute("/rent")({
     return {};
   },
   component: RentPage,
-  head: () => ({
-    meta: [
-      { title: "Rent the studio — Lighthill Studio" },
-      {
-        name: "description",
-        content:
-          "Instant-book the Lighthill cyclorama. $55 an hour, two-hour minimum, 50% deposit.",
-      },
-    ],
-  }),
+  head: () =>
+    pageHead({
+      path: "/rent",
+      title: "Cyclorama Studio Rental, $55/hr | Lighthill, Lawrenceville GA",
+      description:
+        "Instant-book the Lighthill cyclorama studio in Lawrenceville, GA. $55 an hour, two-hour minimum, 20% off eight hours or more, 50% deposit to confirm.",
+    }),
 });
 
 function prettyTime(hhmm: string): string {

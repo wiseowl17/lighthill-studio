@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/PageHero";
 import { MasonryGallery } from "@/components/gallery/MasonryGallery";
 import { useI18n } from "@/lib/i18n/provider";
+import { canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
   head: () => ({
+    links: [canonical("/gallery")],
     meta: [
-      { title: "Gallery — Lighthill Studio" },
+      { title: "Maternity, Newborn & Branding Photos | Lighthill Studio" },
       {
         name: "description",
         content:

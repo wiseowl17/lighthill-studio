@@ -6,12 +6,14 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
+import { canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/team")({
   component: TeamPage,
   head: () => ({
+    links: [canonical("/team")],
     meta: [
-      { title: "Team — Lighthill Studio" },
+      { title: "Meet the Photographers | Lighthill Studio" },
       {
         name: "description",
         content:

@@ -10,11 +10,14 @@ import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
 import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/provider";
+import { canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
   head: () => ({
+    links: [canonical("/pricing")],
     meta: [
+      { name: "robots", content: "noindex, follow" },
       { title: "Pricing — Lighthill Studio" },
       {
         name: "description",

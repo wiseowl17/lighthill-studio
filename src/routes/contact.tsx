@@ -11,6 +11,7 @@ import {
   PhoneLink,
 } from "@/components/layout/ContactLinks";
 import { useI18n } from "@/lib/i18n/provider";
+import { canonical } from "@/lib/seo";
 
 type ContactSearch = {
   type?: InquiryType;
@@ -25,8 +26,9 @@ export const Route = createFileRoute("/contact")({
   }),
   component: ContactPage,
   head: () => ({
+    links: [canonical("/contact")],
     meta: [
-      { title: "Contact — Lighthill Studio" },
+      { title: "Book a Photo Shoot in Lawrenceville, GA | Lighthill Studio" },
       {
         name: "description",
         content:

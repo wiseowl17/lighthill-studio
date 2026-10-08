@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /desk
+Disallow: /login
+Disallow: /api/
+Disallow: /rent/confirmed
+Disallow: /colorful/confirmed
+Disallow: /__grok/
+
+Sitemap: https://www.lighthillstudio.com/sitemap.xml

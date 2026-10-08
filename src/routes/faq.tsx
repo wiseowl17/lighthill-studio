@@ -9,18 +9,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/PageHero";
 import { useI18n } from "@/lib/i18n/provider";
+import { faqJsonLd, pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/faq")({
   component: FaqPage,
   head: () => ({
-    meta: [
-      { title: "FAQ — Lighthill Studio" },
-      {
-        name: "description",
-        content:
-          "Cancellation policies, studio rules, and what to expect at an in-house Lighthill session.",
-      },
-    ],
+    ...pageHead({
+      path: "/faq",
+      title: "Studio Rental & Photo Session FAQ | Lighthill Studio",
+      description:
+        "Rental minimums, deposits, cancellations, what to wear, and house rules for Lighthill Studio in Lawrenceville, GA.",
+    }),
+    scripts: [faqJsonLd(faq)],
   }),
 });
 

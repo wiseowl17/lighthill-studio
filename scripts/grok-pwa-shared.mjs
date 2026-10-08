@@ -44,6 +44,7 @@ function unescapeHtml(value) {
     .replaceAll("&gt;", ">")
     .replaceAll("&quot;", '"')
     .replaceAll("&#39;", "'")
+    .replaceAll("&#x27;", "'")
     .replaceAll("&amp;", "&");
 }
 
@@ -297,6 +298,13 @@ export function titleFromDocument(html) {
   return match ? unescapeHtml(match[1]).trim() : "";
 }
 
+export function descriptionFromDocument(html) {
+  const match = String(html ?? "").match(
+    /<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/i,
+  );
+  return match ? unescapeHtml(match[1]).trim() : "";
+}
+
 export function resolveOgTitle(
   site = {},
   appName = DEFAULT_APP_NAME,
@@ -338,6 +346,7 @@ export function grokOgHeadTags({
   appName = DEFAULT_APP_NAME,
   site = {},
   documentTitle = "",
+  documentDescription = "",
   cwd = process.cwd(),
 } = {}) {
   const title = resolveOgTitle(site, appName, host, documentTitle);
@@ -346,7 +355,8 @@ export function grokOgHeadTags({
     `<meta name="twitter:card" content="summary_large_image">`,
     `<meta property="og:title" content="${escapeHtml(title)}">`,
   ];
-  const description = String(site.description ?? "").trim();
+  // Site-level copy wins; otherwise each page shares its own meta description.
+  const description = String(site.description ?? documentDescription ?? "").trim();
   if (description) {
     tags.push(`<meta property="og:description" content="${escapeHtml(description)}">`);
   }
@@ -426,6 +436,7 @@ export function injectGrokPwaHead(html, ctx = {}) {
   if (typeof html !== "string") return html;
   const { site, projectId, creator, creatorId, host, cwd } = normalizeHeadContext(ctx);
   const documentTitle = titleFromDocument(html);
+  const documentDescription = descriptionFromDocument(html);
   const appName = resolveOgTitle(
     site,
     ctx.appName ?? DEFAULT_APP_NAME,
@@ -444,7 +455,7 @@ export function injectGrokPwaHead(html, ctx = {}) {
 
   next = insertAfterHeadOpen(
     next,
-    grokOgHeadTags({ host, appName, site, documentTitle, cwd }).join(""),
+    grokOgHeadTags({ host, appName, site, documentTitle, documentDescription, cwd }).join(""),
   );
 
   if (!next.includes("/grok-app-builder/extensions.js")) {

@@ -5,12 +5,14 @@ import { Reveal } from "@/components/motion/Reveal";
 import { CtaPair } from "@/components/layout/CtaPair";
 import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
+import { canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/studio")({
   component: StudioPage,
   head: () => ({
+    links: [canonical("/studio")],
     meta: [
-      { title: "The Studio — Lighthill" },
+      { title: "Cyclorama Studio Space in Lawrenceville, GA | Lighthill" },
       {
         name: "description",
         content:
