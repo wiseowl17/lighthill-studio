@@ -18,7 +18,7 @@ export const team: TeamMember[] = [
     id: "luz",
     name: "Luz Reyes",
     title: "Co-owner",
-    bio: "Luz is a co-owner of Lighthill. She and Hillary work every session side by side — maternity, newborns, families, and personal brands — sharing the directing and the light. She treats the cyclorama like a set, not a box.",
+    bio: "Luz Reyes is a co-owner of Lighthill Studio and the photographer behind Luzreyher Photography in Lawrenceville, Georgia, just outside Atlanta. She specializes in maternity, newborn, family, and cake smash photography, the seasons of life she loves most: the anticipation of becoming a mother, the tiny details of a newborn, the connection inside a family, and the joy of a first birthday smash.\n\nFor Luz, photography is more than beautiful pictures. It is an experience, and a feeling preserved that you can return to years from now. Her goal is for everyone in front of her camera to feel comfortable, beautiful, and truly seen.",
     image: "/images/team-luz.jpg",
     objectPosition: "center 12%",
     instagram: "https://www.instagram.com/luzreyherphotos/",

@@ -6,7 +6,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import type { CSSProperties } from "react";
 import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
-import { canonical } from "@/lib/seo";
+import { canonical, teamJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/team")({
   component: TeamPage,
@@ -17,9 +17,10 @@ export const Route = createFileRoute("/team")({
       {
         name: "description",
         content:
-          "Meet Luz Reyes and Hillary Urgelles, co-owners of Lighthill Studio in Lawrenceville, Georgia.",
+          "Meet Luz Reyes and Hillary Urgelles, co-owners of Lighthill Studio: maternity, newborn, family and cake smash photographers in Lawrenceville, Georgia, near Atlanta.",
       },
     ],
+    scripts: [teamJsonLd()],
   }),
 });
 
@@ -28,11 +29,7 @@ function TeamPage() {
   return (
     <main id="main" className="scheme-light bg-paper pb-24 text-ink">
       <div className="bg-bg text-fg">
-        <PageHero
-          eyebrow={copy.team.eyebrow}
-          title={copy.team.title}
-          lede={copy.team.body}
-        />
+        <PageHero eyebrow={copy.team.eyebrow} title={copy.team.title} lede={copy.team.body} />
       </div>
       <div className="mx-auto grid max-w-7xl items-stretch gap-10 px-5 pt-16 md:grid-cols-2 md:px-8">
         {team.map((member, i) => (
@@ -68,9 +65,14 @@ function TeamPage() {
                 {copy.team.coOwner}
               </p>
               <h2 className="mt-2 font-display text-4xl">{member.name}</h2>
-              <p className="mt-4 max-w-lg flex-1 leading-relaxed text-ink-muted">
-                {member.id === "luz" ? copy.team.luz : copy.team.hillary}
-              </p>
+              {/* Bios may hold "\n\n" paragraph breaks. */}
+              <div className="mt-4 max-w-lg flex-1 space-y-4 leading-relaxed text-ink-muted">
+                {(member.id === "luz" ? copy.team.luz : copy.team.hillary)
+                  .split("\n\n")
+                  .map((para) => (
+                    <p key={para.slice(0, 24)}>{para}</p>
+                  ))}
+              </div>
             </article>
           </div>
         ))}

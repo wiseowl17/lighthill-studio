@@ -1,5 +1,6 @@
 import { site } from "@data/site";
 import type { FaqItem } from "@data/faq";
+import { team } from "@data/team";
 
 /**
  * Search and AI-answer metadata shared by the public routes.
@@ -101,6 +102,38 @@ export function businessJsonLd() {
         unitText: "hour",
       },
     },
+  });
+}
+
+/** Owners as Person entities tied to the business, for name searches. */
+export function teamJsonLd() {
+  const knows: Record<string, string[]> = {
+    luz: [
+      "Maternity photography",
+      "Newborn photography",
+      "Family photography",
+      "Cake smash photography",
+    ],
+    hillary: [
+      "Seasonal mini sessions",
+      "Celebration photography",
+      "Branding photography",
+      "Podcast production",
+    ],
+  };
+  return jsonLd({
+    "@context": "https://schema.org",
+    "@graph": team.map((member) => ({
+      "@type": "Person",
+      "@id": `${SITE_ORIGIN}/team#${member.id}`,
+      name: member.name,
+      jobTitle: "Co-owner and photographer",
+      image: `${SITE_ORIGIN}${member.image}`,
+      url: `${SITE_ORIGIN}/team`,
+      sameAs: [member.instagram],
+      knowsAbout: knows[member.id] ?? [],
+      worksFor: { "@id": `${SITE_ORIGIN}/#business` },
+    })),
   });
 }
 
