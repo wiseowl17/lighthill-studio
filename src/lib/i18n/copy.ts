@@ -275,7 +275,7 @@ const en = {
       },
       parking: {
         q: "Where do I park, and how do I get in?",
-        a: "Free on-site parking and street-level access. The exact address and entry notes go out with your confirmation.",
+        a: "The studio is at 1766 Old Norcross Rd, Ste Y, Lawrenceville, GA 30044. Free on-site parking and street-level access. Entry notes go out with your confirmation.",
       },
     },
   },

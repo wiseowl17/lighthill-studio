@@ -12,7 +12,7 @@ import type { FaqItem } from "@data/faq";
 export const SITE_ORIGIN = "https://www.lighthillstudio.com";
 
 /** Google Business Profile. Ties the site to the Maps listing and its reviews. */
-const GOOGLE_MAPS_URL = "https://maps.app.goo.gl/bXjkh5zeN1Xq2rrt5";
+const GOOGLE_MAPS_URL = site.mapsUrl;
 
 type PageHeadInput = {
   path: string;
@@ -44,7 +44,7 @@ function jsonLd(data: unknown) {
   };
 }
 
-/** The studio as a local business. The street address is private until booking. */
+/** The studio as a local business. Name, address and phone must match the Google listing. */
 export function businessJsonLd() {
   return jsonLd({
     "@context": "https://schema.org",
@@ -61,10 +61,13 @@ export function businessJsonLd() {
     priceRange: "$$",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Lawrenceville",
-      addressRegion: "GA",
+      streetAddress: site.address.street,
+      addressLocality: site.address.city,
+      addressRegion: site.address.region,
+      postalCode: site.address.postalCode,
       addressCountry: "US",
     },
+    geo: { "@type": "GeoCoordinates", latitude: 33.952743, longitude: -84.053759 },
     areaServed: [
       { "@type": "City", name: "Lawrenceville, GA" },
       { "@type": "AdministrativeArea", name: "Gwinnett County, GA" },

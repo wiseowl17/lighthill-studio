@@ -43,7 +43,18 @@ export function Footer() {
                 {copy.footer.studio}
               </p>
               <ul className="mt-4 space-y-2 text-sm text-fg-muted">
-                <li>{site.location}</li>
+                <li>
+                  <a
+                    href={site.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors hover:text-fg"
+                  >
+                    {site.address.street}
+                    <br />
+                    {site.address.city}, {site.address.region} {site.address.postalCode}
+                  </a>
+                </li>
                 <li>{site.hours.weekdays}</li>
                 <li>{site.hours.weekends}</li>
               </ul>

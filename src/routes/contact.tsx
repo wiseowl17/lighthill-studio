@@ -60,7 +60,18 @@ function ContactPage() {
             {copy.contact.studio}
           </p>
           <ul className="mt-4 space-y-4 text-sm leading-relaxed text-ink-muted">
-            <li>{site.location}</li>
+            <li>
+              <a
+                href={site.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink underline-offset-4 hover:underline"
+              >
+                {site.address.street}
+                <br />
+                {site.address.city}, {site.address.region} {site.address.postalCode}
+              </a>
+            </li>
             <li>{site.locationNote}</li>
             <li>{site.hours.weekdays}</li>
             <li>{site.hours.weekends}</li>

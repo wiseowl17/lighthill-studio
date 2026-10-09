@@ -11,7 +11,14 @@ export const site = {
   description:
     "In-house photography and a rentable cyclorama studio in Lawrenceville, Georgia — just outside Atlanta.",
   location: "Lawrenceville, Georgia",
-  locationNote: "Just outside Atlanta. Exact address is shared after booking.",
+  locationNote: "Just outside Atlanta. Free on-site parking, street-level entry.",
+  address: {
+    street: "1766 Old Norcross Rd, Ste Y",
+    city: "Lawrenceville",
+    region: "GA",
+    postalCode: "30044",
+  },
+  mapsUrl: "https://maps.app.goo.gl/bXjkh5zeN1Xq2rrt5",
   email: "studiolighthill@gmail.com",
   contactEmail: "studiolighthill@gmail.com",
   phone: "+14702069150",
