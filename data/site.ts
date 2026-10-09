@@ -9,7 +9,7 @@ export const site = {
   shortName: "Lighthill",
   tagline: "A studio made of light.",
   description:
-    "In-house photography and a rentable cyclorama studio in Lawrenceville, Georgia — just outside Atlanta.",
+    "In-house photography and a rentable infinity wall studio in Lawrenceville, Georgia — just outside Atlanta.",
   location: "Lawrenceville, Georgia",
   locationNote: "Just outside Atlanta. Free on-site parking, street-level entry.",
   address: {

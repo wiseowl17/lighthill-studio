@@ -34,7 +34,7 @@ export const photographyPackages: PhotographyPackage[] = [
     price: "$650",
     duration: "90 minutes",
     description:
-      "An unhurried session on the cyclorama. Partner and children are welcome.",
+      "An unhurried session on the infinity wall. Partner and children are welcome.",
     featured: true,
     includes: [
       "Planning call and mood notes",
@@ -81,7 +81,7 @@ export const photographyPackages: PhotographyPackage[] = [
     price: "$450",
     duration: "60 minutes",
     description:
-      "Clean, directed portraits for LinkedIn, teams, and the press page — lit on the cyclorama.",
+      "Clean, directed portraits for LinkedIn, teams, and the press page — lit on the infinity wall.",
     includes: [
       "60 minutes in studio",
       "Up to 2 looks",
@@ -157,7 +157,7 @@ export const rentalRates: RentalRate[] = [
     id: "hourly",
     name: "Hourly rental",
     price: "$55 / hour",
-    note: "Cyclorama studio. Lighting is an add-on.",
+    note: "Infinity wall studio. Lighting is an add-on.",
   },
   {
     id: "minimum",
@@ -204,7 +204,7 @@ export const addons: Addon[] = [
     name: "Studio assistant",
     price: "$45 / hour",
     description:
-      "A second pair of hands for tethering, boom work, and keeping the cyclorama clean.",
+      "A second pair of hands for tethering, boom work, and keeping the infinity wall clean.",
   },
 ];
 

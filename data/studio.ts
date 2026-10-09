@@ -15,7 +15,7 @@ export type Amenity = {
 export const studioIntro = {
   eyebrow: "The space",
   title: "A quiet floor with a true infinity wall.",
-  body: "Lighthill is a 1,200 square-foot studio in Lawrenceville — built for photographers, videographers, and small productions who want a cyclorama, controlled strobe lighting, and enough room to work without a warehouse echo.",
+  body: "Lighthill is a 1,200 square-foot studio in Lawrenceville — built for photographers, videographers, and small productions who want an infinity wall, controlled strobe lighting, and enough room to work without a warehouse echo.",
 } as const;
 
 export const studioFeatures: StudioFeature[] = [
@@ -23,15 +23,15 @@ export const studioFeatures: StudioFeature[] = [
     id: "cyclorama",
     title: "White infinity wall",
     description:
-      "A full cyclorama that disappears the horizon. Portraits, maternity, branding, and talking-head video all sit cleanly on the cove — no wrinkled muslin, no visible floor line.",
-    image: "/images/cyclorama.jpg",
+      "A full infinity wall that disappears the horizon. Portraits, maternity, branding, and talking-head video all sit cleanly on the cove — no wrinkled muslin, no visible floor line.",
+    image: "/images/infinity-wall-studio.jpg",
     objectPosition: "center 78%",
   },
   {
     id: "lighting",
     title: "Studio lighting",
     description:
-      "Godox strobes, octas, and modifiers ready as add-ons. The base rental is the room and the cyclorama — bring your own kit, or use ours. No guessing at the weather.",
+      "Godox strobes, octas, and modifiers ready as add-ons. The base rental is the room and the infinity wall — bring your own kit, or use ours. No guessing at the weather.",
     image: "/images/lighting.jpg",
     objectPosition: "center 42%",
   },

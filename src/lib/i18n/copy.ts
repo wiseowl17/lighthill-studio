@@ -24,7 +24,7 @@ const en = {
   },
   footer: {
     blurb:
-      "In-house photography and a rentable cyclorama in Lawrenceville, Georgia. Book the team — or take the room.",
+      "In-house photography and a rentable infinity wall in Lawrenceville, Georgia. Book the team — or take the room.",
     visit: "Visit",
     studio: "Studio",
     inquire: "Inquire",
@@ -34,13 +34,13 @@ const en = {
   hero: {
     eyebrow: "In-house photography",
     title: "A studio made of light.",
-    lede: "Directed sessions on the cyclorama — maternity, newborns, families, brands, headshots, celebrations. Or take the room yourself.",
+    lede: "Directed sessions on the infinity wall — maternity, newborns, families, brands, headshots, celebrations. Or take the room yourself.",
   },
   home: {
     studioEyebrow: "The studio",
     studioTitle: "An infinity wall. Controlled light. A floor that stays out of the way.",
     studioP1:
-      "Lighthill is a 1,200 square-foot photography studio in Lawrenceville — just outside Atlanta. We built it first for our own sessions: maternity, newborns, brands, headshots, families, seasonals, celebrations, and podcasts. The cyclorama and the strobes are the reason the work looks the way it does.",
+      "Lighthill is a 1,200 square-foot photography studio in Lawrenceville — just outside Atlanta. We built it first for our own sessions: maternity, newborns, brands, headshots, families, seasonals, celebrations, and podcasts. The infinity wall and the strobes are the reason the work looks the way it does.",
     studioP2:
       "When we are not on set, the room is available to other photographers, videographers, and small productions. Book the in-house team, or rent the space.",
     seeSpace: "See the space",
@@ -65,17 +65,17 @@ const en = {
     amenitiesTitle: "Built for working creatives, not for Instagram alone.",
     introTitle: "A quiet floor with a true infinity wall.",
     introBody:
-      "Lighthill is a 1,200 square-foot studio in Lawrenceville — built for photographers, videographers, and small productions who want a cyclorama, controlled strobe lighting, and enough room to work without a warehouse echo.",
+      "Lighthill is a 1,200 square-foot studio in Lawrenceville — built for photographers, videographers, and small productions who want an infinity wall, controlled strobe lighting, and enough room to work without a warehouse echo.",
     features: {
       cyclorama: {
         title: "White infinity wall",
         description:
-          "A full cyclorama that disappears the horizon. Portraits, maternity, branding, and talking-head video all sit cleanly on the cove — no wrinkled muslin, no visible floor line.",
+          "A full infinity wall that disappears the horizon. Portraits, maternity, branding, and talking-head video all sit cleanly on the cove — no wrinkled muslin, no visible floor line.",
       },
       lighting: {
         title: "Studio lighting",
         description:
-          "Godox strobes, octas, and modifiers ready as add-ons. The base rental is the room and the cyclorama — bring your own kit, or use ours. No guessing at the weather.",
+          "Godox strobes, octas, and modifiers ready as add-ons. The base rental is the room and the infinity wall — bring your own kit, or use ours. No guessing at the weather.",
       },
       podcast: {
         title: "Podcast set",
@@ -106,7 +106,7 @@ const en = {
     specs: {
       Floor: "Floor",
       Capacity: "Capacity",
-      Cyclorama: "Cyclorama",
+      Cyclorama: "Backdrop",
       Light: "Light",
       Access: "Access",
       Hours: "Hours",
@@ -139,7 +139,7 @@ const en = {
     inquire: "Inquire",
     writeUs: "Contact us",
     rental: "Section B — Studio rental",
-    rentalTitle: "The cyclorama, by the hour.",
+    rentalTitle: "The infinity wall, by the hour.",
     rentalLede:
       "Bring your own photographer. Instant-book on this site with a 50% deposit, or keep using Peerspace.",
     addons: "Add-ons",
@@ -154,7 +154,7 @@ const en = {
     maternity: {
       title: "Maternity",
       kicker: "Portraits",
-      description: "Quiet, filmic sessions on the cyclorama. Made to feel like stills, not setups.",
+      description: "Quiet, filmic sessions on the infinity wall. Made to feel like stills, not setups.",
     },
     newborn: {
       title: "Newborn",
@@ -221,14 +221,23 @@ const en = {
   faq: {
     eyebrow: "FAQ",
     title: "What to know before you step on the floor.",
-    lede: "Sessions, rentals, and the house rules we keep so the cyclorama stays white.",
+    lede: "Sessions, rentals, and the house rules we keep so the infinity wall stays white.",
     still: "Still have a question",
     groups: {
+      "The studio": "The studio",
       Sessions: "Sessions",
       Rentals: "Rentals",
       "House rules": "House rules",
     },
     items: {
+      "what-is-cyclorama": {
+        q: "What is an infinity wall?",
+        a: "An infinity wall (also called a cyclorama or cyc wall) is a white wall that curves smoothly into the floor, so there is no corner or horizon line behind your subject. Photos and video look like they were made in clean, endless space, and light falls evenly across the set. Lighthill’s white infinity wall is the main set in our 1,200 sq ft studio in Lawrenceville.",
+      },
+      "rental-cost-atlanta": {
+        q: "How much does it cost to rent an infinity wall studio near Atlanta?",
+        a: "Lighthill is $55 an hour with a two-hour minimum, and bookings of eight hours or more get 20% off. Many infinity wall studios around Atlanta list between $60 and $150 an hour. Book online any time of day with a 50% deposit; the balance is due at the studio.",
+      },
       "what-to-expect": {
         q: "What should I expect at an in-house shoot?",
         a: "You’ll be met by the photographer, walked through the floor, and given time in the dressing area. Sessions are directed but unhurried — we light, we shoot, we recast if a look isn’t working. Galleries typically land within seven days.",
@@ -239,7 +248,7 @@ const en = {
       },
       "plus-ones": {
         q: "Can I bring my partner, kids, or a stylist?",
-        a: "Yes. Capacity is twenty people including crew. Tell us who is coming when you book so we can plan the floor. Children are welcome; we just keep snacks and markers off the cyclorama.",
+        a: "Yes. Capacity is twenty people including crew. Tell us who is coming when you book so we can plan the floor. Children are welcome; we just keep snacks and markers off the infinity wall.",
       },
       "session-cancel": {
         q: "What is the cancellation policy for in-house sessions?",
@@ -259,7 +268,7 @@ const en = {
       },
       "rental-gear": {
         q: "Does the rental include lights?",
-        a: "No. The base rate is the room, the cyclorama, Wi-Fi, parking, and the dressing area. Bring your own kit, or add flashes, modifiers, and paper at checkout. We are happy to walk first-time renters through the wall.",
+        a: "No. The base rate is the room, the infinity wall, Wi-Fi, parking, and the dressing area. Bring your own kit, or add flashes, modifiers, and paper at checkout. We are happy to walk first-time renters through the wall.",
       },
       "rental-cancel": {
         q: "What is the rental cancellation policy?",
@@ -267,11 +276,11 @@ const en = {
       },
       "leave-it": {
         q: "How should I leave the studio?",
-        a: "As you found it. Trash out, furniture and props back, spills wiped, cyclorama scuffs reported. Excessive cleaning or damage beyond normal use may be billed. Tape and clamps are fine; no drilling, no paint, no glitter.",
+        a: "As you found it. Trash out, furniture and props back, spills wiped, infinity wall scuffs reported. Excessive cleaning or damage beyond normal use may be billed. Tape and clamps are fine; no drilling, no paint, no glitter.",
       },
       food: {
         q: "Is food and drink allowed?",
-        a: "Yes, off the cyclorama. Water on set is fine with a cap. Coffee, oil, red sauces, and anything that stains stay in the dressing area. Alcohol is allowed for talent only, not for a party — this is a working floor.",
+        a: "Yes, off the infinity wall. Water on set is fine with a cap. Coffee, oil, red sauces, and anything that stains stay in the dressing area. Alcohol is allowed for talent only, not for a party — this is a working floor.",
       },
       parking: {
         q: "Where do I park, and how do I get in?",
@@ -303,8 +312,8 @@ const en = {
   },
   rent: {
     eyebrow: "Studio rental",
-    title: "The cyclorama, by the hour.",
-    lede: "Instant book. $55 an hour, two-hour minimum, 50% deposit due now. The floor stays in step with the studio calendar.",
+    title: "The infinity wall, by the hour.",
+    lede: "Instant book, any hour of the day. $55 an hour with a two-hour minimum, where many Atlantan infinity wall studios list at $60–$150. A 50% deposit holds your time.",
     cancelled: "Checkout was cancelled. Nothing was charged — pick a time again when you are ready.",
     paused: "Direct checkout is paused. Book the room on Peerspace, or write us.",
     write: "Write the studio",
@@ -609,11 +618,20 @@ const es: typeof en = {
     lede: "Sesiones, rentas y las reglas de casa para que el ciclorama se quede blanco.",
     still: "¿Otra pregunta?",
     groups: {
+      "The studio": "El estudio",
       Sessions: "Sesiones",
       Rentals: "Rentas",
       "House rules": "Reglas de casa",
     },
     items: {
+      "what-is-cyclorama": {
+        q: "¿Qué es un ciclorama?",
+        a: "Un ciclorama es una pared blanca que se curva hacia el piso, sin esquinas ni horizonte detrás del sujeto.",
+      },
+      "rental-cost-atlanta": {
+        q: "¿Cuánto cuesta rentar un ciclorama cerca de Atlanta?",
+        a: "Lighthill cuesta $55 la hora, mínimo dos horas, con 20% de descuento desde ocho horas.",
+      },
       "what-to-expect": {
         q: "¿Qué espero en una sesión de casa?",
         a: "Te recibe la fotógrafa, te recorre el piso y te da tiempo en el vestidor. Las sesiones son dirigidas pero sin prisa — iluminamos, disparamos, recasteamos si un look no está. Las galerías suelen llegar en siete días.",

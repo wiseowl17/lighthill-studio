@@ -53,7 +53,7 @@ export function businessJsonLd() {
     "@id": `${SITE_ORIGIN}/#business`,
     name: site.name,
     description:
-      "Cyclorama photography studio in Lawrenceville, Georgia, just outside Atlanta. In-house maternity, newborn, family, branding, headshot and podcast sessions, plus hourly studio rental for photographers and videographers.",
+      "Infinity wall photography studio in Lawrenceville, Georgia, just outside Atlanta. In-house maternity, newborn, family, branding, headshot and podcast sessions, plus hourly studio rental for photographers and videographers.",
     url: `${SITE_ORIGIN}/`,
     logo: `${SITE_ORIGIN}/icon-512.png`,
     image: `${SITE_ORIGIN}/og.jpg`,
@@ -83,7 +83,8 @@ export function businessJsonLd() {
     hasMap: GOOGLE_MAPS_URL,
     sameAs: [site.instagram, site.peerspaceUrl, GOOGLE_MAPS_URL],
     knowsAbout: [
-      "Cyclorama studio",
+      "Infinity wall studio",
+      "Cyclorama",
       "Maternity photography",
       "Newborn photography",
       "Family photography",
@@ -93,7 +94,7 @@ export function businessJsonLd() {
     ],
     makesOffer: {
       "@type": "Offer",
-      name: "Cyclorama studio rental",
+      name: "Infinity wall studio rental",
       url: `${SITE_ORIGIN}/rent`,
       priceSpecification: {
         "@type": "UnitPriceSpecification",

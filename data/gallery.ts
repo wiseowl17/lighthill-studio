@@ -55,7 +55,7 @@ export const galleryImages: GalleryImage[] = [
   {
     id: "maternity-blue",
     src: "/images/gallery/maternity-blue.jpg",
-    alt: "Maternity silhouette in denim against a blue cyclorama",
+    alt: "Maternity silhouette in denim against a blue infinity wall",
     category: "Maternity",
     width: 1200,
     height: 1600,
@@ -109,7 +109,7 @@ export const galleryImages: GalleryImage[] = [
   {
     id: "brand-fitness",
     src: "/images/gallery/brand-fitness.jpg",
-    alt: "Fitness competitor with medals on the cyclorama",
+    alt: "Fitness competitor with medals on the infinity wall",
     category: "Branding",
     width: 1200,
     height: 1600,
@@ -273,7 +273,7 @@ export const galleryImages: GalleryImage[] = [
   {
     id: "maternity-paint-sit",
     src: "/images/gallery/maternity-paint-sit.jpg",
-    alt: "Gender-reveal sitting on the cyclorama floor",
+    alt: "Gender-reveal sitting on the infinity wall floor",
     category: "Maternity",
     width: 1200,
     height: 1600,
@@ -345,7 +345,7 @@ export const galleryImages: GalleryImage[] = [
   {
     id: "headshots",
     src: "/images/headshots.jpg",
-    alt: "Corporate headshot in a white suit on the cyclorama",
+    alt: "Corporate headshot in a white suit on the infinity wall",
     category: "Headshots",
     width: 851,
     height: 1134,
@@ -384,8 +384,8 @@ export const galleryImages: GalleryImage[] = [
   },
   {
     id: "cyclorama",
-    src: "/images/cyclorama.jpg",
-    alt: "White cyclorama cove with paper rolls and Godox lighting",
+    src: "/images/infinity-wall-studio.jpg",
+    alt: "White infinity wall with paper rolls and Godox lighting",
     category: "Studio",
     width: 1280,
     height: 960,
@@ -417,7 +417,7 @@ export const galleryImages: GalleryImage[] = [
   {
     id: "lighting",
     src: "/images/lighting.jpg",
-    alt: "Godox strobe on a stand in the cyclorama",
+    alt: "Godox strobe on a stand by the infinity wall",
     category: "Studio",
     width: 1086,
     height: 1448,

@@ -45,7 +45,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "In-house photography and a rentable cyclorama studio in Lawrenceville, Georgia — just outside Atlanta.",
+          "In-house photography and a rentable infinity wall studio in Lawrenceville, Georgia — just outside Atlanta.",
       },
       { name: "theme-color", content: "#0c0b0a" },
     ],

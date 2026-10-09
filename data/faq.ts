@@ -2,10 +2,17 @@ export type FaqItem = {
   id: string;
   question: string;
   answer: string;
-  group: "Sessions" | "Rentals" | "House rules";
+  group: "The studio" | "Sessions" | "Rentals" | "House rules";
 };
 
 export const faq: FaqItem[] = [
+  {
+    id: "what-is-cyclorama",
+    group: "The studio",
+    question: "What is an infinity wall?",
+    answer:
+      "An infinity wall (also called a cyclorama or cyc wall) is a white wall that curves smoothly into the floor, so there is no corner or horizon line behind your subject. Photos and video look like they were made in clean, endless space, and light falls evenly across the set. Lighthill’s white infinity wall is the main set in our 1,200 sq ft studio in Lawrenceville.",
+  },
   {
     id: "what-to-expect",
     group: "Sessions",
@@ -25,7 +32,7 @@ export const faq: FaqItem[] = [
     group: "Sessions",
     question: "Can I bring my partner, kids, or a stylist?",
     answer:
-      "Yes. Capacity is twenty people including crew. Tell us who is coming when you book so we can plan the floor. Children are welcome; we just keep snacks and markers off the cyclorama.",
+      "Yes. Capacity is twenty people including crew. Tell us who is coming when you book so we can plan the floor. Children are welcome; we just keep snacks and markers off the infinity wall.",
   },
   {
     id: "session-cancel",
@@ -40,6 +47,13 @@ export const faq: FaqItem[] = [
     question: "How can I use the photographs?",
     answer:
       "Personal sessions include personal usage and social sharing. Brand and commercial packages include web and print usage for the commissioning business. Extended licensing, paid ads, and third-party usage can be added in writing.",
+  },
+  {
+    id: "rental-cost-atlanta",
+    group: "Rentals",
+    question: "How much does it cost to rent an infinity wall studio near Atlanta?",
+    answer:
+      "Lighthill is $55 an hour with a two-hour minimum, and bookings of eight hours or more get 20% off. Many infinity wall studios around Atlanta list between $60 and $150 an hour. Book online any time of day with a 50% deposit; the balance is due at the studio.",
   },
   {
     id: "how-to-rent",
@@ -60,7 +74,7 @@ export const faq: FaqItem[] = [
     group: "Rentals",
     question: "Does the rental include lights?",
     answer:
-      "No. The base rate is the room, the cyclorama, Wi-Fi, parking, and the dressing area. Bring your own kit, or add flashes, modifiers, and paper at checkout. We are happy to walk first-time renters through the wall.",
+      "No. The base rate is the room, the infinity wall, Wi-Fi, parking, and the dressing area. Bring your own kit, or add flashes, modifiers, and paper at checkout. We are happy to walk first-time renters through the wall.",
   },
   {
     id: "rental-cancel",
@@ -74,14 +88,14 @@ export const faq: FaqItem[] = [
     group: "House rules",
     question: "How should I leave the studio?",
     answer:
-      "As you found it. Trash out, furniture and props back, spills wiped, cyclorama scuffs reported. Excessive cleaning or damage beyond normal use may be billed. Tape and clamps are fine; no drilling, no paint, no glitter.",
+      "As you found it. Trash out, furniture and props back, spills wiped, infinity wall scuffs reported. Excessive cleaning or damage beyond normal use may be billed. Tape and clamps are fine; no drilling, no paint, no glitter.",
   },
   {
     id: "food",
     group: "House rules",
     question: "Is food and drink allowed?",
     answer:
-      "Yes, off the cyclorama. Water on set is fine with a cap. Coffee, oil, red sauces, and anything that stains stay in the dressing area. Alcohol is allowed for talent only, not for a party — this is a working floor.",
+      "Yes, off the infinity wall. Water on set is fine with a cap. Coffee, oil, red sauces, and anything that stains stay in the dressing area. Alcohol is allowed for talent only, not for a party — this is a working floor.",
   },
   {
     id: "parking",
@@ -92,4 +106,4 @@ export const faq: FaqItem[] = [
   },
 ];
 
-export const faqGroups: FaqItem["group"][] = ["Sessions", "Rentals", "House rules"];
+export const faqGroups: FaqItem["group"][] = ["The studio", "Sessions", "Rentals", "House rules"];

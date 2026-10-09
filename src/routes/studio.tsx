@@ -12,11 +12,11 @@ export const Route = createFileRoute("/studio")({
   head: () => ({
     links: [canonical("/studio")],
     meta: [
-      { title: "Cyclorama Studio Space in Lawrenceville, GA | Lighthill" },
+      { title: "Infinity Wall Studio Space in Lawrenceville, GA | Lighthill" },
       {
         name: "description",
         content:
-          "A 1,200 sq ft photography studio in Lawrenceville, GA with a white cyclorama, Godox lighting, a podcast set, and a private changing room.",
+          "A 1,200 sq ft photography studio in Lawrenceville, GA with a white infinity wall, Godox lighting, a podcast set, and a private changing room.",
       },
     ],
   }),
@@ -30,8 +30,8 @@ function StudioPage() {
         eyebrow={copy.studio.eyebrow}
         title={copy.studio.introTitle}
         lede={copy.studio.introBody}
-        image="/images/cyclorama.jpg"
-        imageAlt="Lighthill Studio white cyclorama"
+        image="/images/infinity-wall-studio.jpg"
+        imageAlt="Lighthill Studio white infinity wall"
       />
 
       <section className="bg-paper text-ink">

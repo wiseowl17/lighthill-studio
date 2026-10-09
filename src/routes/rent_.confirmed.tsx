@@ -138,7 +138,7 @@ function ConfirmedPage() {
             </p>
           ) : null}
           <p className="mt-4 text-sm leading-relaxed text-ink-muted">
-            Leave the cyclorama as you found it. Tape and clamps are fine; no glitter, no paint.
+            Leave the infinity wall as you found it. Tape and clamps are fine; no glitter, no paint.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button variant="invert" size="lg" asChild>

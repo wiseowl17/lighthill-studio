@@ -10,6 +10,28 @@ import { useI18n } from "@/lib/i18n/provider";
 
 export type InquiryType = "shoot" | "rental";
 
+type Fields = { name: string; email: string; phone: string; idealDate: string; message: string };
+const EMPTY: Fields = { name: "", email: "", phone: "", idealDate: "", message: "" };
+/** Per-tab draft so a refresh, a back button or a failed send never loses a message. */
+const DRAFT_KEY = "lighthill:contact-draft";
+
+function readDraft(): Partial<Fields> {
+  try {
+    return JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? "{}") as Partial<Fields>;
+  } catch {
+    return {};
+  }
+}
+
+function writeDraft(fields: Fields | null) {
+  try {
+    if (fields) sessionStorage.setItem(DRAFT_KEY, JSON.stringify(fields));
+    else sessionStorage.removeItem(DRAFT_KEY);
+  } catch {
+    /* storage blocked: the form still works, it just won't survive a reload */
+  }
+}
+
 type ContactFormProps = {
   defaultType?: InquiryType;
   /** data/services.ts id carried from the homepage card the visitor tapped. */
@@ -20,7 +42,24 @@ export function ContactForm({ defaultType = "shoot", defaultService }: ContactFo
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [type, setType] = useState<InquiryType>(defaultType);
   const [service, setService] = useState(defaultService ?? "");
+  const [fields, setFields] = useState<Fields>(EMPTY);
   const { copy } = useI18n();
+
+  // Restore after hydration (sessionStorage is client-only).
+  useEffect(() => {
+    const draft = readDraft();
+    if (Object.values(draft).some(Boolean)) setFields({ ...EMPTY, ...draft });
+  }, []);
+
+  const field = (key: keyof Fields) => ({
+    name: key,
+    value: fields[key],
+    onChange: (e: { target: { value: string } }) => {
+      const next = { ...fields, [key]: e.target.value };
+      setFields(next);
+      writeDraft(next);
+    },
+  });
 
   useEffect(() => {
     setType(defaultType);
@@ -37,12 +76,10 @@ export function ContactForm({ defaultType = "shoot", defaultService }: ContactFo
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
     const kindLabel = type === "shoot" ? copy.contact.shoot : copy.contact.rental;
     const session = type === "shoot" && service ? serviceTitle(service) : "";
-    const idealDate = String(data.get("idealDate") ?? "").trim();
-    const message = String(data.get("message") ?? "").trim();
+    const idealDate = type === "shoot" ? fields.idealDate.trim() : "";
+    const message = fields.message.trim();
     // The desk inbox stores one message field, so the session and date ride
     // at the top of it as well as going to FormSubmit as their own fields.
     const header = [
@@ -50,9 +87,9 @@ export function ContactForm({ defaultType = "shoot", defaultService }: ContactFo
       idealDate ? `Ideal date: ${idealDate}` : "",
     ].filter(Boolean);
     const payload = {
-      name: String(data.get("name") ?? ""),
-      email: String(data.get("email") ?? ""),
-      phone: String(data.get("phone") ?? ""),
+      name: fields.name,
+      email: fields.email,
+      phone: fields.phone,
       projectType: kindLabel,
       ...(session ? { session } : {}),
       ...(idealDate ? { idealDate } : {}),
@@ -84,12 +121,27 @@ export function ContactForm({ defaultType = "shoot", defaultService }: ContactFo
       const deskOk = desk.status === "fulfilled" && desk.value.ok;
       if (!mailOk && !deskOk) throw new Error("Could not send");
       setStatus("sent");
-      form.reset();
+      setFields(EMPTY);
+      writeDraft(null);
       setType(defaultType);
       setService(defaultService ?? "");
     } catch {
       setStatus("error");
     }
+  }
+
+  function mailtoDraft() {
+    const session = type === "shoot" && service ? serviceTitle(service) : "";
+    const lines = [
+      fields.message,
+      "",
+      fields.name,
+      fields.phone,
+      session ? `Session: ${session}` : "",
+      fields.idealDate ? `Ideal date: ${fields.idealDate}` : "",
+    ].filter((line, i) => i < 2 || line);
+    const subject = `Lighthill Studio — ${session ? `${session} session` : type === "shoot" ? copy.contact.shoot : copy.contact.rental}`;
+    return `mailto:${site.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
   }
 
   if (status === "sent") {
@@ -111,16 +163,16 @@ export function ContactForm({ defaultType = "shoot", defaultService }: ContactFo
     <form onSubmit={onSubmit} className="grid gap-5">
       <div className="grid gap-2">
         <Label htmlFor="name">{copy.contact.name}</Label>
-        <Input id="name" name="name" required autoComplete="name" />
+        <Input id="name" {...field("name")} required autoComplete="name" />
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="grid gap-2">
           <Label htmlFor="email">{copy.contact.email}</Label>
-          <Input id="email" name="email" type="email" required autoComplete="email" />
+          <Input id="email" {...field("email")} type="email" required autoComplete="email" />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="phone">{copy.contact.phone} (optional)</Label>
-          <Input id="phone" name="phone" type="tel" autoComplete="tel" />
+          <Input id="phone" {...field("phone")} type="tel" autoComplete="tel" />
         </div>
       </div>
       <div className="grid gap-2">
@@ -169,21 +221,35 @@ export function ContactForm({ defaultType = "shoot", defaultService }: ContactFo
           </div>
           <div className="grid gap-2">
             <Label htmlFor="idealDate">Ideal date (optional)</Label>
-            <Input id="idealDate" name="idealDate" type="date" min={todayInTz()} />
+            <Input id="idealDate" {...field("idealDate")} type="date" min={todayInTz()} />
           </div>
         </div>
       ) : null}
       <div className="grid gap-2">
         <Label htmlFor="message">{copy.contact.message}</Label>
-        <Textarea id="message" name="message" required placeholder={copy.contact.placeholder} />
+        <Textarea
+          id="message"
+          {...field("message")}
+          required
+          placeholder={copy.contact.placeholder}
+        />
       </div>
       {status === "error" ? (
-        <p role="alert" className="text-sm text-danger">
-          {copy.contact.error}{" "}
-          <a href={`mailto:${site.contactEmail}`} className="underline underline-offset-4">
-            {site.contactEmail}
-          </a>
-        </p>
+        <div role="alert" className="space-y-1 text-sm text-danger">
+          <p>
+            {copy.contact.error}{" "}
+            <a href={`mailto:${site.contactEmail}`} className="underline underline-offset-4">
+              {site.contactEmail}
+            </a>
+          </p>
+          <p className="text-ink-muted">
+            Your message is still here.{" "}
+            <a href={mailtoDraft()} className="text-ink underline underline-offset-4">
+              Email it instead
+            </a>
+            , with everything you typed already filled in.
+          </p>
+        </div>
       ) : null}
       <Button type="submit" variant="invert" size="lg" disabled={status === "sending"}>
         {status === "sending" ? copy.contact.sending : copy.contact.send}

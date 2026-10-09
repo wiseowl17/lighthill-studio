@@ -13,7 +13,7 @@ export const services: Service[] = [
     title: "Maternity",
     kicker: "Portraits",
     description:
-      "Quiet, filmic sessions on the cyclorama. Made to feel like stills, not setups.",
+      "Quiet, filmic sessions on the infinity wall. Made to feel like stills, not setups.",
     image: "/images/maternity.jpg",
   },
   {
@@ -84,5 +84,5 @@ export const marqueeItems = [
   "Seasonals",
   "Celebrations",
   "Podcasts",
-  "Cyclorama",
+  "Infinity wall",
 ] as const;

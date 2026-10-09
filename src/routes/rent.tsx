@@ -59,9 +59,9 @@ export const Route = createFileRoute("/rent")({
   head: () =>
     pageHead({
       path: "/rent",
-      title: "Cyclorama Studio Rental, $55/hr | Lighthill, Lawrenceville GA",
+      title: "Infinity Wall Studio Rental, $55/hr | Lighthill, Lawrenceville GA",
       description:
-        "Instant-book the Lighthill cyclorama studio in Lawrenceville, GA, any hour of the day. $55 an hour, two-hour minimum, 20% off eight hours or more, 50% deposit to confirm.",
+        "Instant-book the Lighthill infinity wall studio in Lawrenceville, GA, any hour of the day. $55 an hour, two-hour minimum, 20% off eight hours or more, 50% deposit to confirm.",
     }),
 });
 
