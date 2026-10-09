@@ -373,13 +373,15 @@ function RentPage() {
                   <p className="text-sm text-ink-muted" aria-live="polite">
                     {roomOnly.discounted ? (
                       <>
-                        Room <span className="text-ink tabular-nums">{short(roomOnly.total)}</span>,
-                        20% off {short(roomOnly.full)}
+                        Studio{" "}
+                        <span className="text-ink tabular-nums">{short(roomOnly.total)}</span>, 20%
+                        off {short(roomOnly.full)}
                       </>
                     ) : (
                       <>
-                        Room <span className="text-ink tabular-nums">{short(roomOnly.total)}</span>{" "}
-                        · 20% off from 8 hours
+                        Studio{" "}
+                        <span className="text-ink tabular-nums">{short(roomOnly.total)}</span> · 20%
+                        off at 8+ hours
                       </>
                     )}
                   </p>
