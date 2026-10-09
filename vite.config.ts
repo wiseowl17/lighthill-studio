@@ -162,6 +162,8 @@ function authPopupPlugin(): Plugin {
   };
 }
 
+const MEDIA_CACHE = "public, max-age=604800, stale-while-revalidate=86400";
+
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
@@ -196,6 +198,13 @@ export default defineConfig(({ command, isPreview }) => ({
             // manifest + head-tag middleware). Nitro v3 defaults serverDir to
             // false, so removing this silently unwires /?install=1 on deploys.
             serverDir: "./server",
+            // public/ photos and video are not content-hashed, so cache for a
+            // week and revalidate in the background instead of every visit.
+            routeRules: {
+              "/images/**": { headers: { "cache-control": MEDIA_CACHE } },
+              "/videos/**": { headers: { "cache-control": MEDIA_CACHE } },
+              "/brand/**": { headers: { "cache-control": MEDIA_CACHE } },
+            },
           }),
         ]
       : []),

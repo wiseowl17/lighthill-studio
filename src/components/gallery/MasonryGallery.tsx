@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -74,25 +74,25 @@ export function MasonryGallery() {
 
       <div className="mt-8 columns-2 gap-2 sm:gap-3 lg:columns-3 lg:gap-4 xl:columns-4">
         {items.map((img, i) => (
-          <motion.button
+          // CSS `rise` (not motion `initial`) so tiles paint before hydration;
+          // it replays when a filter change remounts the keyed tiles.
+          <button
             key={img.id}
             type="button"
-            layout={false}
-            initial={reduce ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: Math.min(i, 8) * 0.04 }}
             onClick={() => setActive(img)}
-            className="mb-2 block w-full break-inside-avoid overflow-hidden bg-paper-muted text-left sm:mb-3 lg:mb-4"
+            className="rise mb-2 block w-full break-inside-avoid overflow-hidden bg-paper-muted text-left sm:mb-3 lg:mb-4"
+            style={{ "--rise-delay": `${Math.min(i, 8) * 40}ms` } as CSSProperties}
           >
             <Photo
               src={img.src}
               alt={img.alt}
               width={img.width}
               height={img.height}
+              loading={i < 4 ? "eager" : "lazy"}
               sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
               className="h-auto w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.03]"
             />
-          </motion.button>
+          </button>
         ))}
       </div>
 

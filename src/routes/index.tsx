@@ -7,7 +7,7 @@ import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/home/Marquee";
 import { SelectedWork } from "@/components/home/SelectedWork";
 import { Reveal } from "@/components/motion/Reveal";
-import { Photo } from "@/components/media/Photo";
+import { Photo, webpSrcSet } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
 import { businessJsonLd, pageHead } from "@/lib/seo";
 
@@ -29,6 +29,8 @@ export const Route = createFileRoute("/")({
           rel: "preload",
           as: "image",
           href: "/images/hero-poster.webp",
+          imageSrcSet: webpSrcSet("/images/hero-poster.jpg"),
+          imageSizes: "100vw",
           type: "image/webp",
         },
       ],
@@ -94,6 +96,7 @@ function Home() {
                       <Photo
                         src={service.image}
                         alt={text.title}
+                        sizes="(min-width: 1024px) 25vw, 50vw"
                         className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                         style={
                           service.objectPosition

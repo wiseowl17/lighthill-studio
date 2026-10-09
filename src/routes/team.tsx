@@ -3,7 +3,7 @@ import { Instagram } from "lucide-react";
 import { team } from "@data/team";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/PageHero";
-import { Reveal } from "@/components/motion/Reveal";
+import type { CSSProperties } from "react";
 import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
 import { canonical } from "@/lib/seo";
@@ -36,12 +36,19 @@ function TeamPage() {
       </div>
       <div className="mx-auto grid max-w-7xl items-stretch gap-10 px-5 pt-16 md:grid-cols-2 md:px-8">
         {team.map((member, i) => (
-          <Reveal key={member.id} delay={i * 0.06} className="h-full">
+          // Above the fold, so CSS `rise` rather than <Reveal> (no hydration wait).
+          <div
+            key={member.id}
+            className="rise h-full"
+            style={{ "--rise-delay": `${120 + i * 60}ms` } as CSSProperties}
+          >
             <article className="flex h-full flex-col">
               <div className="aspect-portrait overflow-hidden bg-paper-muted">
                 <Photo
                   src={member.image}
                   alt={member.name}
+                  loading="eager"
+                  sizes="(min-width: 768px) 50vw, 100vw"
                   className="h-full w-full object-cover"
                   style={{
                     objectPosition: member.objectPosition ?? "center 18%",
@@ -65,7 +72,7 @@ function TeamPage() {
                 {member.id === "luz" ? copy.team.luz : copy.team.hillary}
               </p>
             </article>
-          </Reveal>
+          </div>
         ))}
       </div>
       <div className="mx-auto max-w-7xl px-5 pt-16 md:px-8">

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useReducedMotion } from "motion/react";
 import { CtaPair } from "@/components/layout/CtaPair";
 import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
@@ -70,9 +70,16 @@ export function Hero() {
     video.addEventListener("playing", stopPollOnPlay);
 
     const giveUp = window.setTimeout(() => window.clearInterval(poll), 8000);
-    const fallbackTimer = window.setTimeout(() => {
-      if (!liveRef.current) setUseMotionImage(true);
-    }, 1400);
+    // Show the animated WebP only when autoplay is blocked (data loaded, yet
+    // paused — e.g. iOS Low Power Mode). On a slow connection the video simply
+    // hasn't buffered; fetching a second 860 KB file then only slows it more.
+    const fallbackTimer = window.setInterval(() => {
+      if (liveRef.current) return window.clearInterval(fallbackTimer);
+      if (video.readyState >= 2 && video.paused) {
+        setUseMotionImage(true);
+        window.clearInterval(fallbackTimer);
+      }
+    }, 700);
 
     const onVis = () => {
       if (!document.hidden) tryPlay(video);
@@ -89,7 +96,7 @@ export function Hero() {
     return () => {
       window.clearInterval(poll);
       window.clearTimeout(giveUp);
-      window.clearTimeout(fallbackTimer);
+      window.clearInterval(fallbackTimer);
       video.removeEventListener("loadedmetadata", onReady);
       video.removeEventListener("loadeddata", onReady);
       video.removeEventListener("canplay", onReady);
@@ -116,6 +123,7 @@ export function Hero() {
       <Photo
         src="/images/hero-poster.jpg"
         alt=""
+        sizes="100vw"
         loading="eager"
         fetchPriority="high"
         className="absolute inset-0 h-full w-full object-cover object-[center_62%]"
@@ -141,7 +149,7 @@ export function Hero() {
             }}
             className="absolute inset-0 h-full w-full object-cover object-[center_62%] transition-opacity duration-200"
             src="/videos/hero.mp4"
-            poster="/images/hero-poster.jpg"
+            poster="/images/hero-poster-800.webp"
             autoPlay
             muted
             loop
@@ -162,38 +170,27 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-bg/85 to-transparent" />
 
       <div className="relative mx-auto w-full max-w-7xl px-5 pt-36 pb-14 md:px-8 md:pb-24">
-        <motion.p
-          initial={reduce ? false : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="text-xs font-medium tracking-[0.22em] text-fg-muted uppercase"
+        <p
+          className="rise text-xs font-medium tracking-[0.22em] text-fg-muted uppercase"
+          style={{ "--rise-y": "10px" } as CSSProperties}
         >
           {copy.hero.eyebrow}
-        </motion.p>
-        <motion.h1
-          initial={reduce ? false : { opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-4 max-w-5xl font-display text-display text-fg italic"
+        </p>
+        <h1
+          className="rise mt-4 max-w-5xl font-display text-display text-fg italic"
+          style={{ "--rise-y": "18px", "--rise-delay": "60ms" } as CSSProperties}
         >
           {copy.hero.title}
-        </motion.h1>
-        <motion.p
-          initial={reduce ? false : { opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-5 max-w-lg text-lead leading-relaxed text-fg-muted"
+        </h1>
+        <p
+          className="rise mt-5 max-w-lg text-lead leading-relaxed text-fg-muted"
+          style={{ "--rise-y": "14px", "--rise-delay": "140ms" } as CSSProperties}
         >
           {copy.hero.lede}
-        </motion.p>
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-9"
-        >
+        </p>
+        <div className="rise mt-9" style={{ "--rise-delay": "220ms" } as CSSProperties}>
           <CtaPair />
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Self-hosted (Latin subset) so text doesn't wait on fonts.googleapis.com. */
+@import "@fontsource/cormorant-garamond/latin-500.css";
+@import "@fontsource/cormorant-garamond/latin-500-italic.css";
+@import "@fontsource/cormorant-garamond/latin-600.css";
+@import "@fontsource/cormorant-garamond/latin-600-italic.css";
+@import "@fontsource/outfit/latin-300.css";
+@import "@fontsource/outfit/latin-400.css";
+@import "@fontsource/outfit/latin-500.css";
+@import "@fontsource/outfit/latin-600.css";
+
 @theme {
   --color-bg: #0c0b0a;
   --color-bg-elevated: #161412;
@@ -102,6 +112,26 @@
   .marquee-track {
     animation: none !important;
   }
+
+  .rise {
+    animation: none !important;
+  }
+}
+
+/*
+ * Above-the-fold entrance. Pure CSS so it starts on first paint, before the
+ * JS bundle hydrates; a motion.div `initial` would keep the headline at
+ * opacity 0 until hydration and push Largest Contentful Paint past 3 s.
+ */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--rise-y, 12px), 0);
+  }
+}
+
+.rise {
+  animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--rise-delay, 0ms) both;
 }
 
 @media (pointer: fine) {

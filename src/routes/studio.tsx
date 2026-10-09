@@ -55,6 +55,7 @@ function StudioPage() {
                       <Photo
                         src={feature.image}
                         alt={text.title}
+                        sizes="(min-width: 768px) 58vw, 100vw"
                         className="h-full w-full object-cover"
                         style={{
                           objectPosition: feature.objectPosition ?? "center",

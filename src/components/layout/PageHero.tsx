@@ -1,4 +1,4 @@
-import { Reveal } from "@/components/motion/Reveal";
+import type { CSSProperties } from "react";
 import { Photo } from "@/components/media/Photo";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +24,8 @@ export function PageHero({
   return (
     <section className={cn("bg-bg pt-32 pb-10 md:pt-36 md:pb-14", className)}>
       <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <Reveal>
+        {/* CSS entrance, not <Reveal>: the h1 is the page's LCP element. */}
+        <div className="rise">
           {eyebrow ? (
             <p className="text-[0.7rem] font-medium tracking-[0.22em] text-fg-muted uppercase">
               {eyebrow}
@@ -38,11 +39,11 @@ export function PageHero({
               {lede}
             </p>
           ) : null}
-        </Reveal>
+        </div>
       </div>
       {image ? (
         <div className="mx-auto mt-12 max-w-7xl overflow-hidden px-5 md:mt-16 md:px-8">
-          <Reveal>
+          <div className="rise" style={{ "--rise-delay": "120ms" } as CSSProperties}>
             <div className="aspect-wide overflow-hidden bg-bg-elevated">
               <Photo
                 src={image}
@@ -54,7 +55,7 @@ export function PageHero({
                 )}
               />
             </div>
-          </Reveal>
+          </div>
         </div>
       ) : null}
     </section>
