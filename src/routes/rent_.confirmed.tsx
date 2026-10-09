@@ -123,8 +123,18 @@ function ConfirmedPage() {
           )}
           {details ? (
             <p className="mt-6 text-sm leading-relaxed text-ink-muted">
-              An invoice for the remaining {money(details.balanceCents)} is on the desk. Address and
-              entry notes will come from {site.contactEmail}.
+              The studio is at{" "}
+              <a
+                href={site.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink underline underline-offset-4"
+              >
+                {site.address.street}, {site.address.city}, {site.address.region}{" "}
+                {site.address.postalCode}
+              </a>
+              . Entry notes will come from {site.contactEmail}, and the remaining{" "}
+              {money(details.balanceCents)} is due when you arrive.
             </p>
           ) : null}
           <p className="mt-4 text-sm leading-relaxed text-ink-muted">

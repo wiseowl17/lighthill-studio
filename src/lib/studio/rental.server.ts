@@ -19,8 +19,11 @@ import {
 } from "./stripe.server";
 
 const DAYS_AHEAD = 60;
-const SLOT_START_MIN = 7 * 60;
-const SLOT_END_MIN = 22 * 60;
+// The studio is open 24 hours (owner-confirmed 2026-10-08), so any half hour
+// can start a rental. Bookings may run past midnight; conflicts are checked on
+// absolute instants, and listBusy reaches one day past the last bookable date.
+const SLOT_START_MIN = 0;
+const SLOT_END_MIN = 23 * 60 + 30;
 const SLOT_STEP = 30;
 
 type BusyWindow = { start: Date; end: Date };

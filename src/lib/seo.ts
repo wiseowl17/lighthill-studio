@@ -59,6 +59,12 @@ export function businessJsonLd() {
     telephone: site.phone,
     email: site.email,
     priceRange: "$$",
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      opens: "00:00",
+      closes: "23:59",
+    },
     address: {
       "@type": "PostalAddress",
       streetAddress: site.address.street,
