@@ -6,6 +6,7 @@ import {
   Scripts,
   useRouterState,
 } from "@tanstack/react-router";
+import { Analytics } from "@vercel/analytics/react";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { Header } from "@/components/layout/Header";
@@ -116,6 +117,7 @@ function AppChrome() {
       {staff ? null : <Header />}
       <Outlet />
       {staff ? null : <Footer />}
+      {staff ? null : <Analytics />}
     </>
   );
 }

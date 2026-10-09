@@ -11,6 +11,9 @@ import type { FaqItem } from "@data/faq";
  */
 export const SITE_ORIGIN = "https://www.lighthillstudio.com";
 
+/** Google Business Profile. Ties the site to the Maps listing and its reviews. */
+const GOOGLE_MAPS_URL = "https://maps.app.goo.gl/bXjkh5zeN1Xq2rrt5";
+
 type PageHeadInput = {
   path: string;
   title: string;
@@ -67,7 +70,8 @@ export function businessJsonLd() {
       { "@type": "AdministrativeArea", name: "Gwinnett County, GA" },
       { "@type": "City", name: "Atlanta, GA" },
     ],
-    sameAs: [site.instagram, site.peerspaceUrl],
+    hasMap: GOOGLE_MAPS_URL,
+    sameAs: [site.instagram, site.peerspaceUrl, GOOGLE_MAPS_URL],
     knowsAbout: [
       "Cyclorama studio",
       "Maternity photography",
