@@ -46,7 +46,7 @@ export const faq: FaqItem[] = [
     group: "Rentals",
     question: "How do I rent the studio?",
     answer:
-      "Book on this site with Rent now — live availability, 50% deposit, instant confirmation. Lighting, paper, and an assistant are add-ons at checkout. Peerspace stays open as a second door.",
+      "Book on this site with Rent Studio — live availability, 50% deposit, instant confirmation. Lighting, paper, and an assistant are add-ons at checkout. Peerspace stays open as a second door.",
   },
   {
     id: "rental-minimum",
@@ -60,7 +60,7 @@ export const faq: FaqItem[] = [
     group: "Rentals",
     question: "Does the rental include lights?",
     answer:
-      "No. The base rate is the room, the cyclorama, Wi-Fi, parking, and the dressing area. Bring your own kit, or add flashes, modifiers, and paper through the host. We are happy to walk first-time renters through the wall.",
+      "No. The base rate is the room, the cyclorama, Wi-Fi, parking, and the dressing area. Bring your own kit, or add flashes, modifiers, and paper at checkout. We are happy to walk first-time renters through the wall.",
   },
   {
     id: "rental-cancel",

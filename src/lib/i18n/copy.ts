@@ -251,7 +251,7 @@ const en = {
       },
       "how-to-rent": {
         q: "How do I rent the studio?",
-        a: "Book on this site with Rent now — live availability, 50% deposit, instant confirmation. Lighting, paper, and an assistant are add-ons at checkout. Peerspace stays open as a second door.",
+        a: "Book on this site with Rent Studio — live availability, 50% deposit, instant confirmation. Lighting, paper, and an assistant are add-ons at checkout. Peerspace stays open as a second door.",
       },
       "rental-minimum": {
         q: "Is there a minimum rental?",
@@ -259,7 +259,7 @@ const en = {
       },
       "rental-gear": {
         q: "Does the rental include lights?",
-        a: "No. The base rate is the room, the cyclorama, Wi-Fi, parking, and the dressing area. Bring your own kit, or add flashes, modifiers, and paper through the host. We are happy to walk first-time renters through the wall.",
+        a: "No. The base rate is the room, the cyclorama, Wi-Fi, parking, and the dressing area. Bring your own kit, or add flashes, modifiers, and paper at checkout. We are happy to walk first-time renters through the wall.",
       },
       "rental-cancel": {
         q: "What is the rental cancellation policy?",
@@ -282,9 +282,9 @@ const en = {
   contact: {
     eyebrow: "Contact",
     title: "Tell us what you are making.",
-    lede: "In-house sessions start with a note — we’ll send a quote. Studio rentals book instantly on Rent now — or ask us anything first.",
+    lede: "In-house sessions start with a note — we’ll send a quote. Studio rentals book instantly with Rent Studio — or ask us anything first.",
     studio: "Studio",
-    preferRent: "Prefer to rent? Rent now",
+    preferRent: "Prefer to rent? Rent Studio",
     name: "Name",
     email: "Email",
     phone: "Phone",

@@ -59,7 +59,7 @@ function PricingPage() {
               >
                 <p
                   className={cn(
-                    "text-[0.68rem] tracking-[0.16em] uppercase",
+                    "text-xs tracking-[0.16em] uppercase",
                     pkg.featured ? "text-paper/60" : "text-ink-muted",
                   )}
                 >
@@ -122,7 +122,7 @@ function PricingPage() {
           <div className="mt-12 grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
             {rentalRates.map((rate) => (
               <div key={rate.id} className="bg-bg p-7">
-                <p className="text-[0.68rem] tracking-[0.16em] text-fg-subtle uppercase">
+                <p className="text-xs tracking-[0.16em] text-fg-subtle uppercase">
                   {rate.name}
                 </p>
                 {rate.id !== "hourly" ? (

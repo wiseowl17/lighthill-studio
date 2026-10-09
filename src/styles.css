@@ -18,14 +18,16 @@
   --color-ink: #141210;
   --color-fg: #f4f1ea;
   --color-fg-muted: #a39e94;
-  --color-fg-subtle: #6f6a62;
+  /* ≥4.5:1 on bg (5.3) and bg-elevated (4.95); was #6f6a62 at 3.67. */
+  --color-fg-subtle: #8a847a;
   --color-accent: #e8e2d6;
   --color-accent-fg: #141210;
   --color-border: rgb(244 241 234 / 0.12);
   --color-border-strong: rgb(244 241 234 / 0.22);
   --color-ink-border: rgb(20 18 16 / 0.12);
   --color-ink-muted: #6a655c;
-  --color-ink-subtle: #8a847a;
+  /* ≥4.5:1 on paper (5.44) and paper-muted (4.76); was #8a847a at 3.29. */
+  --color-ink-subtle: #66615a;
   --color-danger: #9b2c22;
 
   --font-display: "Cormorant Garamond", "Times New Roman", ui-serif, Georgia, serif;

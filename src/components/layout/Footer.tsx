@@ -25,7 +25,7 @@ export function Footer() {
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7">
             <div>
-              <p className="text-[0.68rem] font-medium tracking-[0.16em] text-fg-subtle uppercase">
+              <p className="text-xs font-medium tracking-[0.16em] text-fg-subtle uppercase">
                 {copy.footer.visit}
               </p>
               <ul className="mt-4 space-y-2 text-sm text-fg-muted">
@@ -39,7 +39,7 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <p className="text-[0.68rem] font-medium tracking-[0.16em] text-fg-subtle uppercase">
+              <p className="text-xs font-medium tracking-[0.16em] text-fg-subtle uppercase">
                 {copy.footer.studio}
               </p>
               <ul className="mt-4 space-y-2 text-sm text-fg-muted">
@@ -60,7 +60,7 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <p className="text-[0.68rem] font-medium tracking-[0.16em] text-fg-subtle uppercase">
+              <p className="text-xs font-medium tracking-[0.16em] text-fg-subtle uppercase">
                 {copy.footer.inquire}
               </p>
               <ul className="mt-4 space-y-3 text-sm text-fg-muted">

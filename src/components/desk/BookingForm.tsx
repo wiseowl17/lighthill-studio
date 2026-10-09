@@ -276,7 +276,7 @@ export function BookingForm({
 
         {showAddons ? (
           <section>
-            <p className="mb-3 text-[0.68rem] font-medium tracking-[0.16em] text-ink-muted uppercase">
+            <p className="mb-3 text-xs font-medium tracking-[0.16em] text-ink-muted uppercase">
               Add-ons
             </p>
             <div className="space-y-3">
@@ -362,7 +362,7 @@ export function BookingForm({
       </form>
 
       <aside className="h-fit border border-ink-border bg-paper-muted/50 p-5">
-        <p className="text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
+        <p className="text-xs tracking-[0.16em] text-ink-muted uppercase">
           Quote
         </p>
         <ul className="mt-4 space-y-2 text-sm">

@@ -46,7 +46,7 @@ export function DeskShell({
             <Logo variant="black" imgClassName="h-9 md:h-10" />
             <Link
               to="/desk"
-              className="hidden text-[0.68rem] tracking-[0.18em] text-ink-muted uppercase sm:block"
+              className="hidden text-xs tracking-[0.18em] text-ink-muted uppercase sm:block"
             >
               Desk
             </Link>

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/home/Marquee";
 import { SelectedWork } from "@/components/home/SelectedWork";
+import { ReviewStrip } from "@/components/home/ReviewStrip";
+import { team } from "@data/team";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo, webpSrcSet } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
@@ -45,28 +47,44 @@ function Home() {
       <Hero />
       <Marquee />
 
+      {/* The people first: the studio section further down already sells the
+          room, so this one introduces who will be behind the camera. */}
       <section className="bg-paper text-ink">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-12 md:gap-16 md:px-8 md:py-28">
-          <Reveal className="md:col-span-5">
-            <p className="text-xs font-medium tracking-[0.2em] text-ink-muted uppercase">
-              {copy.home.studioEyebrow}
-            </p>
-            <h2 className="mt-4 font-display text-headline">{copy.home.studioTitle}</h2>
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 md:grid-cols-12 md:gap-16 md:px-8 md:py-28">
+          <Reveal className="md:col-span-6">
+            <div className="grid grid-cols-2 gap-3">
+              {team.map((member) => (
+                <Link key={member.id} to="/team" className="group block">
+                  <div className="aspect-portrait overflow-hidden bg-paper-muted">
+                    <Photo
+                      src={member.image}
+                      alt={member.name}
+                      sizes="(min-width: 768px) 25vw, 50vw"
+                      className="h-full w-full object-cover"
+                      style={{ objectPosition: member.objectPosition ?? "center 18%" }}
+                    />
+                  </div>
+                  <p className="mt-3 font-display text-xl">{member.name}</p>
+                  <p className="text-sm text-ink-muted">{copy.team.coOwner}</p>
+                </Link>
+              ))}
+            </div>
           </Reveal>
-          <Reveal delay={0.08} className="md:col-span-6 md:col-start-7">
-            <p className="text-lead leading-relaxed text-ink-muted">{copy.home.studioP1}</p>
-            <p className="mt-5 leading-relaxed text-ink-muted">{copy.home.studioP2}</p>
+          <Reveal delay={0.08} className="md:col-span-5 md:col-start-8">
+            <p className="text-xs font-medium tracking-[0.2em] text-ink-muted uppercase">
+              {copy.team.eyebrow}
+            </p>
+            <h2 className="mt-4 font-display text-headline">{copy.team.title}</h2>
+            <p className="mt-6 text-lead leading-relaxed text-ink-muted">{copy.team.body}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button variant="invert" size="lg" asChild>
-                <Link to="/studio">
-                  {copy.home.seeSpace}
+                <Link to="/contact" search={{ type: "shoot" }}>
+                  {copy.home.bookTeam}
                   <ArrowRight className="size-3.5" />
                 </Link>
               </Button>
               <Button variant="paperOutline" size="lg" asChild>
-                <Link to="/contact" search={{ type: "shoot" }}>
-                  {copy.home.bookTeam}
-                </Link>
+                <Link to="/team">Meet the team</Link>
               </Button>
             </div>
           </Reveal>
@@ -89,7 +107,7 @@ function Home() {
                 <Reveal key={service.id} delay={i * 0.03} className="h-full">
                   <Link
                     to="/contact"
-                    search={{ type: "shoot" }}
+                    search={{ type: "shoot", service: service.id }}
                     className="group flex h-full flex-col overflow-hidden bg-bg-elevated"
                   >
                     <div className="aspect-portrait overflow-hidden">
@@ -152,10 +170,7 @@ function Home() {
           <Reveal delay={0.1} className="md:col-span-4 md:col-start-9">
             <dl className="divide-y divide-border border-y border-border">
               {studioSpecs.map((spec) => (
-                <div
-                  key={spec.label}
-                  className="flex items-baseline justify-between gap-4 py-4"
-                >
+                <div key={spec.label} className="flex items-baseline justify-between gap-4 py-4">
                   <dt className="text-xs tracking-[0.16em] text-fg-subtle uppercase">
                     {copy.studio.specs[spec.label as keyof typeof copy.studio.specs] ?? spec.label}
                   </dt>
@@ -168,6 +183,12 @@ function Home() {
       </section>
 
       <SelectedWork />
+
+      <section className="border-b border-ink-border bg-paper text-ink">
+        <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
+          <ReviewStrip pick={(r) => ["Jorlene G.", "Kito R.", "Marisol H."].includes(r.author)} />
+        </div>
+      </section>
 
       <section className="bg-paper text-ink">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-8 px-5 py-24 md:flex-row md:items-end md:justify-between md:px-8 md:py-32">

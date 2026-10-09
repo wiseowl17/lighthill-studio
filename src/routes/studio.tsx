@@ -71,7 +71,7 @@ function StudioPage() {
                         : "md:col-span-4 md:col-start-9"
                     }
                   >
-                    <p className="text-[0.68rem] tracking-[0.18em] text-ink-muted uppercase">
+                    <p className="text-xs tracking-[0.18em] text-ink-muted uppercase">
                       0{i + 1}
                     </p>
                     <h2 className="mt-3 font-display text-title">{text.title}</h2>

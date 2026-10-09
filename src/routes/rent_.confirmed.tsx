@@ -82,7 +82,7 @@ function ConfirmedPage() {
           <span className="flex size-10 items-center justify-center rounded-full bg-ink text-paper">
             <Check className="size-5" strokeWidth={1.5} />
           </span>
-          <p className="mt-6 text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
+          <p className="mt-6 text-xs tracking-[0.16em] text-ink-muted uppercase">
             {paid ? "Confirmation" : "Receipt"}
           </p>
           <h2 className="mt-2 font-display text-3xl">

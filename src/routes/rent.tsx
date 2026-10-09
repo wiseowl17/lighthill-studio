@@ -12,6 +12,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { site } from "@data/site";
 import { PageHero } from "@/components/layout/PageHero";
 import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
+import { ReviewStrip } from "@/components/home/ReviewStrip";
+import { ratings } from "@data/reviews";
+
+const peerspace = ratings.find((r) => r.source === "Peerspace")!;
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Field } from "@/components/desk/Field";
@@ -644,12 +648,21 @@ function RentPage() {
                 </ul>
                 <div className="mt-5 flex items-center gap-3 text-sm text-ink-muted">
                   <PeerspaceMark />
-                  <span>Prefer Peerspace? The room is listed there too.</span>
+                  <span>
+                    Rated {peerspace.rating.toFixed(1)} by {peerspace.count} renters on Peerspace.
+                    You can book it there too.
+                  </span>
                 </div>
               </div>
             </aside>
           </form>
         )}
+
+        <ReviewStrip
+          title="From people who rented the room"
+          pick={(r) => r.kind === "rental" && r.author !== "Marisol H."}
+          className="mt-24"
+        />
       </div>
 
       {ready && !loading ? (

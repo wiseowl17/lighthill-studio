@@ -78,7 +78,7 @@ function InboxPage() {
             type="button"
             onClick={() => setFilter(item.id)}
             className={cn(
-              "h-10 px-3 text-[0.68rem] tracking-[0.14em] uppercase",
+              "h-10 px-3 text-xs tracking-[0.14em] uppercase",
               filter === item.id ? "bg-ink text-paper" : "border border-ink-border text-ink-muted",
             )}
           >

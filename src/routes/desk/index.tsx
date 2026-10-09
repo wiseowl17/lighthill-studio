@@ -130,7 +130,7 @@ function Stat({
 }) {
   return (
     <Link to={to} className="border border-ink-border px-4 py-4">
-      <p className="text-[0.65rem] tracking-[0.16em] text-ink-muted uppercase">{label}</p>
+      <p className="text-xs tracking-[0.16em] text-ink-muted uppercase">{label}</p>
       <p className="mt-2 font-display text-4xl tabular-nums">{value}</p>
     </Link>
   );

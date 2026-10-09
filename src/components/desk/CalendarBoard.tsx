@@ -224,7 +224,7 @@ export function CalendarBoard() {
 
           {hasAllDay ? (
             <>
-              <div className="border-b border-ink-border py-2 pr-2 text-right text-[0.65rem] text-ink-subtle">
+              <div className="border-b border-ink-border py-2 pr-2 text-right text-xs text-ink-subtle">
                 All day
               </div>
               {days.map((day) => {
@@ -241,7 +241,7 @@ export function CalendarBoard() {
                         key={block.key}
                         block={block}
                         className={cn(
-                          "block px-1.5 py-1 text-[0.65rem] leading-tight",
+                          "block px-1.5 py-1 text-xs leading-tight",
                           floorBlockClass(block.kind, block.status),
                         )}
                       />
@@ -284,7 +284,7 @@ export function CalendarBoard() {
       </ul>
 
       <div className="mt-10 md:hidden">
-        <p className="text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
+        <p className="text-xs tracking-[0.16em] text-ink-muted uppercase">
           This day
         </p>
         {blocks.filter((b) => overlapsDay(b.startsAt, b.endsAt, mode === "day" ? cursor : today))
@@ -340,7 +340,7 @@ function HourRow({
 
   return (
     <>
-      <div className="border-b border-ink-border py-2 pr-2 text-right text-[0.65rem] text-ink-subtle tabular-nums">
+      <div className="border-b border-ink-border py-2 pr-2 text-right text-xs text-ink-subtle tabular-nums">
         {label}
       </div>
       {days.map((day) => {
@@ -373,7 +373,7 @@ function HourRow({
                   key={block.key}
                   block={block}
                   className={cn(
-                    "absolute inset-x-1 z-10 overflow-hidden px-1.5 py-1 text-[0.65rem] leading-tight",
+                    "absolute inset-x-1 z-10 overflow-hidden px-1.5 py-1 text-xs leading-tight",
                     floorBlockClass(block.kind, block.status),
                   )}
                   style={{

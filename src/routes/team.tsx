@@ -64,7 +64,7 @@ function TeamPage() {
                 <Instagram className="size-4 shrink-0" strokeWidth={1.5} aria-hidden />
                 {member.instagramHandle}
               </a>
-              <p className="mt-5 text-[0.68rem] tracking-[0.16em] text-ink-muted uppercase">
+              <p className="mt-5 text-xs tracking-[0.16em] text-ink-muted uppercase">
                 {copy.team.coOwner}
               </p>
               <h2 className="mt-2 font-display text-4xl">{member.name}</h2>
