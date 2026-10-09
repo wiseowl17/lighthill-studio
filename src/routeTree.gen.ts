@@ -628,4 +628,26 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
-  RentRoute: Re
+  RentRoute: RentRoute,
+  StudioRoute: StudioRoute,
+  TeamRoute: TeamRoute,
+  ColorfulConfirmedRoute: ColorfulConfirmedRoute,
+  EventConfirmedRoute: EventConfirmedRoute,
+  RentConfirmedRoute: RentConfirmedRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiGoogleCallbackRoute: ApiGoogleCallbackRoute,
+  ApiGoogleConnectRoute: ApiGoogleConnectRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
+}
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
