@@ -17,6 +17,7 @@ export type GalleryImage = {
   category: Exclude<GalleryCategory, "All">;
   width: number;
   height: number;
+  /** Legacy flag; the homepage now uses `selectedWork` below. */
   featured?: boolean;
 };
 
@@ -453,5 +454,22 @@ export const galleryImages: GalleryImage[] = [
     category: "Studio",
     width: 900,
     height: 1600,
-  }
+  },
+];
+
+/**
+ * Homepage "Selected work": eight photos shown as an even 3:4 grid
+ * (2 columns on phones, 4 from tablet up), so rows always end flush.
+ * Order matters: each phone row and each desktop row mixes services.
+ * Every id must exist above; `focus` is the CSS object-position for the crop.
+ */
+export const selectedWork: Array<{ id: string; focus?: string }> = [
+  { id: "maternity-blue" },
+  { id: "newborn-bucket" },
+  { id: "brand-laugh" },
+  { id: "seasonal-family", focus: "45% center" },
+  { id: "headshot-chin", focus: "center 30%" },
+  { id: "cele-disco-champagne", focus: "70% center" },
+  { id: "maternity-couple" },
+  { id: "newborn-santa" },
 ];

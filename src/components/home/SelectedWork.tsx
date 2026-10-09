@@ -1,12 +1,17 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { galleryImages } from "@data/gallery";
+import { galleryImages, selectedWork } from "@data/gallery";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo } from "@/components/media/Photo";
 import { useI18n } from "@/lib/i18n/provider";
 
-const picks = galleryImages.filter((img) => img.featured);
+// Uniform 3:4 crops: mixed portrait/square/landscape files in CSS columns left
+// every column a different height. Unknown ids are skipped, never rendered blank.
+const picks = selectedWork.flatMap(({ id, focus }) => {
+  const img = galleryImages.find((g) => g.id === id);
+  return img ? [{ ...img, focus }] : [];
+});
 
 export function SelectedWork() {
   const { copy } = useI18n();
@@ -18,9 +23,7 @@ export function SelectedWork() {
             <p className="text-xs font-medium tracking-[0.2em] text-fg-muted uppercase">
               {copy.home.selectedEyebrow}
             </p>
-            <h2 className="mt-4 font-display text-headline">
-              {copy.home.selectedTitle}
-            </h2>
+            <h2 className="mt-4 font-display text-headline">{copy.home.selectedTitle}</h2>
           </Reveal>
           <Reveal delay={0.08}>
             <Button variant="outline" size="lg" asChild>
@@ -31,22 +34,28 @@ export function SelectedWork() {
             </Button>
           </Reveal>
         </div>
-        <div className="mt-14 columns-2 gap-2 sm:gap-3 lg:columns-3 lg:gap-4">
+        <ul className="mt-14 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4 lg:gap-4">
           {picks.map((img, i) => (
-            <Reveal key={img.id} delay={i * 0.04} className="mb-2 break-inside-avoid sm:mb-3 lg:mb-4">
-              <Link to="/gallery" className="group block overflow-hidden bg-bg-elevated">
-                <Photo
-                  src={img.src}
-                  alt={img.alt}
-                  width={img.width}
-                  height={img.height}
-                  sizes="(min-width: 1024px) 33vw, 50vw"
-                  className="h-auto w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
-                />
-              </Link>
-            </Reveal>
+            <li key={img.id}>
+              <Reveal delay={(i % 4) * 0.05}>
+                <Link
+                  to="/gallery"
+                  className="group block aspect-portrait overflow-hidden bg-bg-elevated"
+                >
+                  <Photo
+                    src={img.src}
+                    alt={img.alt}
+                    width={img.width}
+                    height={img.height}
+                    sizes="(min-width: 768px) 25vw, 50vw"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                    style={img.focus ? { objectPosition: img.focus } : undefined}
+                  />
+                </Link>
+              </Reveal>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

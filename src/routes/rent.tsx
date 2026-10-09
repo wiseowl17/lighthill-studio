@@ -8,7 +8,7 @@ import {
   type Ref,
 } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { site } from "@data/site";
 import { PageHero } from "@/components/layout/PageHero";
 import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
@@ -191,6 +191,13 @@ function RentPage() {
     [paper, flashes, softboxes, assistant],
   );
   const quote = quoteBooking({ kind: "rental", durationMinutes, addons });
+  // Room price alone, shown beside the hours picker.
+  const roomQuote = quoteBooking({ kind: "rental", durationMinutes, addons: [] });
+  const roomOnly = {
+    total: roomQuote.totalCents,
+    full: roomQuote.lines[0]?.cents ?? roomQuote.totalCents,
+    discounted: roomQuote.lines.length > 1,
+  };
   const dueNow = depositCents(quote.totalCents);
   const balance = quote.totalCents - dueNow;
 
@@ -336,28 +343,47 @@ function RentPage() {
           >
             <div className="space-y-12 lg:col-span-7">
               <Step n={1} title={copy.rent.hours}>
-                <div className="flex flex-wrap gap-2">
-                  {Array.from({ length: 13 - minHours }, (_, i) => i + minHours).map((value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      aria-pressed={hours === value}
-                      aria-label={`${value} hours`}
-                      onClick={() => setHours(value)}
-                      className={cn(
-                        "h-11 min-w-11 border px-3 text-sm tabular-nums",
-                        hours === value
-                          ? "border-ink bg-ink text-paper"
-                          : "border-ink-border bg-paper text-ink hover:border-ink/40",
-                      )}
+                {/* One native select instead of 11 buttons: same choice, a fraction of
+                    the space, and the phone's own picker on mobile. */}
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+                  <label htmlFor="rentHours" className="sr-only">
+                    {copy.rent.hours}
+                  </label>
+                  <div className="relative w-full sm:w-56">
+                    <select
+                      id="rentHours"
+                      value={hours}
+                      onChange={(e) => setHours(Number(e.target.value))}
+                      className="h-12 w-full appearance-none rounded-md border border-ink-border bg-paper px-3.5 pr-10 font-sans text-sm text-ink tabular-nums outline-none focus-visible:border-ink/40 focus-visible:ring-2 focus-visible:ring-ink/15"
                     >
-                      {value}
-                    </button>
-                  ))}
+                      {Array.from({ length: 13 - minHours }, (_, i) => i + minHours).map(
+                        (value) => (
+                          <option key={value} value={value}>
+                            {value} hours{value >= 8 ? " · 20% off" : ""}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                    <ChevronDown
+                      className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted"
+                      strokeWidth={1.5}
+                      aria-hidden
+                    />
+                  </div>
+                  <p className="text-sm text-ink-muted" aria-live="polite">
+                    {roomOnly.discounted ? (
+                      <>
+                        Room <span className="text-ink tabular-nums">{short(roomOnly.total)}</span>,
+                        20% off {short(roomOnly.full)}
+                      </>
+                    ) : (
+                      <>
+                        Room <span className="text-ink tabular-nums">{short(roomOnly.total)}</span>{" "}
+                        · 20% off from 8 hours
+                      </>
+                    )}
+                  </p>
                 </div>
-                <p className="mt-3 text-sm text-ink-muted">
-                  {hours >= 8 ? copy.rent.dayNote : copy.rent.minNote}
-                </p>
               </Step>
 
               <Step n={2} title={copy.rent.date} ref={dateRef}>
