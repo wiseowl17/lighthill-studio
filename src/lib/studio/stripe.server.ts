@@ -27,7 +27,9 @@ function decrypt(payload: string): string {
   const [ivH, tagH, dataH] = payload.split(".");
   const decipher = createDecipheriv("aes-256-gcm", encKey(), Buffer.from(ivH, "hex"));
   decipher.setAuthTag(Buffer.from(tagH, "hex"));
-  return Buffer.concat([decipher.update(Buffer.from(dataH, "hex")), decipher.final()]).toString("utf8");
+  return Buffer.concat([decipher.update(Buffer.from(dataH, "hex")), decipher.final()]).toString(
+    "utf8",
+  );
 }
 
 export type StripeApp = {
@@ -272,8 +274,41 @@ function productIdOf(product: StripePrice["product"]): string {
 }
 
 function looksLikeEventTicket(product: StripeProduct): boolean {
-  const blob = `${product.name} ${product.description ?? ""} ${product.metadata?.event ?? ""} ${product.metadata?.kind ?? ""}`.toLowerCase();
+  const blob =
+    `${product.name} ${product.description ?? ""} ${product.metadata?.event ?? ""} ${product.metadata?.kind ?? ""}`.toLowerCase();
   return /full experience|photo experience|flash tattoo|tattoo experience|colorful/.test(blob);
+}
+
+/**
+ * The one active product tagged `metadata.event = <key>` and its default
+ * price. Event pages use this instead of listOneTimePrices, which would also
+ * surface every other active product in the account.
+ */
+export async function findEventPrice(
+  secretKey: string,
+  eventKey: string,
+): Promise<StripeProductPrice | null> {
+  const productsRes = await stripeRequest<{
+    data: (StripeProduct & { default_price?: string | { id?: string } | null })[];
+  }>(secretKey, "GET", "products?active=true&limit=100");
+  const product = productsRes.data.find((p) => p.metadata?.event === eventKey);
+  const priceId =
+    typeof product?.default_price === "string" ? product.default_price : product?.default_price?.id;
+  if (!product || !priceId) return null;
+  const price = await stripeRequest<StripePrice & { active?: boolean }>(
+    secretKey,
+    "GET",
+    `prices/${encodeURIComponent(priceId)}`,
+  );
+  if (price.active === false || !price.unit_amount) return null;
+  return {
+    productId: product.id,
+    priceId: price.id,
+    name: product.name,
+    description: product.description,
+    amountCents: price.unit_amount,
+    image: product.images?.[0] ?? null,
+  };
 }
 
 export async function listOneTimePrices(secretKey: string): Promise<StripeProductPrice[]> {
@@ -320,6 +355,11 @@ export async function createPriceCheckoutSession(
     successUrl: string;
     cancelUrl: string;
     origin: string;
+    /** Tags the session and payment, e.g. { event: "cocoween" }. */
+    metadata?: Record<string, string>;
+    /** One optional text field shown on Checkout (Stripe allows ≤255 chars). */
+    textField?: { key: string; label: string };
+    submitMessage?: string;
   },
 ): Promise<StripeCheckoutSession> {
   const origin = input.origin.replace(/\/$/, "");
@@ -333,8 +373,20 @@ export async function createPriceCheckoutSession(
     "payment_intent_data[metadata][kind]": "ticket",
     "payment_intent_data[description]": input.name,
     allow_promotion_codes: "true",
-    "custom_text[submit][message]": "Your ticket confirmation is the Stripe receipt.",
+    "custom_text[submit][message]":
+      input.submitMessage ?? "Your ticket confirmation is the Stripe receipt.",
   };
+  for (const [key, value] of Object.entries(input.metadata ?? {})) {
+    base[`metadata[${key}]`] = value;
+    base[`payment_intent_data[metadata][${key}]`] = value;
+  }
+  if (input.textField) {
+    base["custom_fields[0][key]"] = input.textField.key;
+    base["custom_fields[0][label][type]"] = "custom";
+    base["custom_fields[0][label][custom]"] = input.textField.label;
+    base["custom_fields[0][type]"] = "text";
+    base["custom_fields[0][optional]"] = "true";
+  }
   const branded = {
     ...base,
     "branding_settings[background_color]": "#f4f1ea",

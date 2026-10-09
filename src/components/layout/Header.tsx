@@ -3,17 +3,14 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { nav } from "@data/site";
 import { cn } from "@/lib/utils";
-import {
-  Sheet,
-  SheetContent,
-  SheetClose,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetClose, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/layout/Logo";
 import { PeerspaceMark } from "@/components/layout/PeerspaceMark";
 import { InstagramLink, PhoneLink } from "@/components/layout/ContactLinks";
 import { useI18n } from "@/lib/i18n/provider";
+import { cocoweenIsOn } from "@data/cocoween";
+import { todayInTz } from "@/lib/studio/time";
 
 const navLink =
   "whitespace-nowrap text-[0.72rem] font-medium tracking-[0.14em] uppercase transition-colors duration-150";
@@ -37,6 +34,8 @@ export function Header() {
   }, [pathname]);
 
   const solid = !isHome || scrolled || open;
+  // Temporary event link; disappears by itself after the event day.
+  const showEvent = cocoweenIsOn(todayInTz());
 
   return (
     <header
@@ -67,6 +66,17 @@ export function Header() {
           </div>
 
           <nav className="hidden min-w-0 items-center gap-4 xl:gap-5 lg:flex" aria-label="Primary">
+            {showEvent ? (
+              <Link
+                to="/event"
+                className={cn(
+                  navLink,
+                  pathname === "/event" ? "text-fg" : "text-[#f2a11f] hover:text-fg",
+                )}
+              >
+                Cocoween
+              </Link>
+            ) : null}
             {nav.map((item) => (
               <Link
                 key={item.to}
@@ -97,6 +107,13 @@ export function Header() {
         <SheetContent hideClose>
           <div className="flex h-full flex-col overflow-y-auto px-6 pt-6 pb-10">
             <nav className="flex flex-col gap-1" aria-label="Mobile">
+              {showEvent ? (
+                <SheetClose asChild>
+                  <Link to="/event" className="py-3 font-display text-4xl text-[#f2a11f]">
+                    Cocoween · Oct 31
+                  </Link>
+                </SheetClose>
+              ) : null}
               {nav.map((item) => (
                 <SheetClose asChild key={item.to}>
                   <Link to={item.to} className="py-3 font-display text-4xl text-fg">

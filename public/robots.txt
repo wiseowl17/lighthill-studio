@@ -4,6 +4,7 @@ Disallow: /desk
 Disallow: /login
 Disallow: /api/
 Disallow: /rent/confirmed
+Disallow: /event/confirmed
 Disallow: /colorful/confirmed
 Disallow: /__grok/
 

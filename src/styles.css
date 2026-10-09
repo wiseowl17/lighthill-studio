@@ -9,6 +9,7 @@
 @import "@fontsource/outfit/latin-400.css";
 @import "@fontsource/outfit/latin-500.css";
 @import "@fontsource/outfit/latin-600.css";
+@import "@fontsource/rye/latin-400.css";
 
 @theme {
   --color-bg: #0c0b0a;
@@ -46,7 +47,8 @@
 
   --shadow-border: 0 0 0 1px rgb(244 241 234 / 0.08);
   --shadow-border-hover: 0 0 0 1px rgb(244 241 234 / 0.16);
-  --shadow-paper: 0 0 0 1px rgb(20 18 16 / 0.06), 0 1px 2px -1px rgb(20 18 16 / 0.06),
+  --shadow-paper:
+    0 0 0 1px rgb(20 18 16 / 0.06), 0 1px 2px -1px rgb(20 18 16 / 0.06),
     0 2px 8px rgb(20 18 16 / 0.04);
   --aspect-portrait: 3/4;
   --aspect-photo: 3/2;
@@ -194,4 +196,204 @@
   opacity: 0.045;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ------------------------------------------------------------------
+ * Lotería de Cocoween (/event). A scoped world: night-violet table,
+ * printed card stock, wood-type lettering. Everything lives under
+ * .loteria so the rest of the site keeps its paper-and-ink system.
+ * ------------------------------------------------------------------ */
+.loteria {
+  --lot-night: #1c0f2e;
+  --lot-night-2: #26143d;
+  --lot-ink: #140a20;
+  --lot-stock: #f4ead8;
+  --lot-stock-shade: #e3d4b8;
+  --lot-marigold: #f2a11f;
+  --lot-rosa: #e5007d;
+  --lot-turquesa: #00a29a;
+  --lot-violeta: #8a4fd0;
+  --lot-red: #c8102e;
+  --lot-text: #f6efff;
+  --lot-text-muted: #cdbfe2; /* 9.6:1 on night */
+  --lot-wood: "Rye", "Rockwell", Georgia, serif;
+  background: var(--lot-night);
+  color: var(--lot-text);
+}
+
+.loteria ::selection {
+  background: var(--lot-marigold);
+  color: var(--lot-ink);
+}
+
+.loteria :focus-visible {
+  outline: 3px solid var(--lot-marigold);
+  outline-offset: 3px;
+}
+
+.lot-wood {
+  font-family: var(--lot-wood);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* The card: printed stock, heavy ink frame, red number, title band. */
+.lot-card {
+  --lot-field: var(--lot-marigold);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 5 / 8;
+  padding: 7px;
+  background: var(--lot-stock);
+  color: var(--lot-ink);
+  border-radius: 6px;
+  box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.7);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease,
+    box-shadow 0.45s ease,
+    filter 0.45s ease;
+  cursor: pointer;
+  text-align: left;
+}
+/* The heavy ink rule of a lotería card encloses picture and title together. */
+.lot-card__inner {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  border: 4px solid var(--lot-ink);
+  background: var(--lot-field);
+}
+.lot-card[data-field="rosa"] {
+  --lot-field: var(--lot-rosa);
+}
+.lot-card[data-field="turquesa"] {
+  --lot-field: var(--lot-turquesa);
+}
+
+.lot-card__window {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  margin: 5px 5px 0;
+  border: 2px solid var(--lot-ink);
+  background: var(--lot-field);
+}
+.lot-card__number {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  min-width: 1.9em;
+  padding: 0.18em 0.35em 0.12em;
+  font-family: var(--lot-wood);
+  font-size: 1.15rem;
+  line-height: 1;
+  text-align: center;
+  color: var(--lot-red);
+  background: var(--lot-stock);
+  border-right: 2px solid var(--lot-ink);
+  border-bottom: 2px solid var(--lot-ink);
+}
+.lot-card__title {
+  padding: 7px 2px 6px;
+  text-align: center;
+  font-family: var(--lot-wood);
+  font-size: clamp(0.78rem, 0.45rem + 1.3vw, 1.35rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--lot-ink);
+}
+
+/* State by frame, never colour alone: held = double frame + punched corner. */
+.lot-card[aria-pressed="true"] {
+  outline: 3px double var(--lot-marigold);
+  outline-offset: 5px;
+  transform: translateY(-6px) rotate(0deg) !important;
+  filter: brightness(1.08) saturate(1.12);
+  box-shadow:
+    0 0 26px 2px rgb(242 161 31 / 0.35),
+    0 14px 30px -14px rgb(0 0 0 / 0.7);
+}
+.lot-card[aria-pressed="true"] .lot-card__window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 62%,
+    rgb(255 196 92 / 0.38),
+    rgb(255 150 40 / 0.12) 45%,
+    transparent 75%
+  );
+  mix-blend-mode: screen;
+}
+.lot-card[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--lot-night);
+  box-shadow: inset 0 0 0 2px var(--lot-ink);
+}
+.lot-deck[data-holding="true"] .lot-card:not([aria-pressed="true"]) {
+  opacity: 0.45;
+  filter: saturate(0.6);
+}
+
+/* The tabla frame strip: thick stock rule holding the facts and the action. */
+.lot-frame {
+  border: 4px solid var(--lot-stock);
+  border-radius: 10px;
+  background: var(--lot-night-2);
+  box-shadow:
+    inset 0 0 0 2px var(--lot-ink),
+    inset 0 0 0 5px var(--lot-stock-shade);
+}
+
+/* The price seal: one stamped circle, slightly off true. */
+.lot-seal {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: var(--lot-marigold);
+  color: var(--lot-ink);
+  border: 3px dashed var(--lot-ink);
+  outline: 3px solid var(--lot-marigold);
+  transform: rotate(-8deg);
+}
+
+/* Papel picado: a cut-paper edge, only where one band meets the next. */
+.lot-picado {
+  height: 22px;
+  background-color: var(--edge, var(--lot-rosa));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='22'%3E%3Cpath fill-rule='evenodd' d='M0 0h44v12c-4 0-6 10-11 10S26 12 22 12s-6 10-11 10S4 12 0 12z M8.6 6a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0z M30.6 6a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0z'/%3E%3C/svg%3E")
+    0 0 / 44px 22px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='22'%3E%3Cpath fill-rule='evenodd' d='M0 0h44v12c-4 0-6 10-11 10S26 12 22 12s-6 10-11 10S4 12 0 12z M8.6 6a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0z M30.6 6a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0-4.8 0z'/%3E%3C/svg%3E")
+    0 0 / 44px 22px repeat-x;
+}
+
+@keyframes lot-deal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0) rotate(var(--deal-from, -6deg));
+  }
+}
+.lot-deal {
+  animation: lot-deal 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--deal-delay, 0ms) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lot-deal {
+    animation: none;
+  }
+  .lot-card {
+    transition: none;
+  }
 }

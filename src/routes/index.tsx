@@ -8,6 +8,7 @@ import { Marquee } from "@/components/home/Marquee";
 import { SelectedWork } from "@/components/home/SelectedWork";
 import { ReviewStrip } from "@/components/home/ReviewStrip";
 import { TwoPaths } from "@/components/home/TwoPaths";
+import { EventStrip } from "@/components/home/EventStrip";
 import { team } from "@data/team";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo, webpSrcSet } from "@/components/media/Photo";
@@ -46,6 +47,7 @@ function Home() {
   return (
     <main id="main">
       <Hero />
+      <EventStrip />
       <Marquee />
       <TwoPaths />
 

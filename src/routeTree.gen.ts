@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ColorfulRouteImport } from './routes/colorful'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DeskRouteImport } from './routes/desk'
+import { Route as EventRouteImport } from './routes/event'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as LoginRouteImport } from './routes/login'
@@ -28,6 +29,7 @@ import { Route as DeskInboxRouteImport } from './routes/desk/inbox'
 import { Route as DeskInvoicesRouteImport } from './routes/desk/invoices'
 import { Route as DeskNewRouteImport } from './routes/desk/new'
 import { Route as DeskSettingsRouteImport } from './routes/desk/settings'
+import { Route as EventConfirmedRouteImport } from './routes/event_.confirmed'
 import { Route as RentConfirmedRouteImport } from './routes/rent_.confirmed'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiGoogleCallbackRouteImport } from './routes/api/google/callback'
@@ -54,6 +56,11 @@ const ContactRoute = ContactRouteImport.update({
 const DeskRoute = DeskRouteImport.update({
   id: '/desk',
   path: '/desk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventRoute = EventRouteImport.update({
+  id: '/event',
+  path: '/event',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -131,6 +138,11 @@ const DeskSettingsRoute = DeskSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DeskRoute,
 } as any)
+const EventConfirmedRoute = EventConfirmedRouteImport.update({
+  id: '/event_/confirmed',
+  path: '/event/confirmed',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RentConfirmedRoute = RentConfirmedRouteImport.update({
   id: '/rent_/confirmed',
   path: '/rent/confirmed',
@@ -172,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/colorful': typeof ColorfulRoute
   '/contact': typeof ContactRoute
   '/desk': typeof DeskRouteWithChildren
+  '/event': typeof EventRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
@@ -186,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/desk/invoices': typeof DeskInvoicesRoute
   '/desk/new': typeof DeskNewRoute
   '/desk/settings': typeof DeskSettingsRoute
+  '/event/confirmed': typeof EventConfirmedRoute
   '/rent/confirmed': typeof RentConfirmedRoute
   '/desk/': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -199,6 +213,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/colorful': typeof ColorfulRoute
   '/contact': typeof ContactRoute
+  '/event': typeof EventRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
@@ -212,6 +227,7 @@ export interface FileRoutesByTo {
   '/desk/invoices': typeof DeskInvoicesRoute
   '/desk/new': typeof DeskNewRoute
   '/desk/settings': typeof DeskSettingsRoute
+  '/event/confirmed': typeof EventConfirmedRoute
   '/rent/confirmed': typeof RentConfirmedRoute
   '/desk': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -227,6 +243,7 @@ export interface FileRoutesById {
   '/colorful': typeof ColorfulRoute
   '/contact': typeof ContactRoute
   '/desk': typeof DeskRouteWithChildren
+  '/event': typeof EventRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
@@ -241,6 +258,7 @@ export interface FileRoutesById {
   '/desk/invoices': typeof DeskInvoicesRoute
   '/desk/new': typeof DeskNewRoute
   '/desk/settings': typeof DeskSettingsRoute
+  '/event_/confirmed': typeof EventConfirmedRoute
   '/rent_/confirmed': typeof RentConfirmedRoute
   '/desk/': typeof DeskIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -257,6 +275,7 @@ export interface FileRouteTypes {
     | '/colorful'
     | '/contact'
     | '/desk'
+    | '/event'
     | '/faq'
     | '/gallery'
     | '/login'
@@ -271,6 +290,7 @@ export interface FileRouteTypes {
     | '/desk/invoices'
     | '/desk/new'
     | '/desk/settings'
+    | '/event/confirmed'
     | '/rent/confirmed'
     | '/desk/'
     | '/api/auth/$'
@@ -284,6 +304,7 @@ export interface FileRouteTypes {
     | '/'
     | '/colorful'
     | '/contact'
+    | '/event'
     | '/faq'
     | '/gallery'
     | '/login'
@@ -297,6 +318,7 @@ export interface FileRouteTypes {
     | '/desk/invoices'
     | '/desk/new'
     | '/desk/settings'
+    | '/event/confirmed'
     | '/rent/confirmed'
     | '/desk'
     | '/api/auth/$'
@@ -311,6 +333,7 @@ export interface FileRouteTypes {
     | '/colorful'
     | '/contact'
     | '/desk'
+    | '/event'
     | '/faq'
     | '/gallery'
     | '/login'
@@ -325,6 +348,7 @@ export interface FileRouteTypes {
     | '/desk/invoices'
     | '/desk/new'
     | '/desk/settings'
+    | '/event_/confirmed'
     | '/rent_/confirmed'
     | '/desk/'
     | '/api/auth/$'
@@ -340,6 +364,7 @@ export interface RootRouteChildren {
   ColorfulRoute: typeof ColorfulRoute
   ContactRoute: typeof ContactRoute
   DeskRoute: typeof DeskRouteWithChildren
+  EventRoute: typeof EventRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
@@ -348,6 +373,7 @@ export interface RootRouteChildren {
   StudioRoute: typeof StudioRoute
   TeamRoute: typeof TeamRoute
   ColorfulConfirmedRoute: typeof ColorfulConfirmedRoute
+  EventConfirmedRoute: typeof EventConfirmedRoute
   RentConfirmedRoute: typeof RentConfirmedRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiGoogleCallbackRoute: typeof ApiGoogleCallbackRoute
@@ -383,6 +409,13 @@ declare module '@tanstack/react-router' {
       path: '/desk'
       fullPath: '/desk'
       preLoaderRoute: typeof DeskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/event': {
+      id: '/event'
+      path: '/event'
+      fullPath: '/event'
+      preLoaderRoute: typeof EventRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -490,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeskSettingsRouteImport
       parentRoute: typeof DeskRoute
     }
+    '/event_/confirmed': {
+      id: '/event_/confirmed'
+      path: '/event/confirmed'
+      fullPath: '/event/confirmed'
+      preLoaderRoute: typeof EventConfirmedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rent_/confirmed': {
       id: '/rent_/confirmed'
       path: '/rent/confirmed'
@@ -583,29 +623,9 @@ const rootRouteChildren: RootRouteChildren = {
   ColorfulRoute: ColorfulRoute,
   ContactRoute: ContactRoute,
   DeskRoute: DeskRouteWithChildren,
+  EventRoute: EventRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
-  RentRoute: RentRoute,
-  StudioRoute: StudioRoute,
-  TeamRoute: TeamRoute,
-  ColorfulConfirmedRoute: ColorfulConfirmedRoute,
-  RentConfirmedRoute: RentConfirmedRoute,
-  ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiGoogleCallbackRoute: ApiGoogleCallbackRoute,
-  ApiGoogleConnectRoute: ApiGoogleConnectRoute,
-  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
-}
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
+  RentRoute: Re

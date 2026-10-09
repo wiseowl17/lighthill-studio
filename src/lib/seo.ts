@@ -1,6 +1,7 @@
 import { site } from "@data/site";
 import type { FaqItem } from "@data/faq";
 import { team } from "@data/team";
+import { cocoween } from "@data/cocoween";
 
 /**
  * Search and AI-answer metadata shared by the public routes.
@@ -135,6 +136,44 @@ export function teamJsonLd() {
       knowsAbout: knows[member.id] ?? [],
       worksFor: { "@id": `${SITE_ORIGIN}/#business` },
     })),
+  });
+}
+
+/** Cocoween as a schema.org Event, so it can surface in event search. */
+export function eventJsonLd() {
+  return jsonLd({
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: "Cocoween: Halloween & Día de los Muertos for kids",
+    description:
+      "A magical Halloween & Día de los Muertos experience for kids at Lighthill Studio: paint your own ceramic with Fluffy Bee Ceramics, a 5-minute photo experience and 3 edited digital images.",
+    startDate: cocoween.startsAt,
+    endDate: cocoween.endsAt,
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    inLanguage: ["en", "es"],
+    image: [`${SITE_ORIGIN}${cocoween.flyers.en}`, `${SITE_ORIGIN}${cocoween.flyers.es}`],
+    url: `${SITE_ORIGIN}/event`,
+    location: {
+      "@type": "Place",
+      name: site.name,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: site.address.street,
+        addressLocality: site.address.city,
+        addressRegion: site.address.region,
+        postalCode: site.address.postalCode,
+        addressCountry: "US",
+      },
+    },
+    organizer: { "@id": `${SITE_ORIGIN}/#business` },
+    offers: {
+      "@type": "Offer",
+      price: cocoween.priceCents / 100,
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: `${SITE_ORIGIN}/event`,
+    },
   });
 }
 
