@@ -1,7 +1,6 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { CalendarDays, Clock, MapPin, Minus, Plus, Star } from "lucide-react";
-import { ratings } from "@data/reviews";
+import { CalendarDays, Clock, MapPin, Minus, Plus } from "lucide-react";
 import { site } from "@data/site";
 import {
   cocoween,
@@ -259,28 +258,7 @@ function EventPage() {
               </dd>
             </div>
           </dl>
-          <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            {ratings.map((r) => (
-              <li key={r.source}>
-                <a
-                  href={r.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[var(--lot-text-muted)] hover:text-[var(--lot-text)]"
-                >
-                  <Star
-                    className="size-3.5 fill-[var(--lot-marigold)] text-[var(--lot-marigold)]"
-                    aria-hidden
-                  />
-                  <span className="text-[var(--lot-text)]">{r.rating.toFixed(1)}</span>
-                  {lang === "es"
-                    ? `en ${r.source} · ${r.count} reseñas`
-                    : `on ${r.source} · ${r.count} reviews`}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-[var(--lot-text-muted)]">
+          <p className="mt-10 text-[var(--lot-text-muted)]">
             {L(t.questions)}{" "}
             <a
               href={`tel:${site.phone}`}
@@ -339,10 +317,11 @@ function TablaFrame({ className, ...p }: BuyProps & { className?: string }) {
     <div
       className={cn("lot-frame grid gap-6 p-5 md:p-7 lg:grid-cols-12 lg:items-center", className)}
     >
-      <ul className="grid gap-4 sm:grid-cols-3 lg:col-span-7">
+      <ul className="grid gap-4 sm:grid-cols-[auto_auto] sm:justify-start sm:gap-x-12 lg:col-span-7">
         <Fact icon={<CalendarDays className="size-5" aria-hidden />} label={L(t.date)} />
         <Fact icon={<Clock className="size-5" aria-hidden />} label={L(t.time)} sub={L(t.walkIn)} />
         <Fact
+          className="sm:col-start-2 sm:row-span-2 sm:row-start-1"
           icon={<MapPin className="size-5" aria-hidden />}
           label={
             <a
@@ -383,9 +362,19 @@ function TablaFrame({ className, ...p }: BuyProps & { className?: string }) {
   );
 }
 
-function Fact({ icon, label, sub }: { icon: ReactNode; label: ReactNode; sub?: string }) {
+function Fact({
+  icon,
+  label,
+  sub,
+  className,
+}: {
+  icon: ReactNode;
+  label: ReactNode;
+  sub?: string;
+  className?: string;
+}) {
   return (
-    <li className="flex gap-3">
+    <li className={cn("flex gap-3", className)}>
       <span className="mt-0.5 text-[var(--lot-marigold)]">{icon}</span>
       <span>
         <span className="block font-medium">{label}</span>
